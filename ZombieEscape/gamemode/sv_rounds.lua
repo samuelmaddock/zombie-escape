@@ -117,7 +117,7 @@ function GM:RoundRestart(CallBack)
 		local Time = 5
 		if self.ServerStarted then
 			self.ServerStarted = false
-			Time = 3
+			Time = 15
 		end
 
 		timer.Simple(Time, self.RoundStart, self)
