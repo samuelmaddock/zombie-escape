@@ -49,15 +49,11 @@ Although it's suggested to keep these settings at their default, you may change 
 
 
 #### Map Patching ####
-Included with the gamemode is a custom tool, which I originally created for Sassilization, for patching Zombie Escape maps, found under 'ZombieEscape/content/MapPatcher.exe' (Your anti-virus may tell you that it is malware, but I assure you, it is not). Unfortunately, a number of maps for the gamemode feature bugs only found present in Garry's Mod. A certain grated material is handled differently, bullets go through it in Garry's Mod, but not in Counter-Strike: Source. The tool provides instructions for correcting this by clicking the 'Help' link. Technical details: The tool parses the brush lump of a map and removes the CONTENTS_GRATE attribute from any surface with that attribute. More details can be found ```html
-<a href="url=https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Brush_and_brushside">here</a>.
-```
+Included with the gamemode is a custom tool, which I originally created for Sassilization, for patching Zombie Escape maps, found under 'ZombieEscape/content/MapPatcher.exe' (Your anti-virus may tell you that it is malware, but I assure you, it is not). Unfortunately, a number of maps for the gamemode feature bugs only found present in Garry's Mod. A certain grated material is handled differently, bullets go through it in Garry's Mod, but not in Counter-Strike: Source. The tool provides instructions for correcting this by clicking the 'Help' link. Technical details: The tool parses the brush lump of a map and removes the CONTENTS_GRATE attribute from any surface with that attribute. More details can be found ([here](https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Brush_and_brushside).
 
 
 #### Downloads ####
-```html
-<a href="http://www.solidfiles.com/d/47922cc034/">Pre-patched Map Pack</a> (Torrent)(555MB)
-```
+([Pre-patched Map Pack](http://www.solidfiles.com/d/47922cc034/) 555MB Torrent
 
 
 #### Installation ####
