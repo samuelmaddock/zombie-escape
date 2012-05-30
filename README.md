@@ -37,25 +37,27 @@ Although it's suggested to keep these settings at their default, you may change 
 
 #### Developer Support ####
 * Custom human weapons may be added by editing the 'weapons.txt' file.
-* Map fixes may be added to 'gamemode/maps/[i]mapname[/i].lua'
+* Map fixes may be added to 'gamemode/maps/mapname.lua'
 * A selection of hooks are made available for developers looking to implement custom rewards or other features
-OnRoundChange()
-OnChangeMap( String nextmap )
-OnTeamWin( Integer teamId )
-OnInfected( Player ply, Player attacker )
-OnNukeLaunched( Player ply )
-OnBossDefeated( Table boss, Player attacker ) [i]see sv_boss.lua[/i]
+
+* OnRoundChange()
+* OnChangeMap( String nextmap )
+* OnTeamWin( Integer teamId )
+* OnInfected( Player ply, Player attacker )
+* OnNukeLaunched( Player ply )
+* OnBossDefeated( Table boss, Player attacker ) see sv_boss.lua
 
 
 #### Map Patching ####
-Included with the gamemode is a custom tool, which I originally created for Sassilization, for patching Zombie Escape maps, found under 'ZombieEscape/content/MapPatcher.exe' (Your anti-virus may tell you that it is malware, but I assure you, it is not). Unfortunately, a number of maps for the gamemode feature bugs only found present in Garry's Mod. A certain grated material is handled differently, bullets go through it in Garry's Mod, but not in Counter-Strike: Source. The tool provides instructions for correcting this by clicking the 'Help' link. Technical details: The tool parses the brush lump of a map and removes the CONTENTS_GRATE attribute from any surface with that attribute. More details can be found [url=https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Brush_and_brushside]here[/url].
+Included with the gamemode is a custom tool, which I originally created for Sassilization, for patching Zombie Escape maps, found under 'ZombieEscape/content/MapPatcher.exe' (Your anti-virus may tell you that it is malware, but I assure you, it is not). Unfortunately, a number of maps for the gamemode feature bugs only found present in Garry's Mod. A certain grated material is handled differently, bullets go through it in Garry's Mod, but not in Counter-Strike: Source. The tool provides instructions for correcting this by clicking the 'Help' link. Technical details: The tool parses the brush lump of a map and removes the CONTENTS_GRATE attribute from any surface with that attribute. More details can be found ```html
+<a href="url=https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Brush_and_brushside">here</a>.
+```
 
 
 #### Downloads ####
-[url=https://github.com/samuelmaddock/zombie-escape/zipball/master]Direct Download[/url]
-[url=https://github.com/samuelmaddock/zombie-escape]Github[/url]
-https://github.com/samuelmaddock/zombie-escape (Svn Checkout URL)
-[url=http://www.solidfiles.com/d/47922cc034/]Pre-patched Map Pack (Torrent)(555MB)[/url]
+```html
+<a href="http://www.solidfiles.com/d/47922cc034/">Pre-patched Map Pack</a> (Torrent)(555MB)
+```
 
 
 #### Installation ####
