@@ -14,6 +14,14 @@ concommand.Add("ze_scream", function(ply,cmd,args)
 
 end)
 
+concommand.Add("ze_dropentity", function(ply,cmd,args)
+
+	if !IsValid(ply) then return end
+	
+	ply:DropPickupEntity()
+
+end)
+
 local function FindPartialTarget(name)
 	for _, ply in pairs(player.GetAll()) do
 		if string.find(ply:Name(), name) then

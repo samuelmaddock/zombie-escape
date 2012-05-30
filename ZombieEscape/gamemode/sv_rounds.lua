@@ -1,5 +1,5 @@
-GM.CVars.ZSpawnMin			= CreateConVar( "zombie_timer_min", 10, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
-GM.CVars.ZSpawnMax 			= CreateConVar( "zombie_timer_max", 25, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.ZSpawnMin			= CreateConVar( "ze_ztimer_min", 10, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.ZSpawnMax 			= CreateConVar( "ze_ztimer_max", 25, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
 
 GM.CVars.MaxRounds			= CreateConVar( "ze_max_rounds", 8, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
 
@@ -162,7 +162,7 @@ function GM:RoundStart()
 	local scale = math.Clamp( 1 - (team.NumPlayers(TEAM_BOTH) / self.PlayerScale), 0, 1 )
 	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
 
-	local Time = self:GetMinZSpawnTime() + self:GetMaxZSpawnTime()*scale
+	local Time = self:GetMinZSpawnTime() + math.abs(self:GetMaxZSpawnTime()-self:GetMinZSpawnTime())*scale
 	Time = (self:GetRound() == 1) and Time + 3 or Time -- additional time for players selecting their weapons
 	
 	timer.Simple(Time, function()

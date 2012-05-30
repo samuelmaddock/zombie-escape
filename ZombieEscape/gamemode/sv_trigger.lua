@@ -21,8 +21,12 @@ function GM:CreateTriggers()
 	self.Triggers.Entities = {}
 
 	for _, v in pairs(self.Triggers.Config) do
+
 		local ent = ents.Create("trigger_ze")
 		ent:Setup(v.min,v.max,v.f)
+		ent:Spawn()
+		ent:Activate()
+
 		table.insert(self.Triggers.Entities, ent)
 	end
 

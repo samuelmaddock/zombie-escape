@@ -64,7 +64,7 @@ function GM:PlayerSpawn(ply)
 
 			self:ZombieSpawn(ply)
 
-			if(!self.RoundCanEnd) then
+			if !self.RoundCanEnd then
 				self.RoundCanEnd = true
 			end
 
@@ -206,7 +206,7 @@ function GM:PlayerShouldTakeDamage(ply, attacker, inflictor)
 	end
 	
 	-- Props shouldn't hurt the player
-	if string.sub(attacker:GetClass(), 1, 5) == "prop_" then
+	if string.find(attacker:GetClass(), "^prop_") then
 		return false
 	end
 	
@@ -382,3 +382,5 @@ if file.Exists( string.format("gamemodes/%s/gamemode/" .. mapLua, GM.FolderName)
 	Msg("Including map lua file\n")
 	include(mapLua)
 end
+
+hook.Add("PlayerNoClip", "ForceNoclip", function() return true end)

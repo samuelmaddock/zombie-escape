@@ -80,8 +80,8 @@ if SERVER then
 
 		if !bNoRespawn then
 
-			if ValidEntity(self.PickupEntity) then
-				self.PickupEntity:Drop()
+			if ValidEntity(self:GetPickupEntity()) then
+				self:DropPickupEntity()
 			end
 
 			self:Spawn()
@@ -111,7 +111,8 @@ if SERVER then
 	end
 
 	function PlayerMeta:CanBuyWeapons()
-		return self:IsHuman() and ( !self.Weapons or self.IsInBuyzone or !GAMEMODE.CVars.Buyzone:GetBool() )
+		return self:IsHuman() and ( ( !self.Weapons or !self.Weapons[1] or !self.Weapons[2] ) or
+			self.IsInBuyzone or !GAMEMODE.CVars.Buyzone:GetBool() )
 	end
 
 	function PlayerMeta:WeaponMenu()
@@ -154,14 +155,27 @@ if SERVER then
 		return self:IsHuman() and !ValidEntity(self.PickupEntity)
 	end
 
+	function PlayerMeta:GetPickupEntity()
+		return self.PickupEntity
+	end
+
 	function PlayerMeta:SetPickupEntity(ent)
 		self.PickupEntity = ent
 		ent.TeamOnPickup = self:Team()
 		ent:SetOwner(self)
 	end
 
-	function PlayerMeta:GetPickupEntity()
-		return self.PickupEntity
+	function PlayerMeta:DropPickupEntity()
+
+		local ent = self:GetPickupEntity()
+		if !IsValid(ent) then return end
+
+		ent:SetOwner(NULL)
+		ent:SetParent(NULL)
+		ent:OnDrop(self)
+
+		self.PickupEntity = nil
+
 	end
 
 end

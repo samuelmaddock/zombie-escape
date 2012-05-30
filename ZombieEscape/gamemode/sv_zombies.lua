@@ -1,6 +1,6 @@
 GM.CVars.ZSpeed = CreateConVar( "ze_zombie_speed", 250, {FCVAR_REPLICATED}, "" )
-GM.CVars.ZHealthMin = CreateConVar( "zombie_health_min", 3200, {FCVAR_REPLICATED}, "" )
-GM.CVars.ZHealthMax = CreateConVar( "zombie_health_max", 4300, {FCVAR_REPLICATED}, "" )
+GM.CVars.ZHealthMin = CreateConVar( "ze_zhealth_min", 3200, {FCVAR_REPLICATED}, "" )
+GM.CVars.ZHealthMax = CreateConVar( "ze_zhealth_max", 4300, {FCVAR_REPLICATED}, "" )
 GM.CVars.ZombieRatio = CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "" )
 
 function GM:ZombieSpawn( ply )

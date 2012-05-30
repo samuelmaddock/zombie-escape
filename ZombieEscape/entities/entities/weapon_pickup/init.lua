@@ -33,29 +33,34 @@ end
 function ENT:Think()
 
 	local ply = self:GetOwner()
-	if !IsValid(ply) then return end
+
+	if !IsValid(ply) then
+		if IsValid(self:GetParent()) then
+			self:SetParent(nil)
+		end
+		return
+	end
 
 	if !ply:Alive() then
-		self:Drop()
+		ply:DropPickupEntity()
 	end
 
 	-- Drop if teams have changed
 	if ply:Team() != self.TeamOnPickup then
-		self:Drop()
+		ply:DropPickupEntity()
 	end
 
 end
 
 function ENT:Use(ent)
-	if !IsValid(self:GetOwner()) || ent != self:GetOwner() then return false end
+	if !IsValid(self:GetOwner()) or ent != self:GetOwner() then return false end
 	return true
 end
 
 function ENT:StartTouch( ent )
 
-	if !IsValid(ent) || !ent:IsPlayer() || IsValid(self:GetOwner()) || !ent:CanPickupEntity() then return end
-
-	--Msg("OnPlayerPickup: " .. tostring(ent) .. " has picked up " .. tostring(self) .. "\n")
+	if IsValid(self:GetOwner()) or !IsValid(ent) or !ent:IsPlayer() or
+		!ent:CanPickupEntity() or (self.LastOwner == ent and self.LastDrop + 3 > CurTime()) then return end
 	
 	self:TriggerOutput( "OnPlayerPickup", ent )
 	
@@ -77,20 +82,15 @@ function ENT:StartTouch( ent )
 
 end
 
-function ENT:Drop()
+function ENT:OnDrop(ply)
 
-	if IsValid(self:GetOwner()) then
-		self:GetOwner().PickupEntity = nil
-	end
-
-	self:SetOwner(nil)
-	self:SetParent(nil)
+	self.LastOwner = ply
+	self.LastDrop = CurTime()
 
 end
 
 function ENT:OnRemove()
-	self:SetParent(NULL)
 	if IsValid(self:GetOwner()) then
-		self:GetOwner().PickupEntity = nil
+		self:GetOwner():DropPickupEntity()
 	end
 end

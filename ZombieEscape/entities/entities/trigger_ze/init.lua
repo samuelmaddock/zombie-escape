@@ -11,12 +11,18 @@ function ENT:Initialize()
 	self.Entity:SetNotSolid(true)
 	self.Entity:SetNoDraw(true)
 
+	self.Phys = self.Entity:GetPhysicsObject()
+	if IsValid(self.Phys) then
+		self.Phys:Sleep()
+		self.Phys:EnableCollisions(false)
+	end
+
 end
 
 function ENT:Setup(Min, Max, Function)
 
 	local bbox = (Max - Min) / 2 -- determine actual boundaries from world vectors
-	self.Entity:SetPos(self.Entity:GetPos() + bbox) -- set pos to midpoint of bbox
+	self.Entity:SetPos(Min + bbox) -- set pos to midpoint of bbox
 	
 	self.Entity:PhysicsInitBox(-bbox, bbox)
 	self.Entity:SetCollisionBounds(-bbox, bbox)
@@ -28,17 +34,23 @@ function ENT:Setup(Min, Max, Function)
 		self.Phys:Sleep()
 		self.Phys:EnableCollisions(false)
 	end
-	
+
 	self.OnTouch = Function
 
 end
 
 function ENT:StartTouch(ent)
 
-	if ValidEntity(ent) or !ent:IsPlayer() or !ent:Alive() then return end
+	if !IsValid(ent) or !ent:IsPlayer() or !ent:Alive() then return end
 
 	if self.OnTouch then
-		self.OnTouch()
+
+		local bSuccess, err = pcall(self.OnTouch, ent)
+
+		if !bSuccess then
+			ErrorNoHalt("TRIGGER ERROR: "..tostring(err).."\n")
+		end
+
 	end
 
 end
