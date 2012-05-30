@@ -382,5 +382,3 @@ if file.Exists( string.format("gamemodes/%s/gamemode/" .. mapLua, GM.FolderName)
 	Msg("Including map lua file\n")
 	include(mapLua)
 end
-
-hook.Add("PlayerNoClip", "ForceNoclip", function() return true end)
