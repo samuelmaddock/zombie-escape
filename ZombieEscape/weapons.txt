@@ -1,0 +1,78 @@
+"ZEWeapons"
+{
+
+	"AK47"
+	{
+		"class"			"weapon_ak47"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+	"Mac 10"
+	{
+		"class"			"weapon_mac10"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+	"P90"
+	{
+		"class"			"weapon_p90_ze"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+	"Para"
+	{
+		"class"			"weapon_para"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+
+
+	"Elites"
+	{
+		"class"			"weapon_elite_ze"
+		"multiplier"	"1.1"
+		"type"			"2"
+	}
+
+	"Glock"
+	{
+		"class"			"weapon_glock_ze"
+		"multiplier"	"1.1"
+		"type"			"2"
+	}
+
+	"Deagle"
+	{
+		"class"			"weapon_deagle_ze"
+		"multiplier"	"1.2"
+		"type"			"2"
+	}
+
+	"Five Seven"
+	{
+		"class"			"weapon_fiveseven"
+		"multiplier"	"1.1"
+		"type"			"2"
+	}
+
+
+
+	"Crowbar"
+	{
+		"class"			"weapon_crowbar"
+		"multiplier"	"5.0"
+		"type"			"3"
+	}
+
+	"Frag Grenade"
+	{
+		"class"			"weapon_frag"
+		"multiplier"	"6.0"
+		"type"			"3"
+	}
+
+}

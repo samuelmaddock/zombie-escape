@@ -1,0 +1,23 @@
+"Gamemode"
+{
+	"name"		"Zombie Escape"
+	"version"	"1.0"
+
+	"author_name"	"Samuel Maddock"
+	"author_email"	"samuel.maddock@gmail.com"
+	"author_url"	"samuelmaddock.com"
+	
+	"icon"		""
+	"info"		""
+	"hide"		"1"
+	
+	"mappattern"
+	{
+		"1"	"^ze_"
+	}
+        
+	"GCFRequires"
+	{
+		"1" "240"
+	}
+}

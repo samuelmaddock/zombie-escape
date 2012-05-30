@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/player/aliendrone_v3/drone_head"
+	"$bumpmap" "models/player/aliendrone_v3/drone_head_normal"
+	"$halflambert" 1
+
+ 	"$phong" "1"
+	"$phongexponent" "9"
+	"$phongboost"	"0.15"
+	"$phongfresnelranges"	"[1 1 1]"
+	"$phongalbedotint" "1"
+}
+

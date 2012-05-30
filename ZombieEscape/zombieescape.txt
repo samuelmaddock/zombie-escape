@@ -1,0 +1,7 @@
+"Gamemode"
+{
+	"base"		"base"
+	"title"		"Zombie Escape"
+	"maps"		"^ze_"
+	"menusystem"	"1"
+}
