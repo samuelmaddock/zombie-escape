@@ -85,6 +85,12 @@ if SERVER then
 			end
 
 			self:Spawn()
+
+			timer.Simple(3, function()
+				if IsValid(self) then
+					self.SpawnInfo = { pos = self:GetPos() }
+				end
+			end)
 			
 		end
 

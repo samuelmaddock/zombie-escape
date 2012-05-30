@@ -28,7 +28,9 @@ function GM:ChangeMap()
 		-- Remove current map from list
 		if #self.MapList > 1 then
 			local key = table.KeyFromValue(self.MapList, game.GetMap())
-			self.MapList[key] = nil
+			if key and self.MapList[key] then
+				table.remove(self.MapList,key)
+			end
 		end
 
 		map = table.Random(self.MapList)

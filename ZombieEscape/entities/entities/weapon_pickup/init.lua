@@ -9,9 +9,8 @@ function ENT:Initialize()
 	self.Entity:SetColor(255, 255, 255, 0)
 	
 	local RVec = Vector() * 64
-	
-	self.Entity:PhysicsInitSphere(64)
-	self.Entity:SetCollisionBounds(RVec * -1, RVec)
+	self.Entity:PhysicsInitBox(-RVec, RVec)
+	self.Entity:SetCollisionBounds(-RVec, RVec)
 	
 	self.Entity:SetTrigger(true)
 	self.Entity:DrawShadow(false)
@@ -86,6 +85,13 @@ function ENT:OnDrop(ply)
 
 	self.LastOwner = ply
 	self.LastDrop = CurTime()
+
+	/*self:SetMoveType(MOVETYPE_VPHYSICS)
+	self.Phys:Wake()
+	self.Phys:EnableCollisions(true)
+
+	self:SetLocalVelocity(ply:GetVelocity())*/
+
 
 end
 

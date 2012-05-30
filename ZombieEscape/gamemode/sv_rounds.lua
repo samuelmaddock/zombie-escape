@@ -130,6 +130,20 @@ function GM:RoundRestart(CallBack)
 
 end
 
+function GM:AFKCheck()
+	-- Check current position vs spawn position
+	for _, ply in pairs(team.GetPlayers(TEAM_HUMANS)) do
+		if IsValid(ply) and ply.SpawnInfo then
+			if math.floor(ply.SpawnInfo.pos:Length()) == math.floor(ply:GetPos():Length()) then
+				ply:GoTeam(TEAM_ZOMBIES)
+				ply:SendMessage("You have been infected for being AFK")
+			end
+		end
+	end
+	self:RoundChecks()
+end
+
+
 function GM:RoundStart()
 
 	if !self.Restarting then return end
@@ -165,11 +179,16 @@ function GM:RoundStart()
 	local Time = self:GetMinZSpawnTime() + math.abs(self:GetMaxZSpawnTime()-self:GetMinZSpawnTime())*scale
 	Time = (self:GetRound() == 1) and Time + 3 or Time -- additional time for players selecting their weapons
 	
+	-- Random infect
 	timer.Simple(Time, function()
 		math.randomseed(os.time())
 		self:RandomInfect()
 		self.InfectionStarted = true
 	end)
+
+	-- Simple AFK check
+	timer.Destroy("HumanAFKCheck")
+	timer.Create("HumanAFKCheck", 60, 1, self.AFKCheck, self)
 	
 end
 
