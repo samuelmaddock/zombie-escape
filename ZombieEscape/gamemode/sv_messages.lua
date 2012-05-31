@@ -1,3 +1,5 @@
+util.AddNetworkString("MapMessage")
+
 /*---------------------------------------------------------
 	Sent from point_servercommand entities
 ---------------------------------------------------------*/
@@ -7,9 +9,9 @@ function GM:SendMapMessage(str)
 
 	Msg("[ZE] "..tostring(str).."\n")
 
-	umsg.Start("MapMessage")
-		umsg.String(str)
-	umsg.End()
+	net.Start("MapMessage")
+		net.WriteString(str)
+	net.Broadcast()
 
 end
 

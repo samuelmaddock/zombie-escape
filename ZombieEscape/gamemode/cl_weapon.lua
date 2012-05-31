@@ -42,27 +42,25 @@ end
 --[[---------------------------------------------
 		User Message Hooks
 -----------------------------------------------]]
-usermessage.Hook("SelectWeapons", function(um)
-
-	-- Load weapons if necessary
-	local count = tonumber( um:ReadChar() )
-	for i=0,count do
-		table.insert( GAMEMODE.Weapons, { type = um:ReadChar(), class = um:ReadString() } )
-	end
+net.Receive("SelectWeapons", function()
 
 	-- Open Menu
 	GAMEMODE:OpenWeaponSelection()
 
 end)
 
-usermessage.Hook("CloseWeaponSelection", function()
+net.Receive("CloseWeaponSelection", function()
 	GAMEMODE:HideWeaponSelection()
 end)
 
-usermessage.Hook("ReceieveWeapon", function(um)
-	local type = um:ReadChar()
+net.Receive("ReceieveWeapon", function()
+	local type = net.ReadByte()
 	if !type then return end
 	GAMEMODE:ReceivedWeapon(type)
+end)
+
+net.Receive("WeaponsData", function()
+	GAMEMODE.Weapons = net.ReadTable()
 end)
 
 

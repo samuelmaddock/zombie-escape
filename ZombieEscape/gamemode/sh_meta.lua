@@ -40,6 +40,9 @@ end
 
 if SERVER then
 
+	util.AddNetworkString("SelectWeapons")
+	util.AddNetworkString("CloseWeaponSelection")
+
 	function PlayerMeta:Zombify()
 		
 		-- Zombies shouldn't be holding ZE map/weapon pickups
@@ -122,23 +125,13 @@ if SERVER then
 	end
 
 	function PlayerMeta:WeaponMenu()
-		umsg.Start("SelectWeapons", self)
-			if self.bSentWeapons then
-				umsg.Char(0)
-			else
-				umsg.Char(#GAMEMODE.Weapons)
-				for k, weap in pairs(GAMEMODE.Weapons) do
-					umsg.Char(weap.type)
-					umsg.String(weap.class)
-				end
-				self.bSentWeapons = true
-			end
-		umsg.End()
+		net.Start("SelectWeapons")
+		net.Send(self)
 	end
 
 	function PlayerMeta:CloseWeaponMenu()
-		umsg.Start("CloseWeaponSelection", self)
-		umsg.End()
+		net.Start("CloseWeaponSelection")
+		net.Send(self)
 	end
 
 	function PlayerMeta:SetSpeed(speed, crouchSpeed)
@@ -152,9 +145,9 @@ if SERVER then
 
 	function PlayerMeta:SendMessage(str)
 		if !str then return end
-		umsg.Start("MapMessage", self)
-			umsg.String(str)
-		umsg.End()
+		net.Start("MapMessage")
+			net.WriteString(str)
+		net.Send(self)
 	end
 
 	function PlayerMeta:CanPickupEntity()

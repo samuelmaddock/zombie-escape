@@ -22,11 +22,11 @@ function GM:DamageNotes()
 	end
 end
 
-function AddDamageNote( um )
+function AddDamageNote()
 	local note = {}
-	note.Amount	= um:ReadFloat()
-	note.Pos 		= um:ReadVector() + Vector( 0, 0, 65 )
+	note.Amount 	= net.ReadFloat()
+	note.Pos 		= net.ReadVector() + Vector( 0, 0, 65 )
 	note.Time 		= RealTime() + fadetime
 	table.insert(DamageNotes, note)
 end
-usermessage.Hook( "DamageNotes", AddDamageNote )
+net.Receive( "DamageNotes", AddDamageNote )

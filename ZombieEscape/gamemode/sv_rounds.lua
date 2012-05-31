@@ -12,6 +12,8 @@ GM.PlayerScale = math.Clamp( MaxPlayers(), 50, math.max(MaxPlayers(),50) ) -- am
 GM.Round = 0
 GM.RoundCanEnd = true
 
+util.AddNetworkString("WinningTeam")
+
 function GM:GetRound()
 	return self.Round and self.Round or 1
 end
@@ -168,7 +170,7 @@ function GM:RoundStart()
 	
 	gamemode.Call("OnRoundChange")
 	
-	self:SendWinner(-1,true) -- Reset winner
+	self:SendWinner(0,true) -- Reset winner
 	
 	self.Restarting = false
 	self.RoundStarted = CurTime()
@@ -193,8 +195,8 @@ function GM:RoundStart()
 end
 
 function GM:SendWinner( TeamId, bReset )
-	umsg.Start("WinningTeam")
-		umsg.Char(TeamId)
-		umsg.Bool(bReset)
-	umsg.End()
+	net.Start("WinningTeam")
+		net.WriteByte(TeamId)
+		net.WriteBit(bReset)
+	net.Broadcast()
 end

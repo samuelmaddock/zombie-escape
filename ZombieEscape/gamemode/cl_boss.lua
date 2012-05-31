@@ -65,10 +65,10 @@ function GM:BossHealth()
 	end
 end
 
-function RecieveBossSpawn( um )
+function RecieveBossSpawn()
 
-	local index = um:ReadShort()
-	local name = um:ReadString()
+	local index = net.ReadFloat()
+	local name = net.ReadString()
 	
 	local boss = GAMEMODE.BossEntities[index]
 	if !boss then
@@ -83,12 +83,12 @@ function RecieveBossSpawn( um )
 
 
 end
-usermessage.Hook( "BossSpawn", RecieveBossSpawn )
+net.Receive( "BossSpawn", RecieveBossSpawn )
 
 function RecieveBossUpdate( um )
 
-	local index = um:ReadShort()
-	local health, maxhealth = um:ReadShort(), um:ReadShort()
+	local index = net.ReadFloat()
+	local health, maxhealth = net.ReadFloat(), net.ReadFloat()
 	
 	local boss = GAMEMODE.BossEntities[index]
 	if !boss then
@@ -105,11 +105,11 @@ function RecieveBossUpdate( um )
 	GAMEMODE.LastBossUpdate = RealTime()
 
 end
-usermessage.Hook( "BossTakeDamage", RecieveBossUpdate )
+net.Receive( "BossTakeDamage", RecieveBossUpdate )
 
 function RecieveBossDefeated( um )
 
-	local index = um:ReadShort()
+	local index = net.ReadFloat()
 		
 	if !GAMEMODE.BossEntities[index] then
 		--Msg("Warning: Received boss death for non-existant boss!\n")
@@ -119,4 +119,4 @@ function RecieveBossDefeated( um )
 	end
 	
 end
-usermessage.Hook( "BossDefeated", RecieveBossDefeated )
+net.Receive( "BossDefeated", RecieveBossDefeated )

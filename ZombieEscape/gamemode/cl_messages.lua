@@ -92,9 +92,9 @@ function GM:MapMessages()
 
 end
 
-function AddMapMessage( um )
+function AddMapMessage()
 	local msg	= {}
-	msg.text	= um:ReadString()
+	msg.text	= net.ReadString()
 	msg.time 	= SysTime()
 	msg.len		= 10
 	msg.velx	= -5
@@ -106,4 +106,4 @@ function AddMapMessage( um )
 	
 	Msg( "[ZE] " .. msg.text .. "\n" )
 end
-usermessage.Hook( "MapMessage", AddMapMessage )
+net.Receive( "MapMessage", AddMapMessage )

@@ -1,3 +1,7 @@
+util.AddNetworkString("BossSpawn")
+util.AddNetworkString("BossTakeDamage")
+util.AddNetworkString("BossDefeated")
+
 /*---------------------------------------------------------
 	Boss Object
 ---------------------------------------------------------*/
@@ -153,20 +157,20 @@ function GM:BossDamageTaken(ent, activator)
 
 		if !boss.bInitialized then
 
-			umsg.Start("BossSpawn")
-				umsg.Short( boss:GetClientModel():EntIndex() )
-				umsg.String( boss:GetName() )
-			umsg.End()
+			net.Start("BossSpawn")
+				net.WriteFloat( boss:GetClientModel():EntIndex() )
+				net.WriteString( boss:GetName() )
+			net.Broadcast()
 
 			boss.bInitialized = true
 
 		end
 
-		umsg.Start("BossTakeDamage")
-			umsg.Short( boss:GetClientModel():EntIndex() )
-			umsg.Short( boss:Health() )
-			umsg.Short( boss:MaxHealth() )
-		umsg.End()
+		net.Start("BossTakeDamage")
+			net.WriteFloat( boss:GetClientModel():EntIndex() )
+			net.WriteFloat( boss:Health() )
+			net.WriteFloat( boss:MaxHealth() )
+		net.Broadcast()
 		
 	end
 	
@@ -183,9 +187,9 @@ function GM:BossDeath(ent, activator)
 		
 		if !boss:IsValid() or !boss.bInitialized then return end
 
-		umsg.Start("BossDefeated")
-			umsg.Short( boss:GetClientModel():EntIndex() )
-		umsg.End()
+		net.Start("BossDefeated")
+			net.WriteFloat( boss:GetClientModel():EntIndex() )
+		net.Broadcast()
 
 		boss.bInitialized = false
 

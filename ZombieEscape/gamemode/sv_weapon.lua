@@ -1,3 +1,5 @@
+util.AddNetworkString("ReceieveWeapon")
+
 function GM:OnRequestWeapon(ply, class)
 
 	if !ply:Alive() or !ply:IsHuman() or !ply:CanBuyWeapons() then return end
@@ -31,9 +33,9 @@ function GM:OnRequestWeapon(ply, class)
 	-- Save new weapon
 	ply.Weapons[weapon.type] = weapon.class
 
-	umsg.Start("ReceieveWeapon", ply)
-		umsg.Char(weapon.type)
-	umsg.End()
+	net.Start("ReceieveWeapon")
+		net.WriteByte(weapon.type)
+	net.Send(ply)
 
 end
 

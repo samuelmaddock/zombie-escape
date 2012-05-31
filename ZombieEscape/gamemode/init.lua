@@ -32,6 +32,9 @@ GM.PlayerModelOverride = {}
 GM.CVars.ZSpawnLateJoin		= CreateConVar( "ze_zspawn_latejoin", 1, {FCVAR_REPLICATED}, "Allow late joining as zombie." )
 GM.CVars.ZSpawnTimeLimit 	= CreateConVar( "ze_zspawn_timelimit", 120, {FCVAR_REPLICATED}, "Time from the start of the round to allow late zombie spawning." )
 
+util.AddNetworkString("WeaponsData")
+util.AddNetworkString("DamageNotes")
+
 function GM:Initialize()
 	self:LoadWeapons()
 	self:SetupEntityFixes()
@@ -45,7 +48,13 @@ function GM:InitPostEntity()
 end
 
 function GM:PlayerInitialSpawn(ply)
+
 	ply:GoTeam(TEAM_SPECTATOR)
+
+	net.Start("WeaponsData")
+		net.WriteTable(self.Weapons)
+	net.Send(ply)
+
 end
 
 function GM:PlayerDisconnected(ply)
@@ -57,7 +66,7 @@ function GM:PlayerSpawn(ply)
 	ply:RemoveAllItems() -- remove ammo and weapons
 
 	if !ply:IsSpectator() then
-		
+
 		ply:UnSpectate()
 
 		if ply:IsZombie() then
@@ -321,10 +330,10 @@ function GM:EntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
 		-- Send damage display to players
 		if inflictor:IsPlayer() and !inflictor:IsZombie() and ( !inflictor.LastDamageNote or inflictor.LastDamageNote < CurTime() ) and ent:IsZombie() then --or self:IsValidBossDmg(ent) ) then
 			local offset = Vector(math.random(-8,8), math.random(-8,8), math.random(-8,8))
-			umsg.Start("DamageNotes", inflictor)
-				umsg.Float(math.Round(amount))
-				umsg.Vector(ent:GetPos() + offset)
-			umsg.End()
+			net.Start("DamageNotes")
+				net.WriteFloat(math.Round(amount))
+				net.WriteVector(ent:GetPos() + offset)
+			net.Send(inflictor)
 			
 			inflictor.LastDamageNote = CurTime() + 0.15 -- prevent spamming of damage notes
 		end
@@ -378,7 +387,7 @@ end
 	Include Map Lua Files
 ---------------------------------------------------------*/
 local mapLua = string.format("maps/%s.lua", game.GetMap())
-if file.Exists( string.format("gamemodes/%s/gamemode/" .. mapLua, GM.FolderName), true ) then
+if file.Exists( string.format("gamemodes/%s/gamemode/" .. mapLua, GM.FolderName), "GAME" ) then
 	Msg("Including map lua file\n")
 	include(mapLua)
 end

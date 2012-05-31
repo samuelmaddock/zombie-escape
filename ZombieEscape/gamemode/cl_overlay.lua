@@ -69,14 +69,12 @@ function GM:DrawZombiesWin()
 
 end
 
-usermessage.Hook("WinningTeam", function(um)
-	local WinningTeam = um:ReadChar()
-	local bReset = um:ReadBool()
+net.Receive("WinningTeam", function(um)
+	local WinningTeam = net.ReadByte()
+	local bReset = tobool(net.ReadBit())
 	if bReset then
 		GAMEMODE.WinningTeam = nil
 	else
-		GAMEMODE.WinningTeam = WinningTeam
+		GAMEMODE.WinningTeam = tonumber(WinningTeam)
 	end
-
-	print("REC WINTEAM: " .. tostring(WinningTeam) .. ", " .. tostring(bReset))
 end)
