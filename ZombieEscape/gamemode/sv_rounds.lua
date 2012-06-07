@@ -1,7 +1,7 @@
-GM.CVars.ZSpawnMin			= CreateConVar( "ze_ztimer_min", 10, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
-GM.CVars.ZSpawnMax 			= CreateConVar( "ze_ztimer_max", 25, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.ZSpawnMin			= CreateConVar( "ze_ztimer_min", 15, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.ZSpawnMax 			= CreateConVar( "ze_ztimer_max", 30, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
 
-GM.CVars.MaxRounds			= CreateConVar( "ze_max_rounds", 8, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
+GM.CVars.MaxRounds			= CreateConVar( "ze_max_rounds", 10, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
 
 GM.WaitingTime		= 10
 GM.IntermissionTime = 15
@@ -12,6 +12,7 @@ GM.PlayerScale = math.Clamp( MaxPlayers(), 50, math.max(MaxPlayers(),50) ) -- am
 GM.Round = 0
 GM.RoundCanEnd = true
 
+util.AddNetworkString("RoundChange")
 util.AddNetworkString("WinningTeam")
 
 function GM:GetRound()
@@ -170,6 +171,9 @@ function GM:RoundStart()
 	
 	gamemode.Call("OnRoundChange")
 	
+	net.Start("RoundChange")
+	net.Broadcast()
+	
 	self:SendWinner(0,true) -- Reset winner
 	
 	self.Restarting = false
@@ -199,4 +203,8 @@ function GM:SendWinner( TeamId, bReset )
 		net.WriteByte(TeamId)
 		net.WriteBit(bReset)
 	net.Broadcast()
+end
+
+function GM:HasRoundStarted()
+	return !self.Restarting and self.RoundStarted 
 end

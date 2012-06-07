@@ -55,6 +55,10 @@ function GM:PlayerInitialSpawn(ply)
 		net.WriteTable(self.Weapons)
 	net.Send(ply)
 
+	if self:HasRoundStarted() then
+		ply:SendMessage("Press F3 to begin playing as a zombie.")
+	end
+
 end
 
 function GM:PlayerDisconnected(ply)
@@ -272,7 +276,7 @@ end
 	Suicide is disabled
 ---------------------------------------------------------*/
 function GM:CanPlayerSuicide(ply)
-	return ply:IsZombie() and !ply:IsMotherZombie()
+	return ply:IsHuman() or ( ply:IsZombie() and !ply:IsMotherZombie() )
 end
 
 /*---------------------------------------------------------
@@ -317,43 +321,53 @@ end
 
 
 /*---------------------------------------------------------
+	Zombie damage notes
+	Zombie grenade fix
+	Prop knockback effects
+---------------------------------------------------------*/
+function GM:EntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
+	if IsValid(ent) and IsValid(inflictor) then
+		self:OnPlayerTakeDamage(ent, inflictor, attacker, amount, dmginfo)
+		self:PropPhysicsKnockback(ent, inflictor, attacker, amount, dmginfo)
+	end
+end
+
+
+/*---------------------------------------------------------
 	Sends damage done to zombie to player for
 	displaying on screen, also checks for zombies
 	infecting via grenades
 ---------------------------------------------------------*/
-function GM:EntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
-	
-	if !IsValid(ent) or !ent:IsPlayer() then return end
-	
-	if IsValid(inflictor) then
+function GM:OnPlayerTakeDamage(ent, inflictor, attacker, amount, dmginfo)
 
-		-- Send damage display to players
-		if inflictor:IsPlayer() and !inflictor:IsZombie() and ( !inflictor.LastDamageNote or inflictor.LastDamageNote < CurTime() ) and ent:IsZombie() then --or self:IsValidBossDmg(ent) ) then
-			local offset = Vector(math.random(-8,8), math.random(-8,8), math.random(-8,8))
-			net.Start("DamageNotes")
-				net.WriteFloat(math.Round(amount))
-				net.WriteVector(ent:GetPos() + offset)
-			net.Send(inflictor)
-			
-			inflictor.LastDamageNote = CurTime() + 0.15 -- prevent spamming of damage notes
-		end
+	if !ent:IsPlayer() then return end
+
+	-- Send damage display to players
+	if inflictor:IsPlayer() and !inflictor:IsZombie() and ( !inflictor.LastDamageNote or inflictor.LastDamageNote < CurTime() ) and ent:IsZombie() then --or self:IsValidBossDmg(ent) ) then
+		local offset = Vector(math.random(-8,8), math.random(-8,8), math.random(-8,8))
+		net.Start("DamageNotes")
+			net.WriteFloat(math.Round(amount))
+			net.WriteVector(ent:GetPos() + offset)
+		net.Send(inflictor)
 		
-		-- Damage delt to player by grenade
-		if IsValid(attacker) and inflictor:GetClass() == "npc_grenade_frag" then
-			attacker.GrenadeOwner = true -- fix for zombies throwing grenade prior to infection
-			
-			-- Human has grenaded a zombie
-			local dmgblast = (DMG_BLAST & dmginfo:GetDamageType() == DMG_BLAST)
-			if ent:IsZombie() and attacker:IsPlayer() and !attacker:IsZombie() and dmgblast then
-				ent:Ignite(math.random(3, 5), 0)
-			end
-		else
-			attacker.GrenadeOwner = nil
-		end
-
+		inflictor.LastDamageNote = CurTime() + 0.15 -- prevent spamming of damage notes
 	end
 	
+	-- Damage delt to player by grenade
+	if IsValid(attacker) and inflictor:GetClass() == "npc_grenade_frag" then
+		attacker.GrenadeOwner = true -- fix for zombies throwing grenade prior to infection
+		
+		-- Human has grenaded a zombie
+		local dmgblast = (DMG_BLAST & dmginfo:GetDamageType() == DMG_BLAST)
+		if ent:IsZombie() and attacker:IsPlayer() and !attacker:IsZombie() and dmgblast then
+			ent:Ignite(math.random(3, 5), 0)
+		end
+	else
+		attacker.GrenadeOwner = nil
+	end
+
 end
+
 
 /*---------------------------------------------------------
 	Replace common CS:S weapons with pickup weapon
