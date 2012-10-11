@@ -33,7 +33,7 @@ GM.ZombieDeath = {
 }
 
 GM.ZombieModels = {
-	Model("models/player/classic.mdl"),
+	Model("models/player/zombie_classic.mdl"),
 	Model("models/player/charple01.mdl"),
 	Model("models/player/zombiefast.mdl")
 }
