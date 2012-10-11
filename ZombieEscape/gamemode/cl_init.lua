@@ -68,7 +68,7 @@ function GM:CalcView( ply, origin, angle, fov )
 	fov = LocalPlayer():IsZombie() and self.CVars.ZombieFOV:GetInt() or fov
 
 	local ragdoll = ply:GetRagdollEntity() 
-	if ValidEntity( ragdoll ) then 
+	if IsValid( ragdoll ) then 
 		local att = ragdoll:GetAttachment( ragdoll:LookupAttachment("eyes") ) 
  		return self.BaseClass:CalcView( ply, att.Pos, att.Ang, fov ) 
  	end

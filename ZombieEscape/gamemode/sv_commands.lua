@@ -42,7 +42,7 @@ concommand.Add("ze_human", function(ply,cmd,args)
 	end
 	
 	Target = FindPartialTarget(Target)
-	if Target and ValidEntity(Target) and Target:IsPlayer() then
+	if Target and IsValid(Target) and Target:IsPlayer() then
 		if !Target:IsHuman() then
 			Target:GoTeam(TEAM_HUMANS)
 			ply:ChatPrint("Your target has been humanized!")
@@ -67,7 +67,7 @@ concommand.Add("ze_infect", function(ply,cmd,args)
 	end
 	
 	Target = FindPartialTarget(Target)
-	if Target and ValidEntity(Target) and Target:IsPlayer() then
+	if Target and IsValid(Target) and Target:IsPlayer() then
 		if !Target:IsZombie() then
 			Target:Zombify()
 			if !Target:Alive() then

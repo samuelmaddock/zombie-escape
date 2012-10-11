@@ -7,6 +7,7 @@ function ENT:Initialize()
 	
 	self.Entity:SetModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
 	self.Entity:SetColor(255, 255, 255, 0)
+	self.Entity:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self.Entity:DrawShadow(false)
 	self.Entity:SetNotSolid(true)
 	self.Entity:SetNoDraw(true)

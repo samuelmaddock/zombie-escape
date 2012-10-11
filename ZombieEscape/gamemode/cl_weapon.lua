@@ -54,7 +54,7 @@ net.Receive("CloseWeaponSelection", function()
 end)
 
 net.Receive("ReceieveWeapon", function()
-	local type = net.ReadByte()
+	local type = net.ReadUInt()
 	if !type then return end
 	GAMEMODE:ReceivedWeapon(type)
 end)
@@ -85,17 +85,21 @@ function PANEL:SetupWeapons(type)
 
 	surface.SetFont("ScoreboardText")
 
-	local w, h = 94,0
+	local w, h = 94, 0
 	for k, weapon in ipairs(GAMEMODE:GetWeaponsByType(type)) do
 
 		weapon.Slot = k
 
 		local ent = weapons.Get(weapon.class)
-		weapon.Name = (ent and ent.PrintName) and ent.PrintName or "Unknown"
+		weapon.Name = (ent and ent.PrintName) and tostring(ent.PrintName) or "Unknown"
 
-		local w2,h2 = surface.GetTextSize(weapon.Name)
-		w = w2>w and w2 or w
-		h = h2>h and h2 or h
+		local w2, h2 = surface.GetTextSize(weapon.Name)
+		if w2 and h2 then
+			w = (w2 > w) and w2 or w
+			h = (h2 > h) and h2 or h
+		else
+			print(tostring(w2) .. ", " .. tostring(h2) .. ", " .. tostring(w) .. ", " .. tostring(h))
+		end
 
 		self.WeaponList[k] = weapon
 

@@ -17,8 +17,8 @@ if ( CLIENT ) then
 	SWEP.CSMuzzleFlashes	= true
 	
 	// This is the font that's used to draw the death icons
-	surface.CreateFont( "csd", ScreenScale( 30 ), 500, true, true, "CSKillIcons" )
-	surface.CreateFont( "csd", ScreenScale( 60 ), 500, true, true, "CSSelectIcons" )
+	surface.CreateFont( "CSKillIcons", { font = "csd", size = ScreenScale(30), weight = 500, antialias = true, additive = true } )
+	surface.CreateFont( "CSSelectIcons", { font = "csd", size = ScreenScale(60), weight = 500, antialias = true, additive = true } )
 
 end
 
@@ -115,7 +115,7 @@ function SWEP:PrimaryAttack()
 	// In singleplayer this function doesn't get called on the client, so we use a networked float
 	// to send the last shoot time. In multiplayer this is predicted clientside so we don't need to 
 	// send the float.
-	if ( (SinglePlayer() && SERVER) || CLIENT ) then
+	if ( (game.SinglePlayer() && SERVER) || CLIENT ) then
 		self.Weapon:SetNetworkedFloat( "LastShootTime", CurTime() )
 	end
 	
@@ -146,7 +146,7 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	if ( self.Owner:IsNPC() ) then return end
 	
 	// CUSTOM RECOIL !
-	if ( (SinglePlayer() && SERVER) || ( !SinglePlayer() && CLIENT && IsFirstTimePredicted() ) ) then
+	if ( (game.SinglePlayer() && SERVER) || ( !game.SinglePlayer() && CLIENT && IsFirstTimePredicted() ) ) then
 	
 		local eyeang = self.Owner:EyeAngles()
 		eyeang.pitch = eyeang.pitch - recoil

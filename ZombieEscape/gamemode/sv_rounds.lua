@@ -7,7 +7,7 @@ GM.WaitingTime		= 10
 GM.IntermissionTime = 15
 GM.InfectingTime	= 10
 
-GM.PlayerScale = math.Clamp( MaxPlayers(), 50, math.max(MaxPlayers(),50) ) -- amount of players
+GM.PlayerScale = math.Clamp( game.MaxPlayers(), 50, math.max(game.MaxPlayers(),50) ) -- amount of players
 
 GM.Round = 0
 GM.RoundCanEnd = true
@@ -31,8 +31,8 @@ function GM:GetMaxZSpawnTime()
 end
 
 function GM:RoundChecks(CallBack)
-	timer.Simple(0.25, self.DeathCheck, self)
-	timer.Simple(0.5, self.RoundRestart, self)
+	timer.Simple(0.25, function() GAMEMODE:DeathCheck() end)
+	timer.Simple(0.5, function() GAMEMODE:RoundRestart() end)
 	if CallBack then
 		timer.Simple(0.51, CallBack)
 	end
@@ -122,7 +122,7 @@ function GM:RoundRestart(CallBack)
 			Time = 15
 		end
 
-		timer.Simple(Time, self.RoundStart, self)
+		timer.Simple(Time, function() GAMEMODE:RoundStart() end)
 
 		self:SendMapMessage("A new round will begin in "..tostring(Time).." seconds")
 
@@ -190,13 +190,13 @@ function GM:RoundStart()
 
 	-- Simple AFK check
 	timer.Destroy("HumanAFKCheck")
-	timer.Create("HumanAFKCheck", 60, 1, self.AFKCheck, self)
+	timer.Create("HumanAFKCheck", 60, 1, function() self:AFKCheck() end)
 	
 end
 
 function GM:SendWinner( TeamId, bReset )
 	net.Start("WinningTeam")
-		net.WriteByte(TeamId)
+		net.WriteUInt(TeamId)
 		net.WriteBit(bReset)
 	net.Broadcast()
 end

@@ -2,9 +2,8 @@
 	DamageNotes displays the amount of damage done
 	to enemies above their heads
 ---------------------------------------------------------*/
-surface.CreateFont( "Impact", 32, 400, true, false, "ImpactHud" )
-surface.CreateFont( "Impact", 32, 400, true, false, "ImpactHudShadow", false, false, 4 )
-
+surface.CreateFont( "ImpactHud", { font = "Impact", size = 32, weight = 400, antialias = true } )
+surface.CreateFont( "ImpactHudShadow", { font = "Impact", size = 32, weight = 400, antialias = true, blursize = 4 } )
 DamageNotes = {}
 
 local fadetime = 3

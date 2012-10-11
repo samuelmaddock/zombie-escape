@@ -12,7 +12,7 @@ end
 function EntityMeta:GetChildren()
 	local tbl = {}
 	for _, ent in pairs(ents.GetAll()) do
-		if ValidEntity(ent) and ValidEntity(ent:GetParent()) and ent:GetParent() == self then
+		if IsValid(ent) and IsValid(ent:GetParent()) and ent:GetParent() == self then
 			table.insert(tbl, ent)
 		end
 	end
@@ -83,7 +83,7 @@ if SERVER then
 
 		if !bNoRespawn then
 
-			if ValidEntity(self:GetPickupEntity()) then
+			if IsValid(self:GetPickupEntity()) then
 				self:DropPickupEntity()
 			end
 
@@ -151,7 +151,7 @@ if SERVER then
 	end
 
 	function PlayerMeta:CanPickupEntity()
-		return self:IsHuman() and !ValidEntity(self.PickupEntity)
+		return self:IsHuman() and !IsValid(self.PickupEntity)
 	end
 
 	function PlayerMeta:GetPickupEntity()

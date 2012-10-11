@@ -20,7 +20,7 @@ end
 	Throws a Hint sent from the map to the screen
 	Entity: point_servercommand
 ---------------------------------------------------------*/
-surface.CreateFont( "Segoe UI", 24, 400, true, false, "HUDMessages" )
+surface.CreateFont( "HUDMessages", { font = "Segoe UI", size = 24, weight = 400, antialias = true } )
 
 local MapMessages = {}
 local colBar

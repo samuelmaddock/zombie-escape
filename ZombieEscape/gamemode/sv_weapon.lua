@@ -34,7 +34,7 @@ function GM:OnRequestWeapon(ply, class)
 	ply.Weapons[weapon.type] = weapon.class
 
 	net.Start("ReceieveWeapon")
-		net.WriteByte(weapon.type)
+		net.WriteUInt(weapon.type)
 	net.Send(ply)
 
 end

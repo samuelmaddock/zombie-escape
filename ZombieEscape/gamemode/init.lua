@@ -12,6 +12,7 @@ AddCSLuaFile('sh_meta.lua')
 AddCSLuaFile('sh_resources.lua')
 AddCSLuaFile('sh_weapon.lua')
 AddCSLuaFile('team.lua')
+AddCSLuaFile('weapons.lua')
 
 include('shared.lua')
 
@@ -321,8 +322,14 @@ end
 	displaying on screen, also checks for zombies
 	infecting via grenades
 ---------------------------------------------------------*/
-function GM:EntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
+function GM:EntityTakeDamage( ent, attacker, inflictor, amount, dmginfo )
 	
+	/* Change to this later
+	GM:EntityTakeDamage(  ent, dmginfo )
+	local inflictor = dmginfo:GetInflictor()
+	local attacker = dmginfo:GetAttacker()
+	local amount = dmginfo:GetDamage()*/
+
 	if !IsValid(ent) or !ent:IsPlayer() then return end
 	
 	if IsValid(inflictor) then

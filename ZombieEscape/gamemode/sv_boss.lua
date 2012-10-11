@@ -213,8 +213,8 @@ function GM:MathCounterHitMin(ent, activator)
 end
 
 -- Physbox boss handling
-hook.Add("EntityTakeDamage", "PhysboxTakeDamage", function(ent, inflictor, attacker, amount, dmginfo)
-	GAMEMODE:BossDamageTaken(ent, attacker)
+hook.Add("EntityTakeDamage", "PhysboxTakeDamage", function(ent, dmginfo)
+	GAMEMODE:BossDamageTaken(ent, dmginfo:GetAttacker())
 end)
 
 hook.Add("EntityRemoved", "PhysboxRemoved", function(ent)

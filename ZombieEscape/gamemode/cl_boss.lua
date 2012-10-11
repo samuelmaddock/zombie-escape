@@ -4,7 +4,7 @@
 GM.BossEntities = {}
 GM.LastBossUpdate = RealTime()
 
-surface.CreateFont( "Impact", 24, 400, true, false, "BossFont" )
+surface.CreateFont( "BossFont", { font = "Impact", size = 24, weight = 400, antialias = true } )
 local gradientUp = surface.GetTextureID("VGUI/gradient_up")
 local maxBarHealth = 100
 local deltaVelocity = 0.08 -- [0-1]
