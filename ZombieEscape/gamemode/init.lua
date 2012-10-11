@@ -65,6 +65,7 @@ end
 function GM:PlayerSpawn(ply)
 
 	ply:RemoveAllItems() -- remove ammo and weapons
+	ply:SetJumpPower(200)
 
 	if !ply:IsSpectator() then
 
