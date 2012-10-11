@@ -1,10 +1,7 @@
-GM.CVars.ZSpeed 		= CreateConVar( "ze_zombie_speed", 250, {FCVAR_REPLICATED}, "Zombie walk and run speed." )
-GM.CVars.ZHealthMin 	= CreateConVar( "ze_zhealth_min", 3000, {FCVAR_REPLICATED}, "Minumum health for a zombie to receive." )
-GM.CVars.ZHealthMax 	= CreateConVar( "ze_zhealth_max", 3500, {FCVAR_REPLICATED}, "Maximum health for a zombie to receive." )
-GM.CVars.ZKnockback		= CreateConVar( "ze_zknockback", '7.0', {FCVAR_REPLICATED}, "Knockback multiplier for zombies." )
-GM.CVars.ZMotherKnockback 	= CreateConVar( "ze_zmotherknockback", '6.0', {FCVAR_REPLICATED}, "Knockback multiplier for mother zombies." )
-GM.CVars.ZombieRatio 	= CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "Ratio of zombies to spawn." )
-GM.CVars.ZHealthRegen   = CreateConVar( "ze_zhealth_regen", 0, {FCVAR_REPLICATED}, "Whether or not zombie health should regenerate." )
+GM.CVars.ZSpeed = CreateConVar( "ze_zombie_speed", 250, {FCVAR_REPLICATED}, "" )
+GM.CVars.ZHealthMin = CreateConVar( "ze_zhealth_min", 3200, {FCVAR_REPLICATED}, "" )
+GM.CVars.ZHealthMax = CreateConVar( "ze_zhealth_max", 4300, {FCVAR_REPLICATED}, "" )
+GM.CVars.ZombieRatio = CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "" )
 
 function GM:ZombieSpawn( ply )
 
@@ -34,6 +31,7 @@ function GM:ZombieSpawn( ply )
 	
 	ply.NextHealthRegen = CurTime() + 5
 	ply.NextMoan = CurTime() + math.random(25,45)
+	ply.KnockbackMultiplier = 4.0
 
 end
 
@@ -59,6 +57,8 @@ function GM:RandomInfect()
 		ply:Zombify()
 		ply:Spawn()
 		ply.bMotherZombie = true
+		--ply.KnockbackMultiplier = 3.6 -- Mother zombies are more resistent to knockback affects
+		--ply:SendMessage("You've been randomly selected to be infected")
 
 		-- Notify players of infection
 		timer.Simple(0.1, function()
@@ -70,8 +70,8 @@ function GM:RandomInfect()
 		end)
 
 	end
-	
-	-- Infect until ratio is satisfied
+
+	-- Max of 5 mother zombies, 1:7 zombies ratio
 	local Zombies = team.NumPlayers(TEAM_ZOMBIES)
 	local ratio = self.CVars.ZombieRatio:GetInt()
 	if Zombies * ratio > team.NumPlayers(TEAM_HUMANS) then
@@ -113,13 +113,8 @@ local function CheckIgnite(ply)
 		end
 
 	else
-
-		-- Restore default speed
-		if ply._ReducedSpeed then
-			ply:SetSpeed(GAMEMODE.CVars.ZSpeed:GetInt())
-			ply._ReducedSpeed = nil
-		end
-
+		ply:SetSpeed(GAMEMODE.CVars.ZSpeed:GetInt())
+		ply._ReducedSpeed = false
 	end
 
 end
@@ -141,13 +136,11 @@ hook.Add("Think", "ZombieThink", function()
 			end
 			
 			-- Health regeneration
-			if GAMEMODE.CVars.ZHealthRegen:GetBool() then
-				local health = ply:Health()
-				if ply.NextHealthRegen < CurTime() && health < ply:GetMaxHealth() then
-					local newhealth = math.Clamp( health + math.random(50, 150), 0, ply:GetMaxHealth() )
-					ply:SetHealth( newhealth )
-					ply.NextHealthRegen = CurTime() + math.random(2,3)
-				end
+			local health = ply:Health()
+			if ply.NextHealthRegen < CurTime() && health < ply:GetMaxHealth() then
+				local newhealth = math.Clamp( health + math.random(50, 150), 0, ply:GetMaxHealth() )
+				ply:SetHealth( newhealth )
+				ply.NextHealthRegen = CurTime() + math.random(2,3)
 			end
 			
 			-- Weapon check
@@ -161,7 +154,6 @@ hook.Add("Think", "ZombieThink", function()
 				ply:Flashlight(false)
 			end
 
-			-- Grenade speed reduction
 			CheckIgnite(ply)
 
 		end

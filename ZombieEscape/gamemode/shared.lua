@@ -34,7 +34,7 @@ end
 
 function GM:ShouldCollide( ent1, ent2 )
 
-	if IsValid(ent1) and IsValid(ent2) and ent1:IsPlayer() and ent2:IsPlayer() and ent1:Team() == ent2:Team() then
+	if IsValid(ent1) and ent1:IsPlayer() and IsValid(ent2) and ent2:IsPlayer() and ent1:Team() == ent2:Team() then
 		return false
 	end
 
