@@ -177,4 +177,12 @@ if SERVER then
 
 	end
 
+	function PlayerMeta:GetKnockbackMultiplier()
+		if self:IsZombie() then
+			return self:IsMotherZombie() and GAMEMODE.CVars.ZMotherKnockback:GetFloat() or GAMEMODE.CVars.ZKnockback:GetFloat()
+		else
+			return 0.0 -- shouldn't be affected by knockback if player isn't a zombie
+		end
+	end
+
 end

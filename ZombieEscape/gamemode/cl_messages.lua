@@ -26,6 +26,11 @@ local MapMessages = {}
 local colBar
 local colBarDark = Color(100,100,100,255)
 
+function CleanupMM()
+	MapMessages = {}
+end
+net.Receive("RoundChange", CleanupMM)
+
 function GM:MapMessages()
 
 	for k, v in pairs( MapMessages ) do
@@ -92,11 +97,35 @@ function GM:MapMessages()
 
 end
 
+local function MapMessageParser(str)
+	local mapmess = string.lower(str)
+	local seconds = {"seconds", "second", "secs", "sec", "s"}
+	local minutes = {"minutes", "minute", "mins", "min", "m"}
+	local parsed = nil
+	for k,v in pairs(seconds) do
+		if string.find(mapmess, '%d+%s' .. v) != nil then
+			parsed = string.sub(mapmess, string.find(mapmess, '%d+%s*' .. v))
+		end
+	end
+	if parsed == nil then
+		for k,v in pairs(minutes) do
+			if string.find(mapmess, '%d+%s' .. v) != nil then
+				parsed = string.sub(mapmess, string.find(mapmess, '%d+%s*' .. v))
+			end
+		end
+	end
+	if parsed == nil then
+		return 5
+	else
+		return string.sub(parsed, string.find(parsed, '%d+'))
+	end
+end
+
 function AddMapMessage()
 	local msg	= {}
 	msg.text	= net.ReadString()
 	msg.time 	= SysTime()
-	msg.len		= 10
+	msg.len		= MapMessageParser(msg.text)
 	msg.velx	= -5
 	msg.vely	= 0
 	msg.x		= ScrW() + 200

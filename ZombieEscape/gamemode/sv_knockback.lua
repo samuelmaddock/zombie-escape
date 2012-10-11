@@ -1,6 +1,4 @@
-/*---------------------------------------------------------
-	Zombie Knockback effects
----------------------------------------------------------*/
+GM.CVars.PropKnockback = CreateConVar( "ze_propknockback", '2.0', {FCVAR_REPLICATED}, "Force multiplier for props when shot." )
 
 /*
 	GAMEMODE.Multipliers
@@ -27,6 +25,10 @@ GM.Multipliers = {
 	Weapons = {}
 
 }
+
+/*---------------------------------------------------------
+	Zombie Knockback effects
+---------------------------------------------------------*/
 
 /*
 	First hook called before taking damage
@@ -94,22 +96,54 @@ function GM:PlayerHurt( ply, attacker, healthleft, healthtaken )
 
 		local weapMult = self.Multipliers.Weapons[ply.LastDmg[2]]
 		weapMult = weapMult && weapMult || 1.0
-		
-		ply.KnockbackMultiplier = ply.KnockbackMultiplier and ply.KnockbackMultiplier or 1.0
 
 		-- Knockback effects = (multiplier * weapon multiplier * hitgroup multiplier) * damage delt
-		local knockback = (ply.KnockbackMultiplier * weapMult * hitgroupMult) * healthtaken
+		local knockback = (ply:GetKnockbackMultiplier() * weapMult * hitgroupMult) * healthtaken
 		
 		-- Apply force
 		local startvec, endvec = ply.LastDmg[3], ply:GetPos()
 		local vec = (endvec-startvec):Normalize()*knockback
 		
-		--print("Knockback: " .. knockback .. "\tVelocity: " .. tostring(vec) .."\n\n")
-		ply:SetLocalVelocity(ply.OldVelocity + vec)
+		ply:SetLocalVelocity(ply.OldVelocity + vec) -- Add knockback force
 		ply.LastDmg = nil
 		
 	end
 	
 	return ply, attacker, healthleft, healthtaken
 	
+end
+
+
+/*---------------------------------------------------------
+	PropPhysics Knockback effects
+---------------------------------------------------------*/
+
+/*
+	Apply physics to props when shot
+*/
+function GM:PropPhysicsKnockback(ent, inflictor, attacker, amount, dmginfo)
+
+	if ent:IsPlayer() or ent:IsNPC() then return end --Check that the entity is of the type we are looking for
+
+	--Calculate the force multiplier to apply
+	local weapMult = GAMEMODE.Multipliers.Weapons[weap]
+	weapMult = weapMult and weapMult or 1.0
+
+	local forceMultiplier = GAMEMODE.CVars.PropKnockback:GetFloat() * weapMult
+
+	--Store the velocity of the hit and the velocity of the object before hit
+	local hitVel = dmginfo:GetDamageForce()
+	local hitLoc = dmginfo:GetDamagePosition()
+	--local objectVelOld = ent:GetVelocity()
+
+	--Calculate the force to apply to the object
+	--local objectVel = objectVelOld + (forceMultiplier * hitVel)
+	local objectVel = forceMultiplier * hitVel
+
+	--Apply the force to the physics object of the entity
+	local physobj = ent:GetPhysicsObject()
+	if IsValid(physobj) then
+		physobj:ApplyForceOffset(objectVel, hitLoc)
+	end
+
 end
