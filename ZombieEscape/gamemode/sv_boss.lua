@@ -10,7 +10,7 @@ BOSS_PHYSBOX	= 2
 
 local BOSS = {}
 
-function BOSS:Setup(name,modelEnt,counterEnt)
+function BOSS:Setup(name, modelEnt, counterEnt)
 
 	local boss = {}
 	
@@ -30,7 +30,7 @@ function BOSS:Setup(name,modelEnt,counterEnt)
 end
 
 function BOSS:IsValid()
-	return ( IsValid(self:GetCounter()) and IsValid(self:GetClientModel()) )
+	return IsValid( self:GetCounter() ) and IsValid( self:GetClientModel() )
 end
 
 function BOSS:HasCounter(ent)
@@ -213,7 +213,7 @@ function GM:MathCounterHitMin(ent, activator)
 end
 
 -- Physbox boss handling
-hook.Add("EntityTakeDamage", "PhysboxTakeDamage", function(ent, dmginfo)
+hook.Add("EntityTakeDamage", "PhysboxTakeDamage", function( ent, dmginfo )
 	GAMEMODE:BossDamageTaken(ent, dmginfo:GetAttacker())
 end)
 

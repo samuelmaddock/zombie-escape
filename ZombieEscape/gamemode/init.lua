@@ -323,13 +323,11 @@ end
 	displaying on screen, also checks for zombies
 	infecting via grenades
 ---------------------------------------------------------*/
-function GM:EntityTakeDamage( ent, attacker, inflictor, amount, dmginfo )
+function GM:EntityTakeDamage( ent, dmginfo )
 	
-	/* Change to this later
-	GM:EntityTakeDamage(  ent, dmginfo )
 	local inflictor = dmginfo:GetInflictor()
 	local attacker = dmginfo:GetAttacker()
-	local amount = dmginfo:GetDamage()*/
+	local amount = dmginfo:GetDamage()
 
 	if !IsValid(ent) or !ent:IsPlayer() then return end
 	

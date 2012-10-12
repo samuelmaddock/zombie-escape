@@ -1,5 +1,6 @@
 GM.Weapons = {}
 
+-- Weapon categories
 WEAPON_PRIMARY		= 1
 WEAPON_SECONDARY	= 2
 WEAPON_ADDON		= 3
@@ -10,8 +11,11 @@ function GM:LoadWeapons()
 		Error("Can't find GM.Multipliers for weapon knockbacks!\n")
 	end
 
-	local tbl = util.KeyValuesToTable( file.Read( "gamemodes/ZombieEscape/weapons.txt", true ) )
+	-- Read weapons configuration list
+	local f = file.Read( "weapons.txt", "LUA" )
+	local tbl = util.KeyValuesToTable( f )
 
+	-- Load in weapons
 	for _, weapon in pairs(tbl) do
 
 		-- Store values
