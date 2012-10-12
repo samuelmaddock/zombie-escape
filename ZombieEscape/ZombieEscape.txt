@@ -1,7 +1,74 @@
 "Gamemode"
 {
-	"base"		"base"
-	"title"		"Zombie Escape"
-	"maps"		"^ze_"
+	"base"			"base"
+	"title"			"Zombie Escape"
+	"maps"			"^ze_"
 	"menusystem"	"1"
+	"workshopid"	""
+
+	"settings"
+	{
+		1
+		{
+			"name"		"ze_max_rounds"
+			"text"		"Max Rounds"
+			"help"		"The maximum number of rounds before a map change"
+			"type"		"Numeric"
+			"default"	"8"
+		}
+
+		2
+		{
+			"name"		"ze_buyzone"
+			"text"		"Weapon Selection in Buyzone"
+			"help"		"Whether humans can only select weapons in map buyzones"
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+
+		3
+		{
+			"name"		"ze_ammo"
+			"text"		"Human Ammo"
+			"help"		"The amount of ammo humans will begin with at the start of each round"
+			"type"		"Numeric"
+			"default"	"800"
+		}
+
+		4
+		{
+			"name"		"ze_human_speed"
+			"text"		"Human Speed"
+			"help"		"The maximum speed at which humans can move"
+			"type"		"Numeric"
+			"default"	"250"
+		}
+
+		5
+		{
+			"name"		"ze_zombie_speed"
+			"text"		"Zombie Speed"
+			"help"		"The maximum speed at which zombies can move"
+			"type"		"Numeric"
+			"default"	"250"
+		}
+
+		6
+		{
+			"name"		"ze_zhealth_min"
+			"text"		"Min Zombie Health"
+			"help"		"The minimum amount of health a zombie will receive at spawn"
+			"type"		"Numeric"
+			"default"	"3200"
+		}
+
+		7
+		{
+			"name"		"ze_zhealth_max"
+			"text"		"Max Zombie Health Bonus"
+			"help"		"The maximum amount of additional health a zombie will receive at spawn (scales down with additional players)"
+			"type"		"Numeric"
+			"default"	"4300"
+		}
+	}
 }

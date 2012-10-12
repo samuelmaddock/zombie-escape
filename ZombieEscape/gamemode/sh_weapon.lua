@@ -12,8 +12,8 @@ function GM:LoadWeapons()
 	end
 
 	-- Read weapons configuration list
-	local f = file.Read( "weapons.txt", "LUA" )
-	local tbl = util.KeyValuesToTable( f )
+	local path = string.format("gamemodes/%s/weapons.txt", GM.FolderName)
+	local tbl = util.KeyValuesToTable( file.Read( path, "GAME" ) )
 
 	-- Load in weapons
 	for _, weapon in pairs(tbl) do
