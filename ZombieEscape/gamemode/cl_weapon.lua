@@ -146,7 +146,7 @@ function PANEL:PerformLayout()
 	
 end
 
-function PANEL:Paint(w, h)
+function PANEL:Paint( w, h )
 
 	-- Background
 	draw.RoundedBoxEx( 4, 0, 0, w, h, Color(0,0,0,180), true, true, true, true )
