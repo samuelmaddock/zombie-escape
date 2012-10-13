@@ -1,6 +1,8 @@
 "ZEWeapons"
 {
 
+	// Primary weapons
+
 	"AK47"
 	{
 		"class"			"weapon_ak47"
@@ -22,14 +24,36 @@
 		"type"			"1"
 	}
 
-	"Para"
+	"M249"
 	{
 		"class"			"weapon_para"
 		"multiplier"	"1.0"
 		"type"			"1"
 	}
 
+	"M4"
+	{
+		"class"			"weapon_m4"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
 
+	"TMP"
+	{
+		"class"			"weapon_tmp"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+	"M3"
+	{
+		"class"			"weapon_pumpshotgun"
+		"multiplier"	"1.0"
+		"type"			"1"
+	}
+
+
+	// Secondary weapons
 
 	"Elites"
 	{
@@ -60,6 +84,7 @@
 	}
 
 
+	// Tertiary weapons (always given to the player)
 
 	"Crowbar"
 	{
