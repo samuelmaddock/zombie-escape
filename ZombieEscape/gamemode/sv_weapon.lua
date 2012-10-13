@@ -1,4 +1,4 @@
-util.AddNetworkString("ReceieveWeapon")
+util.AddNetworkString("ReceiveWeapon")
 
 function GM:OnRequestWeapon(ply, class)
 
@@ -33,8 +33,9 @@ function GM:OnRequestWeapon(ply, class)
 	-- Save new weapon
 	ply.Weapons[weapon.type] = weapon.class
 
-	net.Start("ReceieveWeapon")
-		net.WriteUInt(weapon.type)
+	net.Start("ReceiveWeapon")
+		-- 3 weapon types, 0x?? (0, 1, 2, 3)
+		net.WriteUInt(weapon.type, 2)
 	net.Send(ply)
 
 end
@@ -42,7 +43,6 @@ end
 concommand.Add("ze_selectweapon", function(ply,cmd,args)
 
 	local class = args[1]
-
 	if !IsValid(ply) or !class then return end
 
 	GAMEMODE:OnRequestWeapon(ply, class)

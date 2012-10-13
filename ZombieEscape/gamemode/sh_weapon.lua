@@ -12,7 +12,7 @@ function GM:LoadWeapons()
 	end
 
 	-- Read weapons configuration list
-	local path = string.format("gamemodes/%s/weapons.txt", GM.FolderName)
+	local path = string.format("gamemodes/%s/weapons.txt", self.FolderName)
 	local tbl = util.KeyValuesToTable( file.Read( path, "GAME" ) )
 
 	-- Load in weapons

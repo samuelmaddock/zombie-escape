@@ -43,18 +43,15 @@ end
 		User Message Hooks
 -----------------------------------------------]]
 net.Receive("SelectWeapons", function()
-
-	-- Open Menu
 	GAMEMODE:OpenWeaponSelection()
-
 end)
 
 net.Receive("CloseWeaponSelection", function()
 	GAMEMODE:HideWeaponSelection()
 end)
 
-net.Receive("ReceieveWeapon", function()
-	local type = net.ReadUInt()
+net.Receive("ReceiveWeapon", function()
+	local type = net.ReadUInt(2)
 	if !type then return end
 	GAMEMODE:ReceivedWeapon(type)
 end)
@@ -67,6 +64,8 @@ end)
 --[[---------------------------------------------
 		Weapon Selection VGUI
 -----------------------------------------------]]
+surface.CreateFont( "WeaponMenuText", { font = "Segoe UI", size = 20, weight = 400, antialias = true } )
+
 local PANEL = {}
 
 function PANEL:Init()
@@ -84,7 +83,7 @@ function PANEL:SetupWeapons(type)
 	
 	self.WeaponList = {}
 
-	surface.SetFont("ScoreboardText")
+	surface.SetFont("WeaponMenuText")
 
 	local w, h = 94, 0
 	for k, weapon in ipairs(GAMEMODE:GetWeaponsByType(type)) do
@@ -95,12 +94,10 @@ function PANEL:SetupWeapons(type)
 		weapon.Name = (ent and ent.PrintName) and tostring(ent.PrintName) or "Unknown"
 
 		local w2, h2 = surface.GetTextSize(weapon.Name)
-		if w2 and h2 then
-			w = (w2 > w) and w2 or w
-			h = (h2 > h) and h2 or h
-		else
-			print(tostring(w2) .. ", " .. tostring(h2) .. ", " .. tostring(w) .. ", " .. tostring(h))
-		end
+
+		w = (w2 and w2 > w) and w2 or w
+		h = (h2 and h2 > h) and h2 or h
+
 
 		self.WeaponList[k] = weapon
 
@@ -138,7 +135,7 @@ end
 
 function PANEL:PerformLayout()
 
-	local w = self.tw + (self.padding * 2) + 16
+	local w = self.tw + (self.padding * 2) + 20
 	local h = (self.padding + self.th) * (#self.WeaponList+1) + self.padding
 
 	self:SetPos(20, ScrH()/2 - h/2)
@@ -151,8 +148,8 @@ function PANEL:Paint( w, h )
 	-- Background
 	draw.RoundedBoxEx( 4, 0, 0, w, h, Color(0,0,0,180), true, true, true, true )
 
-	draw.SimpleText("Select A Weapon", "ScoreboardText", self.padding, self.padding+2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-	draw.SimpleText("Select A Weapon", "ScoreboardText", self.padding, self.padding, team.GetColor(LocalPlayer():Team()), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding + 2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding, team.GetColor(LocalPlayer():Team()), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 
 	local x, y, text
 	for k, v in pairs(self.WeaponList) do
@@ -161,8 +158,8 @@ function PANEL:Paint( w, h )
 		x = self.padding
 		y = self.padding + (self.padding + self.th) * (k)
 		text = tostring(v.Slot) .. ". " .. v.Name
-		draw.SimpleText(text, "ScoreboardText", x, y+2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText(text, "ScoreboardText", x, y, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(text, "WeaponMenuText", x, y+2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+		draw.SimpleText(text, "WeaponMenuText", x, y, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 
 	end
 

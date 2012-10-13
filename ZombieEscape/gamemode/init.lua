@@ -369,7 +369,12 @@ end
 	additional weapon and ammo).
 ---------------------------------------------------------*/
 local pickups = {"weapon_deagle", "weapon_elite","weapon_glock","weapon_hegrenade","weapon_knife"}
-local remove = {"weapon_awp","weapon_m3","weapon_m249","info_ladder"}
+local remove = {
+	"weapon_awp", "weapon_m3", "weapon_m249",
+	"weapon_p228", "weapon_usp", "weapon_p90",
+	"weapon_mp5navy", "weapon_ump45", "weapon_xm1014",
+	"weapon_sg550", "weapon_g3sg1", "info_ladder"
+}
 function GM:SetupEntityFixes()
 
 	-- Replace weapons with pickup entities

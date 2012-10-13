@@ -6,7 +6,9 @@ local cmdignore = {
 	"mp_freezetime",
 	"mp_flashlight",
 	"mat_color_correction",
-	"zombie_delete_dropped_weapons"
+	"zombie_delete_dropped_weapons",
+	"sv_pushaway_force",
+	"sv_pushaway_clientside"
 }
 
 local fixcmd = {}
