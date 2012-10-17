@@ -1,3 +1,5 @@
+GM.CVars.PropKnockback = CreateConVar( "ze_propForceMultiplier", '2.0', {FCVAR_REPLICATED}, "Force multiplier for props when shot." )
+
 /*---------------------------------------------------------
 	Zombie Knockback effects
 ---------------------------------------------------------*/
@@ -8,7 +10,6 @@
 	Multipliers affect the amount of force applied to zombies
 	upon bullet impact
 */
--- GM.DmgFilter = DMG_BULLET | DMG_CLUB | DMG_ALWAYSGIB | DMG_BLAST
 GM.DmgFilter = bit.bor(DMG_BULLET, DMG_CLUB, DMG_ALWAYSGIB, DMG_BLAST)
 GM.Multipliers = {
 
@@ -28,6 +29,10 @@ GM.Multipliers = {
 	Weapons = {}
 
 }
+
+/*---------------------------------------------------------
+	Zombie Knockback effects
+---------------------------------------------------------*/
 
 /*
 	First hook called before taking damage
@@ -113,4 +118,42 @@ function GM:PlayerHurt( ply, attacker, healthleft, healthtaken )
 	
 	return ply, attacker, healthleft, healthtaken
 	
+end
+
+/*---------------------------------------------------------
+	PropPhysics Knockback effects
+---------------------------------------------------------*/
+
+/*
+	Apply physics to props when shot
+*/
+function GM:PropPhysicsKnockback(ent, dmginfo)
+
+	local inflictor = dmginfo:GetInflictor()
+	local attacker = dmginfo:GetAttacker()
+	local amount = dmginfo:GetDamage()
+
+	if ent:IsNPC() then return end --Check that the entity is of the type we are looking for
+
+	--Calculate the force multiplier to apply
+	local weapMult = GAMEMODE.Multipliers.Weapons[weap]
+	weapMult = weapMult and weapMult or 1.0
+
+	local forceMultiplier = GAMEMODE.CVars.PropKnockback:GetFloat() * weapMult
+
+	--Store the velocity of the hit and the velocity of the object before hit
+	local hitVel = dmginfo:GetDamageForce()
+	local hitLoc = dmginfo:GetDamagePosition()
+	--local objectVelOld = ent:GetVelocity()
+
+	--Calculate the force to apply to the object
+	--local objectVel = objectVelOld + (forceMultiplier * hitVel)
+	local objectVel = forceMultiplier * hitVel
+
+	--Apply the force to the physics object of the entity
+	local physobj = ent:GetPhysicsObject()
+	if IsValid(physobj) then
+		physobj:ApplyForceOffset(objectVel, hitLoc)
+	end
+
 end

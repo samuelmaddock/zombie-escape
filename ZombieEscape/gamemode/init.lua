@@ -56,6 +56,10 @@ function GM:PlayerInitialSpawn(ply)
 		net.WriteTable(self.Weapons)
 	net.Send(ply)
 
+	if self:HasRoundStarted() then
+		ply:SendMessage("Press F3 to begin playing as a zombie.")
+	end
+
 end
 
 function GM:PlayerDisconnected(ply)
@@ -274,7 +278,7 @@ end
 	Suicide is disabled
 ---------------------------------------------------------*/
 function GM:CanPlayerSuicide(ply)
-	return ply:IsZombie() and !ply:IsMotherZombie()
+	return ply:IsHuman() or ( ply:IsZombie() and !ply:IsMotherZombie() )
 end
 
 /*---------------------------------------------------------
@@ -329,9 +333,11 @@ function GM:EntityTakeDamage( ent, dmginfo )
 	local attacker = dmginfo:GetAttacker()
 	local amount = dmginfo:GetDamage()
 
-	if !IsValid(ent) or !ent:IsPlayer() then return end
+	if !IsValid(ent) or !IsValid(inflictor) or ent:IsNPC() then
+		return
+	end
 	
-	if IsValid(inflictor) then
+	if ent:IsPlayer() then
 
 		-- Send damage display to players
 		if inflictor:IsPlayer() and !inflictor:IsZombie() and ( !inflictor.LastDamageNote or inflictor.LastDamageNote < CurTime() ) and ent:IsZombie() then --or self:IsValidBossDmg(ent) ) then
@@ -356,6 +362,10 @@ function GM:EntityTakeDamage( ent, dmginfo )
 		else
 			attacker.GrenadeOwner = nil
 		end
+
+	else
+
+		self:PropPhysicsKnockback(ent, dmginfo)
 
 	end
 	

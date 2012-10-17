@@ -1,7 +1,6 @@
-GM.CVars.ZSpawnMin			= CreateConVar( "ze_ztimer_min", 10, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
-GM.CVars.ZSpawnMax 			= CreateConVar( "ze_ztimer_max", 25, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
-
-GM.CVars.MaxRounds			= CreateConVar( "ze_max_rounds", 8, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
+GM.CVars.ZSpawnMin	= CreateConVar( "ze_ztimer_min", 15, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.ZSpawnMax 	= CreateConVar( "ze_ztimer_max", 30, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
+GM.CVars.MaxRounds	= CreateConVar( "ze_max_rounds", 10, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
 
 GM.WaitingTime		= 10
 GM.IntermissionTime = 15
@@ -28,6 +27,10 @@ end
 
 function GM:GetMaxZSpawnTime()
 	return (self.CVars and self.CVars.ZSpawnMax) and self.CVars.ZSpawnMax:GetInt() or 25
+end
+
+function GM:HasRoundStarted()
+	return !self.Restarting and self.RoundStarted 
 end
 
 function GM:RoundChecks(CallBack)
@@ -169,7 +172,7 @@ function GM:RoundStart()
 	end
 	
 	gamemode.Call("OnRoundChange")
-	
+
 	self:SendWinner(0,true) -- Reset winner
 	
 	self.Restarting = false
