@@ -286,7 +286,7 @@ function SWEP:DrawHUD()
 	if ( self.Owner == LocalPlayer() && self.Owner:ShouldDrawLocalPlayer() ) then
 
 		local tr = util.GetPlayerTrace( self.Owner )
-		tr.mask = ( CONTENTS_SOLID|CONTENTS_MOVEABLE|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEBRIS|CONTENTS_GRATE|CONTENTS_AUX )
+		tr.mask = bit.bor(CONTENTS_SOLID,CONTENTS_MOVEABLE,CONTENTS_MONSTER,CONTENTS_WINDOW,CONTENTS_DEBRIS,CONTENTS_GRATE,CONTENTS_AUX)
 		local trace = util.TraceLine( tr )
 		
 		local coords = trace.HitPos:ToScreen()

@@ -70,7 +70,7 @@ function GM:DrawZombiesWin()
 end
 
 net.Receive("WinningTeam", function(um)
-	local WinningTeam = net.ReadUInt()
+	local WinningTeam = net.ReadUInt(2)
 	local bReset = tobool(net.ReadBit())
 	if bReset then
 		GAMEMODE.WinningTeam = nil

@@ -349,7 +349,7 @@ function GM:EntityTakeDamage( ent, dmginfo )
 			attacker.GrenadeOwner = true -- fix for zombies throwing grenade prior to infection
 			
 			-- Human has grenaded a zombie
-			local dmgblast = (DMG_BLAST & dmginfo:GetDamageType() == DMG_BLAST)
+			local dmgblast = bit.band(DMG_BLAST, dmginfo:GetDamageType()) == DMG_BLAST
 			if ent:IsZombie() and attacker:IsPlayer() and !attacker:IsZombie() and dmgblast then
 				ent:Ignite(math.random(3, 5), 0)
 			end

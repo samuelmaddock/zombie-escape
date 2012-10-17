@@ -8,7 +8,8 @@
 	Multipliers affect the amount of force applied to zombies
 	upon bullet impact
 */
-GM.DmgFilter = DMG_BULLET | DMG_CLUB | DMG_ALWAYSGIB | DMG_BLAST
+-- GM.DmgFilter = DMG_BULLET | DMG_CLUB | DMG_ALWAYSGIB | DMG_BLAST
+GM.DmgFilter = bit.bor(DMG_BULLET, DMG_CLUB, DMG_ALWAYSGIB, DMG_BLAST)
 GM.Multipliers = {
 
 	Hitgroups = {
@@ -52,7 +53,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	 end
 
 	-- Zombie Knockback implementation
-	local bPassesDmgFilter = dmginfo:GetDamageType() & self.DmgFilter == dmginfo:GetDamageType()
+	local bPassesDmgFilter = bit.band(dmginfo:GetDamageType(), self.DmgFilter) == dmginfo:GetDamageType()
 	local inflictor = dmginfo:GetInflictor()
 	if IsValid(ply) && ply:IsPlayer() && IsValid(inflictor) && inflictor:IsPlayer() && ply:IsZombie() && bPassesDmgFilter then
 	
@@ -93,18 +94,18 @@ function GM:PlayerHurt( ply, attacker, healthleft, healthtaken )
 		hitgroupMult = hitgroupMult && hitgroupMult || 1.0
 
 		local weapMult = self.Multipliers.Weapons[ply.LastDmg[2]]
-		weapMult = weapMult && weapMult || 1.0
+		weapMult = weapMult and weapMult or 1.0
 		
 		ply.KnockbackMultiplier = ply.KnockbackMultiplier and ply.KnockbackMultiplier or 1.0
 
 		-- Knockback effects = (multiplier * weapon multiplier * hitgroup multiplier) * damage delt
 		local knockback = (ply.KnockbackMultiplier * weapMult * hitgroupMult) * healthtaken
-		
+
 		-- Apply force
-		local startvec, endvec = ply.LastDmg[3], ply:GetPos()
-		local vec = (endvec-startvec):Normalize()*knockback
+		local startvec = ply.LastDmg[3]
+		local endvec = ply:GetPos()
+		local vec = (endvec - startvec):GetNormal() * knockback
 		
-		--print("Knockback: " .. knockback .. "\tVelocity: " .. tostring(vec) .."\n\n")
 		ply:SetLocalVelocity(ply.OldVelocity + vec)
 		ply.LastDmg = nil
 		

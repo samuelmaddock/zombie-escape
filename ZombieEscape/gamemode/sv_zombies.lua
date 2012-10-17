@@ -12,7 +12,7 @@ function GM:ZombieSpawn( ply )
 	mdl = override and table.Random(override) or mdl
 	
 	ply:SetModel(mdl)
-	ply:SetFOV(110)
+	ply:SetFOV(110, 3)
 
 	local scale = math.Clamp( 1 - (#team.GetPlayers(TEAM_BOTH) / self.PlayerScale), 0, 1 )
 	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
@@ -35,14 +35,26 @@ function GM:ZombieSpawn( ply )
 
 end
 
+GM.PreviousZombies = {}
 function GM:RandomInfect()
 	
+	local ratio = self.CVars.ZombieRatio:GetInt()
+
+	-- Reset previous zombies if number of players is too low
+	if team.NumPlayers(TEAM_ZOMBIES) < 1 then
+		local NonZombies = math.floor(team.NumPlayers(TEAM_HUMANS) - (team.NumPlayers(TEAM_HUMANS) * (1/ratio)))
+		if #self.PreviousZombies > NonZombies then
+			Msg("[ZE] Clearing previous zombies, " .. tostring(#self.PreviousZombies) .. ", " .. tostring(NonZombies) .. "\n")
+			self.PreviousZombies = {}
+		end
+	end
+
 	local ply
 	
 	-- Get random player to infect
 	local Players = team.GetPlayers(TEAM_HUMANS)
 	for _, pl in RandomPairs(Players) do
-		if IsValid(pl) then
+		if IsValid(pl) && !table.HasValue(self.PreviousZombies, ply) then
 			ply = pl
 			break
 		end
@@ -73,8 +85,8 @@ function GM:RandomInfect()
 
 	-- Max of 5 mother zombies, 1:7 zombies ratio
 	local Zombies = team.NumPlayers(TEAM_ZOMBIES)
-	local ratio = self.CVars.ZombieRatio:GetInt()
 	if Zombies * ratio > team.NumPlayers(TEAM_HUMANS) then
+		self.PreviousZombies = team.GetPlayers(TEAM_ZOMBIES)
 		return Msg("[ZE] " .. tostring(Zombies) .. " zombies have been infected.\n")
 	else
 		if Zombies < 1 then
@@ -137,7 +149,7 @@ hook.Add("Think", "ZombieThink", function()
 			
 			-- Health regeneration
 			local health = ply:Health()
-			if ply.NextHealthRegen < CurTime() && health < ply:GetMaxHealth() then
+			if ply.NextHealthRegen && ply.NextHealthRegen < CurTime() && health < ply:GetMaxHealth() then
 				local newhealth = math.Clamp( health + math.random(50, 150), 0, ply:GetMaxHealth() )
 				ply:SetHealth( newhealth )
 				ply.NextHealthRegen = CurTime() + math.random(2,3)

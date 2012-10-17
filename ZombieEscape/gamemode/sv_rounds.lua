@@ -196,7 +196,7 @@ end
 
 function GM:SendWinner( TeamId, bReset )
 	net.Start("WinningTeam")
-		net.WriteUInt(TeamId)
+		net.WriteUInt(TeamId, 2)
 		net.WriteBit(bReset)
 	net.Broadcast()
 end
