@@ -60,10 +60,10 @@ end
 function SWEP:Precache()
 end
 
-if CLIENT then
-	-- Speed up melee animations
-	function SWEP:Think()
-		self.Owner:GetViewModel():SetPlaybackRate(3)
+function SWEP:Think()
+	if self:GetNextPrimaryFire() > CurTime() then
+		-- Speed up melee animations
+		self.Owner:GetViewModel():SetPlaybackRate(3.0)
 	end
 end
 
