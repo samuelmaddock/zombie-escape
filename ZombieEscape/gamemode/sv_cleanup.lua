@@ -1,37 +1,4 @@
-local EntitiesToRemove = { /*"playelr_speedmod","game_player_equip","weapon_*",*/ "prop_ragdoll" }
-function GM:CleanUpMap()
-	
-	-- Zombie Escape maps save values in several
-	-- entities, commonly used for difficulty levels
-	game.CleanUpMap( false, {"func_brush","env_global"} )
-	
-	-- Remove unwanted entities
-	for _, class in pairs(EntitiesToRemove) do
-		for _, ent in pairs(ents.FindByClass(class)) do
-			 -- ents with targetnames are typically important
-			if IsValid(ent) and !ent.OnPlayerPickup and !ent:HasTargetName() then
-				ent:Remove()
-			end
-		end
-	end
-
-	for _, ent in pairs(ents.FindByClass("func_physbox_multiplayer")) do
-		ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-	end
-
-	for _, ent in pairs(ents.FindByClass("func_movelinear")) do
-		if ent:HasSpawnFlags(8) then -- broken in gmod?
-			ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-		end
-	end
-
-	self:CreateTriggers()
-
-	CorrectLasers()
-	
-end
-
-function CorrectBeam(a, b)
+local function CorrectBeam(a, b)
 	if(!IsValid(a) or !IsValid(b)) then
 		return
 	end
@@ -45,7 +12,7 @@ function CorrectBeam(a, b)
 	end
 end
 
-function CorrectLasers()
+local function CorrectLasers()
 	local laser = ents.FindByClass("env_laser")
 	for _,v in pairs(laser) do
 		local e = v:GetKeyValues()
@@ -69,4 +36,28 @@ function CorrectLasers()
 		
 		CorrectBeam(sent, eent)
 	end
+end
+
+local EntitiesToRemove = { /*"playelr_speedmod","game_player_equip","weapon_*",*/ "prop_ragdoll" }
+
+function GM:CleanUpMap()
+	
+	-- Zombie Escape maps save values in several
+	-- entities, commonly used for difficulty levels
+	game.CleanUpMap( false, {"func_brush","env_global"} )
+	
+	-- Remove unwanted entities
+	for _, class in pairs(EntitiesToRemove) do
+		for _, ent in pairs(ents.FindByClass(class)) do
+			 -- ents with targetnames are typically important
+			if IsValid(ent) and !ent.OnPlayerPickup and !ent:HasTargetName() then
+				ent:Remove()
+			end
+		end
+	end
+
+	self:CreateTriggers()
+
+	CorrectLasers()
+	
 end

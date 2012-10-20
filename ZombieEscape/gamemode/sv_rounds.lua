@@ -43,7 +43,7 @@ end
 
 function GM:ShouldStartRound()
 
-	if self.RoundCanEnd and #player.GetAll() >= 2 then
+	if self.RoundCanEnd and (game.SinglePlayer() or #player.GetAll() >= 2) then
 
 		-- Check if no one is alive on either team
 		if !team.IsAlive(TEAM_HUMANS) or !team.IsAlive(TEAM_ZOMBIES) then
@@ -125,6 +125,10 @@ function GM:RoundRestart(CallBack)
 			Time = 15
 		end
 
+		if game.SinglePlayer() then
+			Time = 2
+		end
+
 		timer.Simple(Time, function() GAMEMODE:RoundStart() end)
 
 		self:SendMapMessage("A new round will begin in "..tostring(Time).." seconds")
@@ -184,16 +188,18 @@ function GM:RoundStart()
 	local Time = self:GetMinZSpawnTime() + math.abs(self:GetMaxZSpawnTime()-self:GetMinZSpawnTime())*scale
 	Time = (self:GetRound() == 1) and Time + 3 or Time -- additional time for players selecting their weapons
 	
-	-- Random infect
-	timer.Simple(Time, function()
-		math.randomseed(os.time())
-		self:RandomInfect()
-		self.InfectionStarted = true
-	end)
+	if !game.SinglePlayer() then
+		-- Random infect
+		timer.Simple(Time, function()
+			math.randomseed(os.time())
+			self:RandomInfect()
+			self.InfectionStarted = true
+		end)
 
-	-- Simple AFK check
-	timer.Destroy("HumanAFKCheck")
-	timer.Create("HumanAFKCheck", 60, 1, function() self:AFKCheck() end)
+		-- Simple AFK check
+		timer.Destroy("HumanAFKCheck")
+		timer.Create("HumanAFKCheck", 60, 1, function() self:AFKCheck() end)
+	end
 	
 end
 

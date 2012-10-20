@@ -53,6 +53,9 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 
+SWEP.PenetrationPower = 4 // thickness of a wall that this bullet can penetrate
+SWEP.PenetrationDistance = 128 // distance at which the bullet is capable of penetrating a wall
+
 
 
 

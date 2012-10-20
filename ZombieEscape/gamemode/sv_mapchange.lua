@@ -4,7 +4,7 @@ local function LoadMaps()
 
 	GAMEMODE.MapList = {}
 
-	for _, v in pairs( file.Find( "maps/*.bsp", true ) ) do
+	for _, v in pairs( file.Find( "maps/*.bsp", "GAME" ) ) do
 
         local name = string.gsub( v, ".bsp", "" )
         local lowername = string.lower( v )

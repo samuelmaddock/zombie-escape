@@ -15,11 +15,14 @@ local tab = {}
 
 function ZombieVision()
 
-	if !LocalPlayer():IsZombie() then delay = nil return end
+	if !LocalPlayer():IsZombie() and delay then
+		delay = nil
+		return
+	end
 
 	if GAMEMODE.bZombieLight then
 		local dlight = DynamicLight( LocalPlayer():EntIndex() )
-		if ( dlight ) then
+		if dlight then
 			dlight.r = color_white.r
 			dlight.g = color_white.r
 			dlight.b = color_white.r

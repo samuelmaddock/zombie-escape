@@ -8,6 +8,7 @@ include('cl_boss.lua')
 include('cl_damage.lua')
 include('cl_messages.lua')
 include('cl_overlay.lua')
+include('cl_scoreboard.lua')
 
 --[[---------------------------------------
 		HUD

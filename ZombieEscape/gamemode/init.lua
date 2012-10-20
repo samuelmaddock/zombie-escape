@@ -4,6 +4,7 @@ AddCSLuaFile('cl_boss.lua')
 AddCSLuaFile('cl_damage.lua')
 AddCSLuaFile('cl_messages.lua')
 AddCSLuaFile('cl_overlay.lua')
+AddCSLuaFile('cl_scoreboard.lua')
 AddCSLuaFile('cl_weapon.lua')
 AddCSLuaFile('cl_zvision.lua')
 
@@ -70,6 +71,7 @@ function GM:PlayerSpawn(ply)
 
 	ply:RemoveAllItems() -- remove ammo and weapons
 	ply:SetJumpPower(200)
+	-- ply:SetCollisionGroup(COLLISION_GROUP_PLAYER)
 
 	if !ply:IsSpectator() then
 
@@ -162,6 +164,14 @@ end
 
 function GM:PlayerCanHearPlayersVoice( ply1, ply2 )
 	return IsValid(ply1) and IsValid(ply2) and (ply1:Team() != ply2:Team())
+end
+
+local CS_PLAYER_FATAL_FALL_SPEED = 1100	// approx 60 feet
+local CS_PLAYER_MAX_SAFE_FALL_SPEED = 580		// approx 20 feet
+local CS_DAMAGE_FOR_FALL_SPEED = (100 / ( CS_PLAYER_FATAL_FALL_SPEED - CS_PLAYER_MAX_SAFE_FALL_SPEED )) // damage per unit per second. 
+function GM:GetFallDamage(ply, speed)
+	speed = speed - CS_PLAYER_MAX_SAFE_FALL_SPEED
+	return speed * CS_DAMAGE_FOR_FALL_SPEED * 1.25
 end
 
 /*---------------------------------------------------------

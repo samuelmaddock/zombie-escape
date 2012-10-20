@@ -3,24 +3,26 @@ ENT.Base = "base_anim"
 
 function ENT:Initialize()
 
-	self.Entity:SetMoveType(MOVETYPE_NONE)
+	self:SetMoveType(MOVETYPE_NONE)
 	
-	self.Entity:SetModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
-	self.Entity:SetColor(255, 255, 255, 0)
+	self:SetModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
+	self:SetColor(255, 255, 255, 0)
 	
-	local RVec = Vector() * 64
-	self.Entity:PhysicsInitBox(-RVec, RVec)
-	self.Entity:SetCollisionBounds(-RVec, RVec)
+	/*local RVec = Vector() * 128
+	self:PhysicsInitBox(-RVec, RVec)
+	self:SetCollisionBounds(-RVec, RVec)*/
+	self:PhysicsInit(SOLID_VPHYSICS)
+
+	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 	
-	self.Entity:SetTrigger(true)
-	self.Entity:DrawShadow(false)
-	self.Entity:SetNotSolid(true)
-	self.Entity:SetNoDraw(true)
+	self:SetTrigger(true)
+	self:DrawShadow(false)
+	self:SetNotSolid(false)
+	self:SetNoDraw(true)
 	
-	self.Phys = self.Entity:GetPhysicsObject()
-	if(self.Phys and self.Phys:IsValid()) then
+	self.Phys = self:GetPhysicsObject()
+	if IsValid(self.Phys) then
 		self.Phys:Sleep()
-		self.Phys:EnableCollisions(false)
 	end
 	
 end
@@ -35,7 +37,7 @@ function ENT:Think()
 
 	if !IsValid(ply) then
 		if IsValid(self:GetParent()) then
-			self:SetParent(nil)
+			self:SetParent(NULL)
 		end
 		return
 	end
@@ -58,40 +60,51 @@ end
 
 function ENT:StartTouch( ent )
 
-	if IsValid(self:GetOwner()) or !IsValid(ent) or !ent:IsPlayer() or
-		!ent:CanPickupEntity() or (self.LastOwner == ent and self.LastDrop + 3 > CurTime()) then return end
+	if self.NextPickup and self.NextPickup > CurTime() then return end
+	if IsValid(self:GetOwner()) or !IsValid(ent) or !ent:IsPlayer() then return end
+	if !ent:CanPickupEntity() then return end
 	
+	if IsValid(self.Phys) then
+		self.Phys:EnableCollisions(false)
+		self.Phys:Sleep()
+	end
+
 	self:TriggerOutput( "OnPlayerPickup", ent )
 	
 	-- Set offset
 	local boneId = ent:LookupBone("ValveBiped.Bip01_Pelvis")
 	local bonePos, boneAng = ent:GetBonePosition(boneId)
 	
-	self.Entity:SetPos(bonePos)
-	self.Entity:SetAngles(ent:GetAngles())
+	self:SetPos(bonePos)
+	self:SetAngles(ent:GetAngles())
 	
-	self.Entity:Fire("setparentattachmentmaintainoffset", "forward", 0)
-	self.Entity:SetParent(ent)
-	
-	for _, v in pairs(self:GetChildren()) do
-		v:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-	end
+	self:Fire("setparentattachmentmaintainoffset", "forward", 0)
+	self:SetParent(ent)
 
 	ent:SetPickupEntity(self)
 
 end
 
-function ENT:OnDrop(ply)
+function ENT:OnDrop()
 
-	self.LastOwner = ply
-	self.LastDrop = CurTime()
+	self.LastOwner = self:GetOwner()
+	self.NextPickup = CurTime() + 0.8
 
-	/*self:SetMoveType(MOVETYPE_VPHYSICS)
-	self.Phys:Wake()
-	self.Phys:EnableCollisions(true)
+	self:SetOwner()
+	self:SetParent()
 
-	self:SetLocalVelocity(ply:GetVelocity())*/
+	self:SetMoveType(MOVETYPE_FLYGRAVITY)
+	self:SetGravity(1.0)
+	self:SetMoveCollide(MOVECOLLIDE_FLY_BOUNCE)
+	self:SetGroundEntity()
 
+	local vThrowPos = self.LastOwner:GetShootPos() - Vector(0,0,12)
+	self:SetPos(vThrowPos)
+
+	if IsValid(self.Phys) then
+		-- self.Phys:SetVelocity(self.LastOwner:GetForward() * 128)
+		self.Phys:ApplyForceCenter(self.LastOwner:GetForward() * 128)
+	end
 
 end
 

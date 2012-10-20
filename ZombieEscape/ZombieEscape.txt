@@ -59,7 +59,7 @@
 			"text"		"Min Zombie Health"
 			"help"		"The minimum amount of health a zombie will receive at spawn"
 			"type"		"Numeric"
-			"default"	"3200"
+			"default"	"3000"
 		}
 
 		7
@@ -68,7 +68,7 @@
 			"text"		"Max Zombie Health Bonus"
 			"help"		"The maximum amount of additional health a zombie will receive at spawn (scales down with additional players)"
 			"type"		"Numeric"
-			"default"	"4300"
+			"default"	"3500"
 		}
 	}
 }

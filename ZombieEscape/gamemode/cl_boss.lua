@@ -37,7 +37,7 @@ function GM:BossHealth()
 		local x3, y3 = x-(w/2), y + h - padding*2
 		local w3, h3 = tw + padding*4, th + padding
 		draw.RoundedBox( 4, x3, y3, w3, h3, Color( 0, 0, 0, 255 ) )
-		draw.SimpleText(name, "BossFont", x3 + padding*2, y3 + padding, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(name, "BossFont", x3 + padding*2, y3 + padding, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 		
 		-- Boss health bar segments
 		local rw, rh = (bw + padding)*totalHealthBars + padding, th + padding

@@ -4,7 +4,7 @@ GM.CVars.ZHealthMax 	= CreateConVar( "ze_zhealth_max", 3500, {FCVAR_REPLICATED},
 GM.CVars.ZKnockback		= CreateConVar( "ze_zknockback", '7.0', {FCVAR_REPLICATED}, "Knockback multiplier for zombies." )
 GM.CVars.ZMotherKnockback = CreateConVar( "ze_zmotherknockback", '6.0', {FCVAR_REPLICATED}, "Knockback multiplier for mother zombies." )
 GM.CVars.ZombieRatio 	= CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "Ratio of zombies to spawn." )
-GM.CVars.ZHealthRegen   = CreateConVar( "ze_zhealth_regen", 0, {FCVAR_REPLICATED}, "Whether or not zombie health should regenerate." )
+GM.CVars.ZHealthRegen   = CreateConVar( "ze_zhealth_regen", 1, {FCVAR_REPLICATED}, "Whether or not zombie health should regenerate." )
 
 function GM:ZombieSpawn( ply )
 
@@ -56,7 +56,7 @@ function GM:RandomInfect()
 	-- Get random player to infect
 	local Players = team.GetPlayers(TEAM_HUMANS)
 	for _, pl in RandomPairs(Players) do
-		if IsValid(pl) && !table.HasValue(self.PreviousZombies, ply) then
+		if IsValid(pl) && !table.HasValue(self.PreviousZombies, pl) then
 			ply = pl
 			break
 		end
