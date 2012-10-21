@@ -136,3 +136,18 @@ hook.Add("Think", "HideTeamPlayers", function()
 	end
 
 end)
+
+function GM:PlayerBindPress( ply, bind, pressed )
+	if ( bind == "+menu" && pressed ) then
+		LocalPlayer():ConCommand( "lastinv" )
+		return true
+	end
+	
+	if ( bind == "+menu_context" && pressed ) then
+		LocalPlayer():ConCommand( "ze_dropentity" )
+		return true
+	end
+	
+	
+	return false
+end

@@ -16,6 +16,7 @@ local table = table
 ---------------------------------------------------------*/
 module("weapons")
 
+local Aliases = {}
 local WeaponList = {}
 
 
@@ -71,6 +72,11 @@ end
 ---------------------------------------------------------*/
 function Get( name )
 
+	-- Do we have an alias?
+	if ( Aliases[ name ] ) then
+		name = Aliases[ name ]
+	end
+
 	local Stored = GetStored(name)
 	if ( !Stored ) then return nil end
 
@@ -122,4 +128,13 @@ end
 ---------------------------------------------------------*/
 function Remove( name )
 	WeaponList[ name ] = nil
+end
+
+--[[---------------------------------------------------------
+   Name: Alias
+-----------------------------------------------------------]]
+function Alias( From, To )
+
+	Aliases[ From ] = To
+	
 end

@@ -116,6 +116,9 @@ game.AddAmmoType({
 	Bullet
 -------------------------------------------------*/
 
+/*function util.Tracer( vecStart, vecEnd, ent, iAttachment, flVelocity, bWhiz, pCustomTracerName)
+end*/
+
 function util.ImpactTrace( tr, iDamageType, pCustomImpactName )
 	local ent = tr.Entity
 
@@ -172,22 +175,22 @@ local function GetBulletTypeParameters( iBulletType )
 	elseif iBulletType == "ammo_556mm" or iBulletType == "ammo_556mm_box" then
 		fPenetrationPower = 35
 		flPenetrationDistance = 4000
-	elseif iBulletType == "ammo_338mag"then
+	elseif iBulletType == "ammo_338mag" then
 		fPenetrationPower = 45
 		flPenetrationDistance = 8000
-	elseif iBulletType == "ammo_9mm"then
+	elseif iBulletType == "ammo_9mm" then
 		fPenetrationPower = 21
 		flPenetrationDistance = 800
-	elseif iBulletType == "ammo_buckshot"then
+	elseif iBulletType == "ammo_buckshot" then
 		fPenetrationPower = 0
 		flPenetrationDistance = 0
-	elseif iBulletType == "ammo_45acp"then
+	elseif iBulletType == "ammo_45acp" then
 		fPenetrationPower = 15
 		flPenetrationDistance = 500
-	elseif iBulletType == "ammo_357sig"then
+	elseif iBulletType == "ammo_357sig" then
 		fPenetrationPower = 25
 		flPenetrationDistance = 800
-	elseif iBulletType == "ammo_57mm"then
+	elseif iBulletType == "ammo_57mm" 	then
 		fPenetrationPower = 30
 		flPenetrationDistance = 2000
 	else
@@ -312,7 +315,7 @@ function PlayerMeta:FireCSBullet(
 	local weap = self:GetActiveWeapon()
 	if !IsValid(weap) then return end
 
-	local iBulletType = weap.Primary.Ammo
+	local iBulletType = weap.Primary and weap.Primary.Ammo or "ammo_57mm"
 
 	local flDamageModifier = 0.5
 	local flPenetrationModifier = 1.0
@@ -453,7 +456,7 @@ function PlayerMeta:FireCSBullet(
 			})
 		end
 
-		local iExitMaterial = exitTr.MatType
+		local iExitMaterial = exitTr.MatType and exitTr.MatType or 0
 
 		hitGrate = hitGrate and bit.band(iExitMaterial, MAT_GRATE) == MAT_GRATE
 

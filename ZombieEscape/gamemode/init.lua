@@ -39,6 +39,8 @@ util.AddNetworkString("WeaponsData")
 util.AddNetworkString("DamageNotes")
 
 function GM:Initialize()
+	self.BaseClass:Initialize()
+
 	self:LoadWeapons()
 	self:SetupEntityFixes()
 	self.Restarting = false
@@ -46,11 +48,13 @@ function GM:Initialize()
 end
 
 function GM:InitPostEntity()
+	self.BaseClass:InitPostEntity()
 	self.ServerStarted = true
 	self:CleanUpMap()
 end
 
 function GM:PlayerInitialSpawn(ply)
+	self.BaseClass:PlayerInitialSpawn(ply)
 
 	ply:GoTeam(TEAM_SPECTATOR)
 
@@ -61,7 +65,6 @@ function GM:PlayerInitialSpawn(ply)
 	if self:HasRoundStarted() then
 		ply:SendMessage("Press F3 to begin playing as a zombie.")
 	end
-
 end
 
 function GM:PlayerDisconnected(ply)
@@ -399,16 +402,18 @@ local remove = {
 function GM:SetupEntityFixes()
 
 	-- Replace weapons with pickup entities
-	for _, weapon in pairs(pickups) do
+	/*for _, weapon in pairs(pickups) do
 
-		-- weapons.Remove(weapon) -- make sure it's only a sent
+		weapons.Remove(weapon) -- make sure it's only a sent
 
-		-- local swep = scripted_ents.Get("weapon_pickup")
-		-- scripted_ents.Register(swep,weapon,true)
+		local swep = scripted_ents.Get("weapon_pickup")
+		scripted_ents.Register(swep,weapon,true)
 
-		-- scripted_ents.Alias(weapon, "weapon_pickup")
+		scripted_ents.Alias(weapon, "weapon_pickup")
 
-	end
+	end*/
+
+	weapons.Alias("weapon_hegrenade", "weapon_frag")
 
 	-- Create useless entities for unwanted entities
 	for _, entity in pairs(remove) do

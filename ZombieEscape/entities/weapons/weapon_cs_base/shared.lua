@@ -327,3 +327,8 @@ function SWEP:OnRestore()
 	self:SetIronsights( false )
 	
 end
+
+function SWEP:Deploy()
+	self.Weapon:SetNextPrimaryFire( CurTime() )
+	self.Weapon:SetNextSecondaryFire( CurTime() )
+end

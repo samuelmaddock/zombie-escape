@@ -9,7 +9,6 @@ ENT.Model = Model("models/weapons/w_pist_elite.mdl")
 function ENT:Initialize()
 	
 	self:SetModel(self.Model)
-	self:SetColor(255, 255, 255, 0)
 	
 	if SERVER then
 
@@ -28,9 +27,6 @@ function ENT:Initialize()
 		end
 
 	end
-
-	self:Spawn()
-	self:Activate()
 	
 end
 
