@@ -36,18 +36,18 @@ SWEP.Primary.ClipSize		= 15
 SWEP.Primary.Delay			= 0.15
 SWEP.Primary.DefaultClip	= 15
 SWEP.Primary.Automatic		= false
-SWEP.Primary.Ammo			= "pistol"
+SWEP.Primary.Ammo			= "ammo_9mm"
 
-SWEP.Secondary.Sound			= Sound( "Weapon_Elite.Single" )
-SWEP.Secondary.Recoil			= 1.2
-SWEP.Secondary.Damage			= 15
+SWEP.Secondary.Sound		= Sound( "Weapon_Elite.Single" )
+SWEP.Secondary.Recoil		= 1.2
+SWEP.Secondary.Damage		= 15
 SWEP.Secondary.NumShots		= 1
 SWEP.Secondary.Cone			= 0.04
 SWEP.Secondary.ClipSize		= 15
-SWEP.Secondary.Delay			= 0.15
+SWEP.Secondary.Delay		= 0.15
 SWEP.Secondary.DefaultClip	= 15
-SWEP.Secondary.Automatic		= false
-SWEP.Secondary.Ammo			= "pistol"
+SWEP.Secondary.Automatic	= false
+SWEP.Secondary.Ammo			= "ammo_9mm"
 
 SWEP.IronSightsPos 		= nil
 

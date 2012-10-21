@@ -19,6 +19,7 @@ function BOSS:Setup(name, modelEnt, counterEnt)
 	
 	boss.Name = name
 	boss.Type = -1
+	boss.KilledOnRound = -1
 	boss.Entities = {}
 
 	boss.Targets = {}
@@ -30,7 +31,10 @@ function BOSS:Setup(name, modelEnt, counterEnt)
 end
 
 function BOSS:IsValid()
-	return IsValid( self:GetCounter() ) and IsValid( self:GetClientModel() )
+	return IsValid( self:GetCounter() ) and
+		IsValid( self:GetClientModel() ) and
+		-- self:MaxHealth() > 10 and
+		self.KilledOnRound != GAMEMODE:GetRound()
 end
 
 function BOSS:HasCounter(ent)
@@ -83,13 +87,16 @@ function BOSS:GetCounter()
 
 		for _, v in pairs(ents.FindByName(self.Targets.Counter)) do
 			if IsValid(v) and v:GetName() == self.Targets.Counter then
-				self.Entities.Counter = v
-
 				if v:GetClass() == "math_counter" then
 					self.Type = BOSS_MATH
 				elseif v:GetClass() == "func_physbox_multiplayer" then
 					self.Type = BOSS_PHYSBOX
+				else
+					continue -- not what we want
 				end
+
+				self.Entities.Counter = v
+				break
 			end
 		end
 
@@ -120,6 +127,7 @@ end
 	Bosses
 ---------------------------------------------------------*/
 GM.Bosses = {}
+GM.ValidBossEntities = { "math_counter", "func_physbox_multiplayer" }
 -- AddBoss( name, model entity, math counter )
 function GM:AddBoss(name, propEnt, healthEnt)
 
@@ -131,8 +139,29 @@ end
 -- return boss table
 function GM:GetBoss(ent)
 
+	if self.CVars.BossDebug:GetInt() == 2 then
+		Msg("REQUESTING BOSS\n")
+		Msg(ent)
+		Msg("\n")
+	end
+
+	if !table.HasValue(self.ValidBossEntities, ent:GetClass()) then
+		return
+	end
+
+	if self.CVars.BossDebug:GetInt() == 1 then
+		Msg("REQUESTING BOSS\n")
+		Msg(ent)
+		Msg("\n")
+	end
+
 	for _, boss in pairs(self.Bosses) do
 		if boss:HasCounter(ent) then
+			if self.CVars.BossDebug:GetInt() > 0 then
+				Msg("FOUND BOSS\n")
+				Msg(boss)
+				Msg("\n")
+			end
 			return boss
 		end
 	end
@@ -148,7 +177,7 @@ end
 function GM:BossDamageTaken(ent, activator)
 
 	if !IsValid(ent) then return end
-	if self.LastBossUpdate && self.LastBossUpdate + 0.15 > CurTime() then return end -- prevent umsg spam
+	if self.NextBossUpdate && self.NextBossUpdate > CurTime() then return end -- prevent umsg spam
 
 	local boss = self:GetBoss(ent)
 	if boss then
@@ -172,9 +201,16 @@ function GM:BossDamageTaken(ent, activator)
 			net.WriteFloat( boss:MaxHealth() )
 		net.Broadcast()
 		
+		if self.CVars.BossDebug:GetInt() > 0 then
+			Msg("BOSS TAKE DAMAGE:\n")
+			Msg("\tMath: " .. tostring(boss:GetCounter()) .. "\n")
+			Msg("\tProp: " .. tostring(boss:GetClientModel()) .. "\n")
+			Msg("\tActivator: " .. tostring(activator) .. "\n")
+		end
+
+		self.NextBossUpdate = CurTime() + 0.15
+
 	end
-	
-	self.LastBossUpdate = CurTime()
 
 end
 
@@ -192,11 +228,14 @@ function GM:BossDeath(ent, activator)
 		net.Broadcast()
 
 		boss.bInitialized = false
+		boss.KilledOnRound = GAMEMODE:GetRound()
 
-		/*Msg("BOSS DEFEATED:\n")
-		Msg("\tMath: " .. tostring(boss:GetCounter()) .. "\n")
-		Msg("\tProp: " .. tostring(boss:GetClientModel()) .. "\n")
-		Msg("\tActivator: " .. tostring(activator) .. "\n")*/
+		if self.CVars.BossDebug:GetInt() > 0 then
+			Msg("BOSS DEFEATED:\n")
+			Msg("\tMath: " .. tostring(boss:GetCounter()) .. "\n")
+			Msg("\tProp: " .. tostring(boss:GetClientModel()) .. "\n")
+			Msg("\tActivator: " .. tostring(activator) .. "\n")
+		end
 
 		gamemode.Call("OnBossDefeated", boss, activator)
 

@@ -23,7 +23,7 @@ GM:AddBoss("Predator", "cboss_predator", "cboss_predatorhealth_counter")
 -- Ultimate
 GM:AddBoss("Predator", "mob_grudge_model_2", "fboss_math_2")	-- endboss
 GM:AddBoss("Predator", "mob_grudge_model_2", "fboss_math_1")	-- endboss rage mode
-GM:AddBoss("Predator", "fboss_ee_model", "fboss_ee_math")		-- endboss rage mode?
+GM:AddBoss("Alien", "fboss_ee_model", "fboss_ee_math")			-- post-endboss miniboss
 
 --[[-------------------------------------------------------------------
 		Map Fixes

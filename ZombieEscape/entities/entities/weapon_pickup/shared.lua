@@ -1,31 +1,40 @@
+if SERVER then
+	AddCSLuaFile('shared.lua')
+end
+
 ENT.Type = "anim"
 ENT.Base = "base_anim"
+ENT.Model = Model("models/weapons/w_pist_elite.mdl")
 
 function ENT:Initialize()
-
-	self:SetMoveType(MOVETYPE_NONE)
 	
-	self:SetModel("models/Combine_Helicopter/helicopter_bomb01.mdl")
+	self:SetModel(self.Model)
 	self:SetColor(255, 255, 255, 0)
 	
-	/*local RVec = Vector() * 128
-	self:PhysicsInitBox(-RVec, RVec)
-	self:SetCollisionBounds(-RVec, RVec)*/
-	self:PhysicsInit(SOLID_VPHYSICS)
+	if SERVER then
 
-	self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-	
-	self:SetTrigger(true)
-	self:DrawShadow(false)
-	self:SetNotSolid(false)
-	self:SetNoDraw(true)
-	
-	self.Phys = self:GetPhysicsObject()
-	if IsValid(self.Phys) then
-		self.Phys:Sleep()
+		self:SetMoveType(MOVETYPE_NONE)
+		self:PhysicsInit(SOLID_VPHYSICS)
+		self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+		
+		self:SetTrigger(true)
+		self:DrawShadow(false)
+		self:SetNotSolid(false)
+		self:SetNoDraw(false)
+		
+		self.Phys = self:GetPhysicsObject()
+		if IsValid(self.Phys) then
+			self.Phys:Sleep()
+		end
+
 	end
+
+	self:Spawn()
+	self:Activate()
 	
 end
+
+if !SERVER then return end
 
 function ENT:KeyValue( key, value )
 	self:StoreOutput( key, value )

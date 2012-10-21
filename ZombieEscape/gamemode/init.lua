@@ -1,3 +1,4 @@
+AddCSLuaFile("css.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile('cl_bhop.lua')
 AddCSLuaFile('cl_boss.lua')
@@ -388,7 +389,7 @@ end
 	of weapons, which are unnecessary (ie. providing an
 	additional weapon and ammo).
 ---------------------------------------------------------*/
-local pickups = {"weapon_deagle", "weapon_elite","weapon_glock","weapon_hegrenade","weapon_knife"}
+local pickups = {"weapon_deagle", "weapon_elite","weapon_glock","weapon_hegrenade"/*,"weapon_knife"*/}
 local remove = {
 	"weapon_awp", "weapon_m3", "weapon_m249",
 	"weapon_p228", "weapon_usp", "weapon_p90",
@@ -400,10 +401,12 @@ function GM:SetupEntityFixes()
 	-- Replace weapons with pickup entities
 	for _, weapon in pairs(pickups) do
 
-		weapons.Remove(weapon) -- make sure it's only a sent
+		-- weapons.Remove(weapon) -- make sure it's only a sent
 
-		local swep = scripted_ents.Get("weapon_pickup")
-		scripted_ents.Register(swep,weapon,true)
+		-- local swep = scripted_ents.Get("weapon_pickup")
+		-- scripted_ents.Register(swep,weapon,true)
+
+		-- scripted_ents.Alias(weapon, "weapon_pickup")
 
 	end
 

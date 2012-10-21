@@ -68,9 +68,11 @@ local function fixMessage(str, activator)
 	str = string.gsub(str, "say ", "")
 	str = string.gsub(str, "SAY ", "")
 
-	if IsValid(activator) and activator:IsPlayer() and string.find(str, "player") then
+	if IsValid(activator) and activator:IsPlayer() and
+		string.find(string.lower(str), "player") then
 		str = string.gsub(str, "A player", activator:Name()) -- mako reactor
 		str = string.gsub(str, "Player", activator:Name())
+		str = string.gsub(str, "PLAYER", activator:Name())
 	end
 
 	return str

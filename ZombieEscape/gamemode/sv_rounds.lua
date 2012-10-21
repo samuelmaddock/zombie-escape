@@ -155,7 +155,7 @@ end
 
 function GM:RoundStart()
 
-	if !self.Restarting then return end
+	if !game.SinglePlayer() and !self.Restarting then return end
 	
 	self.RoundCanEnd = false
 	self.RoundTime = CurTime()

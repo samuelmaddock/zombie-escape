@@ -38,7 +38,7 @@ local function CorrectLasers()
 	end
 end
 
-local EntitiesToRemove = { /*"playelr_speedmod","game_player_equip","weapon_*",*/ "prop_ragdoll" }
+local EntitiesToRemove = { /*"player_speedmod","game_player_equip","weapon_*",*/ "prop_ragdoll" }
 
 function GM:CleanUpMap()
 	

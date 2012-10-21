@@ -41,7 +41,7 @@ SWEP.Primary.ClipSize		= 8
 SWEP.Primary.Delay			= 0.95
 SWEP.Primary.DefaultClip	= 16
 SWEP.Primary.Automatic		= false
-SWEP.Primary.Ammo			= "buckshot"
+SWEP.Primary.Ammo			= "ammo_buckshot"
 
 SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1

@@ -3,6 +3,7 @@
 ---------------------------------------------------------*/
 GM.BossEntities = {}
 GM.LastBossUpdate = RealTime()
+GM.BossGlowColor = Color(129, 180, 30, 180)
 
 surface.CreateFont( "BossFont", { font = "Impact", size = 24, weight = 400, antialias = true } )
 local gradientUp = surface.GetTextureID("VGUI/gradient_up")
@@ -17,11 +18,13 @@ local curPercent = nil
 function GM:BossHealth()
 	for k, boss in pairs(self.BossEntities) do
 
-		if !IsValid(boss.Ent) or boss.Health <= 0 then self.BossEntities[k] = nil return end
+		if !IsValid(boss.Ent) or boss.Health <= 1 then self.BossEntities[k] = nil return end
 		if (LocalPlayer():GetPos() - boss.Ent:GetPos()):Length() > 4096 then return end
 
+		halo.Add({boss.Ent}, self.BossGlowColor)
+
 		-- Let's do some calculations first
-		maxBarHealth = (boss.MaxHealth > 1000) and 1000 or 100
+		maxBarHealth = (boss.MaxHealth > 999) and 1000 or 100
 		local name = boss.Name and boss.Name or "BOSS"
 		local totalHealthBars = math.ceil(boss.MaxHealth / maxBarHealth)
 		local curHealthBar = math.floor(boss.Health / maxBarHealth)
@@ -78,7 +81,11 @@ function RecieveBossSpawn()
 		boss.Name = string.upper(name)
 		boss.bSpawned = true
 
-		Msg(name .. " boss has spawned.\n")
+		if GAMEMODE.CVars.BossDebug:GetInt() > 0 then
+			Msg("BOSS SPAWN\n")
+			Msg("\tName: " .. name .. "\n")
+			Msg("\tEntity: " .. tostring(GAMEMODE.BossEntities[index].Ent) .. "\n")
+		end
 	end
 
 
@@ -92,7 +99,9 @@ function RecieveBossUpdate( um )
 	
 	local boss = GAMEMODE.BossEntities[index]
 	if !boss then
-		--Msg("Received boss update for non-existant boss.\n")
+		if GAMEMODE.CVars.BossDebug:GetInt() > 0 then
+			Msg("Received boss update for non-existant boss.\n")
+		end
 		GAMEMODE.BossEntities[index] = {}
 		boss = GAMEMODE.BossEntities[index]
 		boss.Ent = Entity(index)
@@ -100,7 +109,12 @@ function RecieveBossUpdate( um )
 	
 	boss.Health = health
 	boss.MaxHealth = maxhealth
-	--Msg("BOSS UPDATE " .. tostring(GAMEMODE.BossEntities[index].Ent) .. "\t" .. health .. "\t" .. boss.MaxHealth .. "\n")
+	if GAMEMODE.CVars.BossDebug:GetInt() > 0 then
+		Msg("BOSS UPDATE\n")
+		Msg("\tEntity: " .. tostring(GAMEMODE.BossEntities[index].Ent) .. "\n")
+		Msg("\tHealth: " .. health .. "\n")
+		Msg("\tMaxHealth: " .. boss.MaxHealth .. "\n")
+	end
 
 	GAMEMODE.LastBossUpdate = RealTime()
 
@@ -112,9 +126,14 @@ function RecieveBossDefeated( um )
 	local index = net.ReadFloat()
 		
 	if !GAMEMODE.BossEntities[index] then
-		--Msg("Warning: Received boss death for non-existant boss!\n")
+		if GAMEMODE.CVars.BossDebug:GetInt() > 0 then
+			Msg("Warning: Received boss death for non-existant boss!\n")
+		end
 	else
-		--Msg("BOSS DEATH " .. tostring(GAMEMODE.BossEntities[index].Ent) .. "\n")
+		if GAMEMODE.CVars.BossDebug:GetInt() > 0 then
+			Msg("BOSS DEATH\n")
+			Msg("\tEntity: " .. tostring(GAMEMODE.BossEntities[index].Ent) .. "\n")
+		end
 		GAMEMODE.BossEntities[index] = nil
 	end
 	
