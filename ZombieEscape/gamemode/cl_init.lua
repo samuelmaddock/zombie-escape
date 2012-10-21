@@ -143,11 +143,10 @@ function GM:PlayerBindPress( ply, bind, pressed )
 		return true
 	end
 	
-	if ( bind == "+menu_context" && pressed ) then
+	if bind == "+menu_context" and pressed then
 		LocalPlayer():ConCommand( "ze_dropentity" )
 		return true
 	end
-	
 	
 	return false
 end
