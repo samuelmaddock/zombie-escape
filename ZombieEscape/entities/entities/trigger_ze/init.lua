@@ -2,6 +2,9 @@ ENT.Type = "anim"
 ENT.Base = "base_anim"
 
 function ENT:Initialize()
+end
+
+function ENT:Setup(Min, Max, Function, bRemoveOnTouch)
 
 	self.Entity:SetMoveType(MOVETYPE_NONE)
 	
@@ -11,16 +14,6 @@ function ENT:Initialize()
 	self.Entity:DrawShadow(false)
 	self.Entity:SetNotSolid(true)
 	self.Entity:SetNoDraw(true)
-
-	self.Phys = self.Entity:GetPhysicsObject()
-	if IsValid(self.Phys) then
-		self.Phys:Sleep()
-		self.Phys:EnableCollisions(false)
-	end
-
-end
-
-function ENT:Setup(Min, Max, Function)
 
 	local bbox = (Max - Min) / 2 -- determine actual boundaries from world vectors
 	self.Entity:SetPos(Min + bbox) -- set pos to midpoint of bbox
@@ -36,20 +29,23 @@ function ENT:Setup(Min, Max, Function)
 		self.Phys:EnableCollisions(false)
 	end
 
+	self.bRemoveOnTouch = bRemoveOnTouch
 	self.OnTouch = Function
 
 end
 
 function ENT:StartTouch(ent)
 
-	if !IsValid(ent) or !ent:IsPlayer() or !ent:Alive() then return end
-
-	if self.OnTouch then
+	if IsValid(ent) and self.OnTouch then
 
 		local bSuccess, err = pcall(self.OnTouch, ent)
 
 		if !bSuccess then
 			ErrorNoHalt("TRIGGER ERROR: "..tostring(err).."\n")
+		end
+
+		if self.bRemoveOnTouch then
+			self:Remove()
 		end
 
 	end

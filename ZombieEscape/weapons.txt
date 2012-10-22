@@ -95,7 +95,7 @@
 
 	"Frag Grenade"
 	{
-		"class"			"weapon_frag"
+		"class"			"weapon_hegrenade"
 		"multiplier"	"6.0"
 		"type"			"3"
 	}

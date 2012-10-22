@@ -313,7 +313,7 @@ function GM:EntityKeyValue(ent, key, value)
 	if key == "OnPlayerPickup" then
 		ent.OnPlayerPickup = value
 	end
-	
+
 end
 
 /*---------------------------------------------------------
@@ -392,7 +392,7 @@ end
 	of weapons, which are unnecessary (ie. providing an
 	additional weapon and ammo).
 ---------------------------------------------------------*/
-local pickups = {"weapon_deagle", "weapon_elite","weapon_glock","weapon_hegrenade"/*,"weapon_knife"*/}
+local pickups = {"weapon_deagle", "weapon_elite","weapon_glock"/*,"weapon_knife"*/}
 local remove = {
 	"weapon_awp", "weapon_m3", "weapon_m249",
 	"weapon_p228", "weapon_usp", "weapon_p90",
@@ -412,8 +412,6 @@ function GM:SetupEntityFixes()
 		scripted_ents.Alias(weapon, "weapon_pickup")
 
 	end*/
-
-	weapons.Alias("weapon_hegrenade", "weapon_frag")
 
 	-- Create useless entities for unwanted entities
 	for _, entity in pairs(remove) do
