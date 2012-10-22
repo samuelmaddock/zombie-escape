@@ -116,12 +116,7 @@ game.AddAmmoType({
 	Bullet
 -------------------------------------------------*/
 
-/*function util.Tracer( vecStart, vecEnd, ent, iAttachment, flVelocity, bWhiz, pCustomTracerName)
-end*/
-
-function util.ImpactTrace( tr, iDamageType, pCustomImpactName )
-	local ent = tr.Entity
-
+local function ImpactTrace( ply, tr, iDamageType, pCustomImpactName )
 	if tr.HitSky then
 		return
 	end
@@ -134,32 +129,43 @@ function util.ImpactTrace( tr, iDamageType, pCustomImpactName )
 		return
 	end
 
-	ent:ImpactTrace(tr, iDamageType)
-end
+	local surfaceType = Material( tr.HitTexture ):GetString("$surfaceprop") or "default_silent"
+	 
+	local hitEntity = IsValid( tr.Entity )
+	 
+	if hitEntity then
+	    local phys = tr.Entity:GetPhysicsObject()
+	    if IsValid( phys ) then
+	        surfaceType = phys:GetMaterial()
+	    end
+	end
+	                 
+	local e = EffectData()
+	e:SetOrigin( tr.HitPos )
+	e:SetStart( tr.StartPos )
+	e:SetSurfaceProp( util.GetSurfaceIndex( surfaceType ) )
+	e:SetDamageType( iDamageType )
+	e:SetHitBox( tr.HitBox )
 
--- For some reason, impact effects are wrong
-local HitDecals = {
-	[MAT_METAL] = MAT_CONCRETE,
-	[MAT_CONCRETE] = MAT_METAL
-}
-function EntityMeta:ImpactTrace( tr, iDamageType, pCustomImpactName )
-
-	local data = EffectData()
-	data:SetOrigin(tr.HitPos)
-	data:SetStart(tr.StartPos)
-	data:SetDamageType(iDamageType)
-	data:SetHitBox(tr.HitBox)
-
-	-- Msg("MAT IMPACT " .. tr.MatType .. "\n")
-	local fixedmat = HitDecals[tr.MatType] and HitDecals[tr.MatType] or tr.MatType
-	data:SetSurfaceProp(fixedmat)
-
-	if !pCustomImpactName then
-		util.Effect( "Impact", data, true, true )
+	if CLIENT then
+	    e:SetEntity( tr.Entity )
 	else
-		util.Effect( pCustomImpactName, data, true, true )
+	    e:SetEntIndex( tr.Entity:EntIndex() )
 	end
 
+	-- if SERVER then
+	-- 	SuppressHostEvents( ply )
+	-- end
+
+	if pCustomImpactName then
+		util.Effect( pCustomImpactName, e )
+	else
+		util.Effect( "Impact", e )
+	end
+
+	-- if SERVER then
+	-- 	SuppressHostEvents( NULL )
+	-- end
 end
 
 local function GetBulletTypeParameters( iBulletType )
@@ -397,7 +403,7 @@ function PlayerMeta:FireCSBullet(
 				if !tr.HitSky and !tr.HitNoDraw then
 					local ent = tr.Entity
 					if !(IsValid(ent) and ent:IsPlayer() and ent:Team() == LocalPlayer():Team()) then
-						util.ImpactTrace(tr, iDamageType)
+						ImpactTrace(self, tr, iDamageType)
 					end
 				end
 			end
@@ -474,7 +480,7 @@ function PlayerMeta:FireCSBullet(
 		end
 
 		if bDoEffects then
-			util.ImpactTrace(exitTr, iDamageType)
+			ImpactTrace(self, exitTr, iDamageType)
 		end
 
 		flPenetrationPower = flPenetrationPower - flTraceDistance / flPenetrationModifier
