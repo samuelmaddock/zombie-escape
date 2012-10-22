@@ -51,19 +51,16 @@ Although it's suggested to keep these settings at their default, you may change 
 * OnBossDefeated( Table boss, Player attacker ) see sv_boss.lua
 
 
-#### Map Patching ####
-Included with the gamemode is a custom tool, which I originally created for Sassilization, for patching Zombie Escape maps, found under 'ZombieEscape/content/MapPatcher.exe' (Your anti-virus may tell you that it is malware, but I assure you, it is not). Unfortunately, a number of maps for the gamemode feature bugs only found present in Garry's Mod. A certain grated material is handled differently, bullets go through it in Garry's Mod, but not in Counter-Strike: Source. The tool provides instructions for correcting this by clicking the 'Help' link. Technical details: The tool parses the brush lump of a map and removes the CONTENTS_GRATE attribute from any surface with that attribute. More details can be found ([here](https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Brush_and_brushside).
-
-
-#### Downloads ####
-Pre-patched Map Pack [Part 1](http://www.solidfiles.com/d/3c95902d0b/) [2](http://www.solidfiles.com/d/d0d880550c/) [3](http://www.solidfiles.com/d/8c31ceb6c4/) [4](http://www.solidfiles.com/d/e3f4ff9d50/) [5](http://www.solidfiles.com/d/8e3f3c583f/) [6](http://www.solidfiles.com/d/e55e522ec0/)
-
-
 #### Installation ####
-
 Place the 'ZombieEscape' folder inside 'garrysmod/gamemodes'
+
+
+#### Maps ####
+Additional maps can be found on [gamebanana.com](http://gamebanana.com/csszm/maps/cats/2471)
+Also be sure to check out any CS:S Zombie Escape servers for any popular maps.
 
 
 #### Links ####
 * [Facepunch thread](http://www.facepunch.com/showthread.php?t=1187359)
 * [Zombie Escape Wiki](http://zombieescape.wikia.com/wiki/Zombie_Escape_Wiki) (for CS:S)
+* [Maps](http://gamebanana.com/csszm/maps/cats/2471)
