@@ -58,9 +58,13 @@ function GM:PlayerInitialSpawn(ply)
 
 	ply:GoTeam(TEAM_SPECTATOR)
 
-	net.Start("WeaponsData")
-		net.WriteTable(self.Weapons)
-	net.Send(ply)
+	timer.Simple(0.1, function()
+		if IsValid(ply) then
+			net.Start("WeaponsData")
+				net.WriteTable(self.Weapons)
+			net.Send(ply)
+		end
+	end)
 
 	if self:HasRoundStarted() then
 		ply:SendMessage("Press F3 to begin playing as a zombie.")
@@ -75,7 +79,9 @@ function GM:PlayerSpawn(ply)
 
 	ply:RemoveAllItems() -- remove ammo and weapons
 	ply:SetJumpPower(200)
-	-- ply:SetCollisionGroup(COLLISION_GROUP_PLAYER)
+
+	-- Set collision rules
+	ply:SetNoCollideWithTeammates(true)
 
 	if !ply:IsSpectator() then
 

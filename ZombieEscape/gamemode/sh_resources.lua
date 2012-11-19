@@ -34,8 +34,8 @@ GM.ZombieDeath = {
 
 GM.ZombieModels = {
 	Model("models/player/zombie_classic.mdl"),
-	Model("models/player/charple01.mdl"),
-	Model("models/player/zombiefast.mdl")
+	Model("models/player/corpse1.mdl"),
+	Model("models/player/zombie_fast.mdl")
 }
 
 if SERVER then
