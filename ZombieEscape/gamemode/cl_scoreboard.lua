@@ -130,7 +130,7 @@ local PLAYER_LINE =
 		-- so if we set the z order according to kills they'll be ordered that way!
 		-- Careful though, it's a signed short internally, so needs to range between -32,768k and +32,767
 		--
-		self:SetZPos( (self.NumKills * -50) + self.NumDeaths )
+		self:SetZPos( (self.Player:Team() * -100) + (self.NumKills * -50) + self.NumDeaths )
 
 	end,
 
@@ -221,18 +221,7 @@ local SCORE_BOARD =
 
 			self.Scores:AddItem( pl.ScoreEntry )
 
-		end		
-
-		table.sort( self.Scores.Items, function( a, b )
-			if a.Player:Team() == b.Player:Team() then
-				if a.Player:Frags() > b.Player:Frags() then
-					return true
-				else
-					return a.Player:UserID() > b.Player:UserID()
-				end
-			end
-			return a.Player:Team() > b.Player:Team()
-		end )
+		end
 
 	end,
 }

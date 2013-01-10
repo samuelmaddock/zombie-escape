@@ -431,7 +431,7 @@ function PlayerMeta:FireCSBullet(
 			else
 				if !tr.HitSky and !tr.HitNoDraw then
 					local ent = tr.Entity
-					if !(IsValid(ent) and ent:IsPlayer() and ent:Team() == LocalPlayer():Team()) then
+					if !(IsValid(ent) and ent:IsPlayer() and ent:Team() == self:Team()) then
 						ImpactTrace(self, tr, iDamageType)
 					end
 				end
@@ -532,9 +532,9 @@ end
 function GM:ShouldCollide( ent1, ent2 )
 
 	-- Players of opposite teams shouldn't collide
-	if ent1:IsPlayer() and ent2:IsPlayer() and ent1:Team() == ent2:Team() then
+	/*if ent1:IsPlayer() and ent2:IsPlayer() and ent1:Team() == ent2:Team() then
 		return false
-	end
+	end*/
 
 	-- CS:S Collision Rules
 	local collisionGroup0 = ent1:GetCollisionGroup()
@@ -562,4 +562,10 @@ function GM:ShouldCollide( ent1, ent2 )
 
 	return self.BaseClass:ShouldCollide( ent1, ent2 )
 
+end
+
+function GM:OnEntityCreated(ent)
+	if ent:IsPlayer() then
+		ent:SetCustomCollisionCheck(true)
+	end
 end
