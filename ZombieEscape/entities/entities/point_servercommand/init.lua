@@ -81,9 +81,11 @@ end
 
 function ENT:AcceptInput(name, activator, caller, data)
 
-    if caller:IsPlayer() || IgnoreCommand(data) then return end
+    if caller:IsPlayer() || IgnoreCommand(data) then return false end
 	
-    if name == "Command" then
+    name = string.lower(name)
+
+    if name == "command" then
 	
 		if string.find(string.lower(data), "say") then
 
@@ -99,5 +101,7 @@ function ENT:AcceptInput(name, activator, caller, data)
 		end
 		
     end
+
+	return true
 	
 end

@@ -28,13 +28,13 @@ GM:AddBoss("Alien", "fboss_ee_model", "fboss_ee_math")			-- post-endboss minibos
 --[[-------------------------------------------------------------------
 		Map Fixes
 ---------------------------------------------------------------------]]
-hook.Add("OnRoundChange", "RemoveWaterSplashes", function()
+hook.Add( "OnRoundChange", "RemoveWaterSplashes", function()
 	-- Remove shitty entities that cause water splashing
 	for _, v in pairs( ents.FindByName("splash_*") ) do
 		if IsValid(v) then
 			v:Remove()
 		end
 	end
-end)
+end )
 
 GM:IgnoreMessages({"TYPE MAT_COLORCORRECTION 1 IN CONSOLE FOR BETTER VISUALS"})

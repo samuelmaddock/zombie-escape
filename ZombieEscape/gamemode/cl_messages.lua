@@ -132,6 +132,8 @@ function AddMapMessage()
 	msg.a		= 200
 	table.insert( MapMessages, msg )
 	
-	Msg( "[ZE] " .. msg.text .. "\n" )
+	if !game.SinglePlayer() then
+		MsgC( Color(147,255,25), "[ZE] ", msg.text, "\n" )
+	end
 end
 net.Receive( "MapMessage", AddMapMessage )

@@ -175,7 +175,7 @@ function GM:RoundStart()
 		end
 	end
 	
-	gamemode.Call("OnRoundChange")
+	hook.Call( "OnRoundChange", self )
 
 	self:SendWinner(0,true) -- Reset winner
 	

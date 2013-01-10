@@ -108,6 +108,8 @@ function ENT:AcceptInput( name, activator, caller, data )
 		self.m_bDisabled = false
 	elseif name == "disable" then
 		self.m_bDisabled = true	
+	else
+		return false
 	end
 	
 	-- Setup initial value
@@ -129,6 +131,8 @@ function ENT:AcceptInput( name, activator, caller, data )
 		self.m_InitialValue = self:GetOutValue()
 		hook.Call("MathCounterUpdate", GAMEMODE, self, activator)
 	end*/
+
+	return true
 	
 end
 
@@ -177,4 +181,24 @@ end
 
 function ENT:GetOutValue()
 	return self.m_OutValue
+end
+
+function ENT:UpdateTransmitState()
+	return TRANSMIT_NEVER
+end
+
+function ENT:StoreOutput(name, info)
+	local rawData = string.Explode(",",info);
+	
+	local Output = {}
+	Output.entities = rawData[1] or ""
+	Output.input = rawData[2] or ""
+	Output.param = rawData[3] or ""
+	Output.delay = tonumber(rawData[4]) or 0
+	Output.times = tonumber(rawData[5]) or -1
+	
+	self.Outputs = self.Outputs or {}
+	self.Outputs[name] = self.Outputs[name] or {}
+	
+	table.insert(self.Outputs[name], 1, Output);
 end

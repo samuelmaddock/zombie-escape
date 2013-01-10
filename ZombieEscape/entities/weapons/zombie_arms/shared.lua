@@ -18,7 +18,7 @@ end
 
 
 SWEP.ViewModel		= Model("models/weapons/v_zombiearms.mdl")
-SWEP.WorldModel		= Model("models/weapons/w_knife_t.mdl")
+SWEP.WorldModel		= Model("models/weapons/w_knife_ct.mdl")
 SWEP.ViewModelFlip	= false
 
 SWEP.HoldType		= "knife"

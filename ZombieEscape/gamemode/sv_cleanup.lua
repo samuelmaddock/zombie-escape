@@ -47,14 +47,14 @@ function GM:CleanUpMap()
 	game.CleanUpMap( false, {"func_brush","env_global"} )
 	
 	-- Remove unwanted entities
-	for _, class in pairs(EntitiesToRemove) do
+	/*for _, class in pairs(EntitiesToRemove) do
 		for _, ent in pairs(ents.FindByClass(class)) do
 			 -- ents with targetnames are typically important
 			if IsValid(ent) and !ent.OnPlayerPickup and !ent:HasTargetName() then
 				ent:Remove()
 			end
 		end
-	end
+	end*/
 
 	self:CreateTriggers()
 
