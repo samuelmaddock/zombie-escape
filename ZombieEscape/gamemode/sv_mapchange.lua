@@ -39,7 +39,7 @@ function GM:ChangeMap()
 
 	if map then
 
-		gamemode.Call("OnChangeMap", map)
+		hook.Call( "OnChangeMap", self, map )
 
 		self:SendMapMessage("Changing map to '"..tostring(map).."' in 10 seconds")
 

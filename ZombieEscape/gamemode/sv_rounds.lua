@@ -83,7 +83,7 @@ function GM:DeathCheck()
 
 			if WinnerTeam then
 				self:SendWinner(WinnerTeam,false)
-				gamemode.Call("OnTeamWin", WinnerTeam)
+				hook.Call( "OnTeamWin", self, WinnerTeam )
 			end
 
 		end
@@ -115,7 +115,7 @@ function GM:RoundRestart(CallBack)
 	
 	if self:GetRound() >= self:GetMaxRounds() then
 
-		gamemode.Call("ChangeMap")
+		hook.Call( "ChangeMap", self )
 
 	else
 
@@ -168,14 +168,14 @@ function GM:RoundStart()
 
 	self:CleanUpMap()
 	
+	hook.Call( "OnRoundChange", self )
+	
 	-- Spawn all non-spectators as humans
 	for _, ply in pairs(player.GetAll()) do
 		if IsValid(ply) then
 			ply:GoTeam(TEAM_HUMANS)
 		end
 	end
-	
-	hook.Call( "OnRoundChange", self )
 
 	self:SendWinner(0,true) -- Reset winner
 	
@@ -191,7 +191,7 @@ function GM:RoundStart()
 	if !game.SinglePlayer() then
 		-- Random infect
 		timer.Simple(Time, function()
-			math.randomseed(os.time())
+			math.randomseed( os.time() * #player.GetAll() / game.MaxPlayers() )
 			self:RandomInfect()
 			self.InfectionStarted = true
 		end)

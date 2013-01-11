@@ -29,12 +29,21 @@ GM:AddBoss("Alien", "fboss_ee_model", "fboss_ee_math")			-- post-endboss minibos
 		Map Fixes
 ---------------------------------------------------------------------]]
 hook.Add( "OnRoundChange", "RemoveWaterSplashes", function()
+
 	-- Remove shitty entities that cause water splashing
 	for _, v in pairs( ents.FindByName("splash_*") ) do
 		if IsValid(v) then
 			v:Remove()
 		end
 	end
+
+	-- Remove dev room spawn
+	for _, ent in pairs( ents.FindInSphere( Vector(-2048,3072,2496), 64 ) ) do
+		if IsValid(ent) and ent:GetClass() == "info_player_start" then
+			ent:Remove()
+		end
+	end
+
 end )
 
 GM:IgnoreMessages({"TYPE MAT_COLORCORRECTION 1 IN CONSOLE FOR BETTER VISUALS"})

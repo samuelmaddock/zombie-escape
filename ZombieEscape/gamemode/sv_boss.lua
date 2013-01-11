@@ -237,7 +237,7 @@ function GM:BossDeath(ent, activator)
 			Msg("\tActivator: " .. tostring(activator) .. "\n")
 		end
 
-		gamemode.Call("OnBossDefeated", boss, activator)
+		hook.Call( "OnBossDefeated", self, boss, activator )
 
 	end
 

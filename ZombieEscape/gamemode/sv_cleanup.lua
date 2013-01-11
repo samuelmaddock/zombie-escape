@@ -38,23 +38,27 @@ local function CorrectLasers()
 	end
 end
 
-local EntitiesToRemove = { /*"player_speedmod","game_player_equip","weapon_*",*/ "prop_ragdoll" }
-
+local SaveEntities = { "func_brush", "env_global" }
+local EntitiesToRemove = { "game_player_equip", "prop_ragdoll", "weapon_*" }
 function GM:CleanUpMap()
 	
 	-- Zombie Escape maps save values in several
 	-- entities, commonly used for difficulty levels
-	game.CleanUpMap( false, {"func_brush","env_global"} )
+	game.CleanUpMap( false, SaveEntities )
 	
 	-- Remove unwanted entities
-	/*for _, class in pairs(EntitiesToRemove) do
-		for _, ent in pairs(ents.FindByClass(class)) do
+	for _, class in pairs( EntitiesToRemove ) do
+
+		for _, ent in pairs( ents.FindByClass(class) ) do
+
 			 -- ents with targetnames are typically important
-			if IsValid(ent) and !ent.OnPlayerPickup and !ent:HasTargetName() then
+			if IsValid(ent) and !ent:HasTargetName() and !ent.OnPlayerPickup then
 				ent:Remove()
 			end
+
 		end
-	end*/
+
+	end
 
 	self:CreateTriggers()
 

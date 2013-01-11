@@ -217,7 +217,7 @@ function GM:PlayerShouldTakeDamage(ply, attacker, inflictor)
 				umsg.Entity( attacker )
 			umsg.End()
 			
-			gamemode.Call("OnInfected", ply, attacker)
+			hook.Call( "OnInfected", self, ply, attacker )
 
 			return false
 			

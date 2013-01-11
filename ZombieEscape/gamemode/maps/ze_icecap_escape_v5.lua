@@ -3,7 +3,7 @@
 ---------------------------------------------------------------------]]
 hook.Add("PlayerUse", "LaunchNuke", function(ply, ent)
 	if !ply:IsZombie() && ent.bNukeBtn && !ent:IsPressed() then
-		gamemode.Call("OnNukeLaunched", ply)
+		hook.Call( "OnNukeLaunched", GAMEMODE, ply )
 	end
 end)
 
