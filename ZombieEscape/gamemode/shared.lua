@@ -4,6 +4,11 @@ GM.Website  = "http://samuelmaddock.com/"
 
 DeriveGamemode('base')
 
+include('player_class/player_ze.lua')
+include('player_class/player_human.lua')
+include('player_class/player_zombie.lua')
+include('player_class/player_spectator.lua')
+include('animations.lua')
 include('sh_meta.lua')
 include('sh_resources.lua')
 include('sh_weapon.lua')
@@ -18,7 +23,7 @@ TEAM_SPECTATOR = 1
 TEAM_ZOMBIES = 2
 TEAM_HUMANS = 3
 
-TEAM_BOTH = {TEAM_ZOMBIES, TEAM_HUMANS}
+TEAM_BOTH = { TEAM_ZOMBIES, TEAM_HUMANS }
 
 function GM:CreateTeams()
 	

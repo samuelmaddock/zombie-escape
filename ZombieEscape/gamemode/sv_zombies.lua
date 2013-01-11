@@ -6,37 +6,6 @@ GM.CVars.ZMotherKnockback = CreateConVar( "ze_zmotherknockback", '6.0', {FCVAR_R
 GM.CVars.ZombieRatio 	= CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "Ratio of zombies to spawn." )
 GM.CVars.ZHealthRegen   = CreateConVar( "ze_zhealth_regen", 1, {FCVAR_REPLICATED}, "Whether or not zombie health should regenerate." )
 
-function GM:ZombieSpawn( ply )
-
-	local mdl = table.Random(self.ZombieModels)
-
-	 -- Map specific zombie models
-	local override = self.PlayerModelOverride[TEAM_ZOMBIES]
-	mdl = override and table.Random(override) or mdl
-	
-	ply:SetModel(mdl)
-	ply:SetFOV(110, 3)
-
-	local scale = math.Clamp( 1 - (#team.GetPlayers(TEAM_BOTH) / self.PlayerScale), 0, 1 )
-	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
-
-	local health = self.CVars.ZHealthMin:GetInt() + self.CVars.ZHealthMax:GetInt()*scale
-	ply:SetHealth(health)
-	ply:SetMaxHealth(health)
-
-	ply:SetSpeed(self.CVars.ZSpeed:GetInt())
-	
-	ply:Flashlight(false)
-	ply:StripWeapons() -- zombies can't use guns, silly!
-	ply:Give("zombie_arms")
-
-	ply:ZScream()
-	
-	ply.NextHealthRegen = CurTime() + 5
-	ply.NextMoan = CurTime() + math.random(25,45)
-
-end
-
 GM.PreviousZombies = {}
 function GM:RandomInfect()
 	
@@ -163,10 +132,10 @@ hook.Add("Think", "ZombieThink", function()
 			end
 			
 			-- Weapon check
-			if !ply:HasWeapon("zombie_arms") then
+			/*if !ply:HasWeapon("zombie_arms") then
 				ply:Give("zombie_arms")
 				ply:SelectWeapon("zombie_arms")
-			end
+			end*/
 
 			-- Flashlight should always be disabled
 			if ply:FlashlightIsOn() then

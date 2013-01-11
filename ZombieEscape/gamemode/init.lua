@@ -1,3 +1,4 @@
+AddCSLuaFile("animations.lua")
 AddCSLuaFile("css.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile('cl_bhop.lua')
@@ -67,7 +68,7 @@ function GM:PlayerInitialSpawn(ply)
 	end)
 
 	if self:HasRoundStarted() then
-		ply:SendMessage("Press F3 to begin playing as a zombie.")
+		ply:SendMessage( "Press F3 to begin playing as a zombie." )
 	end
 end
 
@@ -77,34 +78,22 @@ end
 
 function GM:PlayerSpawn(ply)
 
-	ply:RemoveAllItems() -- remove ammo and weapons
-	ply:SetJumpPower(200)
-
-	-- Set collision rules
-	ply:SetNoCollideWithTeammates(true)
-
 	if !ply:IsSpectator() then
 
 		ply:UnSpectate()
 
 		if ply:IsZombie() then
 
-			self:ZombieSpawn(ply)
-
 			if !self.RoundCanEnd then
 				self.RoundCanEnd = true
 			end
 
-		else -- is human
-
-			self:HumanSpawn(ply)
-
 		end
 
-	else
-		ply:Spectate(OBS_MODE_ROAMING)
-		ply:SetMoveType(MOVETYPE_OBSERVER)
 	end
+
+	player_manager.OnPlayerSpawn( ply )
+	player_manager.RunClass( ply, "Spawn" )
 
 	self:RoundChecks()
 
@@ -288,7 +277,7 @@ function GM:DoPlayerDeath(ply, attacker, DmgInfo)
 		ply.DiedOnRound = self:GetRound()
 	end
 	
-	ply:SetTeam(TEAM_SPECTATOR)
+	ply:GoTeam( TEAM_SPECTATOR, true )
 
 	self:RoundChecks()
 
@@ -298,7 +287,13 @@ end
 	Suicide is disabled
 ---------------------------------------------------------*/
 function GM:CanPlayerSuicide(ply)
+
+	if GetConVar("sv_cheats"):GetBool() then
+		return true
+	end
+
 	return ply:IsHuman() or ( ply:IsZombie() and !ply:IsMotherZombie() )
+
 end
 
 /*---------------------------------------------------------
@@ -309,6 +304,20 @@ function GM:PlayerUse(ply, ent)
 	return ply:Alive() and (ply:IsHuman() or ply:IsZombie())
 end
 
+--[[---------------------------------------------------------
+   Name: gamemode:PlayerNoClip( player, bool )
+   Desc: Player pressed the noclip key, return true if
+		  the player is allowed to noclip, false to block
+-----------------------------------------------------------]]
+function GM:PlayerNoClip( pl, on )
+	
+	-- Allow noclip if we're in single player
+	if ( game.SinglePlayer() ) then return true end
+	if GetConVar("sv_cheats"):GetBool() then return true end
+	
+	return false
+	
+end
 
 /*---------------------------------------------------------
 	Key Value Fixes
@@ -375,7 +384,7 @@ function GM:EntityTakeDamage( ent, dmginfo )
 			attacker.GrenadeOwner = true -- fix for zombies throwing grenade prior to infection
 			
 			-- Human has grenaded a zombie
-			local dmgblast = bit.band(DMG_BLAST, dmginfo:GetDamageType()) == DMG_BLAST
+			local dmgblast = bit.band(DMG_BLAST, dmginfo:GetDamageType()) != 0
 			if ent:IsZombie() and attacker:IsPlayer() and !attacker:IsZombie() and dmgblast then
 				ent:Ignite(math.random(3, 5), 0)
 			end

@@ -34,6 +34,7 @@ function GM:HasRoundStarted()
 end
 
 function GM:RoundChecks(CallBack)
+	if game.SinglePlayer() then return end
 	timer.Simple(0.25, function() GAMEMODE:DeathCheck() end)
 	timer.Simple(0.5, function() GAMEMODE:RoundRestart() end)
 	if CallBack then

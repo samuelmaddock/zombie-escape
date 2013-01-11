@@ -1,53 +1,40 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "player_default" )
-
-if ( CLIENT ) then
-
-	CreateConVar( "cl_playercolor", "0.24 0.34 0.41", { FCVAR_ARCHIVE, FCVAR_USERINFO, FCVAR_DONTRECORD }, "The value is a Vector - so between 0-1 - not between 0-255" )
-	-- CreateConVar( "cl_weaponcolor", "0.30 1.80 2.10", { FCVAR_ARCHIVE, FCVAR_USERINFO, FCVAR_DONTRECORD }, "The value is a Vector - so between 0-1 - not between 0-255" )
-
-end
 
 local PLAYER = {}
 
-PLAYER.DisplayName			= "Lobby Class"
-
-PLAYER.WalkSpeed 			= 200		-- How fast to move when not running
-PLAYER.RunSpeed				= 300		-- How fast to move when running
-PLAYER.CrouchedWalkSpeed 	= 0.2		-- Multiply move speed by this when crouching
-PLAYER.DuckSpeed			= 0.3		-- How fast to go from not ducking, to ducking
-PLAYER.UnDuckSpeed			= 0.3		-- How fast to go from ducking, to not ducking
-PLAYER.JumpPower			= 200		-- How powerful our jump should be
-PLAYER.CanUseFlashlight     = true		-- Can we use the flashlight
-PLAYER.MaxHealth			= 100		-- Max health we can have
-PLAYER.StartHealth			= 100		-- How much health we start with
-PLAYER.StartArmor			= 0			-- How much armour we start with
-PLAYER.DropWeaponOnDie		= false		-- Do we drop our weapon when we die
-PLAYER.TeammateNoCollide 	= true		-- Do we collide with teammates or run straight through them
-PLAYER.AvoidPlayers			= true		-- Automatically swerves around other players
-
-
---
--- Set up the network table accessors
---
-function PLAYER:SetupDataTables()
-	self.Player:DTVar("Int", 0, "Location")
-end
-
---
--- Called when the class object is created (shared)
---
-function PLAYER:Init()
-
-end
+PLAYER.DisplayName			= "Zombie"
 
 --
 -- Called serverside only when the player spawns
 --
 function PLAYER:Spawn()
 
-	local col = self.Player:GetInfo( "cl_playercolor" )
-	self.Player:SetPlayerColor( Vector( col ) )
+	local mdl = table.Random(GAMEMODE.ZombieModels)
+
+	 -- Map specific zombie models
+	local override = GAMEMODE.PlayerModelOverride[TEAM_ZOMBIES]
+	mdl = override and table.Random(override) or mdl
+	
+	self.Player:SetModel(mdl)
+	self.Player:SetFOV(110, 3)
+
+	local scale = math.Clamp( 1 - (#team.GetPlayers(TEAM_BOTH) / GAMEMODE.PlayerScale), 0, 1 )
+	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
+
+	local health = GAMEMODE.CVars.ZHealthMin:GetInt() + GAMEMODE.CVars.ZHealthMax:GetInt()*scale
+	self.Player:SetHealth(health)
+	self.Player:SetMaxHealth(health)
+
+	self.Player:SetSpeed( GAMEMODE.CVars.ZSpeed:GetInt() )
+	
+	self.Player:Flashlight(false)
+	self.Player:StripWeapons() -- zombies can't use guns, silly!
+	self.Player:Give("zombie_arms")
+
+	self.Player:ZScream()
+	
+	self.Player.NextHealthRegen = CurTime() + 5
+	self.Player.NextMoan = CurTime() + math.random(25,45)
 
 end
 
@@ -57,24 +44,59 @@ end
 function PLAYER:Loadout()
 
 	self.Player:RemoveAllAmmo()
-
-	if game.SinglePlayer() then
-		-- self.Player:Give( "weapon_physgun" )
-	end
-
 	self.Player:SwitchToDefaultWeapon()
 
 end
 
--- Clientside only
-function PLAYER:CalcView( view ) end		-- Setup the player's view
-function PLAYER:CreateMove( cmd ) end		-- Creates the user command on the client
-function PLAYER:ShouldDrawLocal() end		-- Return true if we should draw the local player
+function PLAYER:CalcMainActivity( velocity )
 
--- Shared
-function PLAYER:StartMove( cmd, mv ) end	-- Copies from the user command to the move
-function PLAYER:Move( mv ) end				-- Runs the move (can run multiple times for the same client)
-function PLAYER:FinishMove( mv ) end		-- Copy the results of the move back to the Player
+	self.Player.CalcIdeal = ACT_MP_STAND_IDLE
+	self.Player.CalcSeqOverride = self.Player:LookupSequence( "zombie_idle" )
 
+	local len2d = velocity:Length2D()
+	if ( len2d > 200 ) then
+		self.Player.CalcSeqOverride = self.Player:LookupSequence( "zombie_run" )
+	elseif ( len2d > 0.5 ) then
+		self.Player.CalcSeqOverride = self.Player:LookupSequence( "zombie_walk_03" )
+	end
 
-player_manager.RegisterClass( "player_lobby", PLAYER, nil )
+	return self.Player.CalcIdeal, self.Player.CalcSeqOverride
+
+end
+
+function PLAYER:DoAnimationEvent( event, data )
+
+	if event == PLAYERANIMEVENT_ATTACK_PRIMARY then
+	
+		self.Player:AnimRestartGesture( GESTURE_SLOT_CUSTOM, ACT_GMOD_GESTURE_RANGE_ZOMBIE, true )
+
+		return ACT_VM_PRIMARYATTACK
+	
+	elseif event == PLAYERANIMEVENT_ATTACK_SECONDARY then
+	
+		-- there is no gesture, so just fire off the VM event
+		return ACT_VM_SECONDARYATTACK
+		
+	elseif event == PLAYERANIMEVENT_JUMP then
+	
+		self.Player.m_bJumping = true
+		self.Player.m_bFirstJumpFrame = true
+		self.Player.m_flJumpStartTime = CurTime()
+		
+		self.Player:AnimRestartMainSequence()
+		
+		return ACT_INVALID
+
+	elseif event >= PLAYERANIMEVENT_FLINCH_CHEST and event <= PLAYERANIMEVENT_FLINCH_RIGHTLEG then
+
+		self.Player:AnimRestartGesture( GESTURE_SLOT_FLINCH, ACT_FLINCH_PHYSICS, true )
+
+		return ACT_INVALID
+
+	end
+
+	return nil
+
+end
+
+player_manager.RegisterClass( "player_zombie", PLAYER, "player_ze" )

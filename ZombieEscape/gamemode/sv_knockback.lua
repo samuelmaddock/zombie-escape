@@ -34,6 +34,15 @@ GM.Multipliers = {
 	Zombie Knockback effects
 ---------------------------------------------------------*/
 
+local FlinchEvent = {
+	[HITGROUP_HEAD] = PLAYERANIMEVENT_FLINCH_HEAD,
+	[HITGROUP_CHEST] = PLAYERANIMEVENT_FLINCH_CHEST,
+	[HITGROUP_LEFTARM] = PLAYERANIMEVENT_FLINCH_LEFTARM,
+	[HITGROUP_LEFTLEG] = PLAYERANIMEVENT_FLINCH_LEFTLEG,
+	[HITGROUP_RIGHTARM] = PLAYERANIMEVENT_FLINCH_RIGHTARM,
+	[HITGROUP_RIGHTLEG] = PLAYERANIMEVENT_FLINCH_RIGHTLEG,
+}
+
 /*
 	First hook called before taking damage
 */
@@ -58,8 +67,9 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	 end
 
 	-- Zombie Knockback implementation
-	local bPassesDmgFilter = bit.band(dmginfo:GetDamageType(), self.DmgFilter) == dmginfo:GetDamageType()
+	local bPassesDmgFilter = bit.band(dmginfo:GetDamageType(), self.DmgFilter) != 0
 	local inflictor = dmginfo:GetInflictor()
+
 	if IsValid(ply) && ply:IsPlayer() && IsValid(inflictor) && inflictor:IsPlayer() && ply:IsZombie() && bPassesDmgFilter then
 	
 		-- Store some info for GM.PlayerHurt
@@ -74,7 +84,10 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 		
 		-- Hack to disable default pushback effects
 		ply:SetMoveType(MOVETYPE_NONE)
-		
+
+		-- Pushback animations
+		self:DoAnimationEvent( ply, FlinchEvent[hitgroup] or PLAYERANIMEVENT_FLINCH_CHEST, 0 )
+
 	else
 		ply.LastDmg = nil
 	end

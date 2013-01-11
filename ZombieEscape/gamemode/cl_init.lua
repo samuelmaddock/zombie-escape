@@ -65,23 +65,6 @@ function GM:HUDShouldDraw(name)
 end
 
 /*---------------------------------------------------------
-	CalcView
-		Firstperson on death
----------------------------------------------------------*/
-function GM:CalcView( ply, origin, angle, fov )
-
-	fov = LocalPlayer():IsZombie() and self.CVars.ZombieFOV:GetInt() or fov
-
-	local ragdoll = ply:GetRagdollEntity() 
-	if IsValid( ragdoll ) then
-		local att = ragdoll:GetAttachment( ragdoll:LookupAttachment("eyes") ) 
- 		return self.BaseClass:CalcView( ply, att.Pos, att.Ang, fov ) 
- 	end
-
-	return self.BaseClass:CalcView( ply, origin, angle, fov )
-end
-
-/*---------------------------------------------------------
 	Player Transparency
 		Distance opacity opacity
 ---------------------------------------------------------*/

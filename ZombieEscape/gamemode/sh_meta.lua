@@ -53,7 +53,6 @@ if SERVER then
 		
 		self.bMotherZombie = false
 		self:GoTeam(TEAM_ZOMBIES, true) -- respawning causes stuck issues
-		GAMEMODE:ZombieSpawn(self)
 		
 		GAMEMODE:RoundChecks() -- check for winner
 
@@ -81,11 +80,22 @@ if SERVER then
 			self:SetTeam(teamId)
 		end
 
+		if teamId == TEAM_SPECTATOR then
+			player_manager.SetPlayerClass( self, "player_spectator" )
+		elseif teamId == TEAM_ZOMBIES then
+			player_manager.SetPlayerClass( self, "player_zombie" )
+		elseif teamId == TEAM_HUMANS then
+			player_manager.SetPlayerClass( self, "player_human" )
+		end
+
 		if !bNoRespawn then
 
 			if IsValid(self:GetPickupEntity()) then
 				self:DropPickupEntity()
 			end
+
+			player_manager.OnPlayerSpawn( self )
+			player_manager.RunClass( self, "Spawn" )
 
 			self:Spawn()
 
@@ -170,6 +180,8 @@ if SERVER then
 		if !IsValid(ent) then return end
 
 		ent:OnDrop()
+
+		self:AnimRestartGesture( GESTURE_SLOT_CUSTOM, ACT_GMOD_GESTURE_ITEM_DROP, true )
 
 		self.PickupEntity = nil
 
