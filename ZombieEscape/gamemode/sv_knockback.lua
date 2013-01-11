@@ -75,11 +75,13 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 		-- Store some info for GM.PlayerHurt
 		ply.OldVelocity = ply:GetVelocity()
 		
+		ply.LastDmg = {}
+		ply.LastDmg.Hitgroup = hitgroup
+		ply.LastDmg.Pos = inflictor:GetPos()
+
 		local weap = inflictor:GetActiveWeapon()
 		if IsValid(weap) then
-			ply.LastDmg = { hitgroup, weap:GetClass(), inflictor:GetPos() }
-		else
-			ply.LastDmg = { hitgroup, "nil", inflictor:GetPos() }
+			ply.LastDmg.Weapon = weap:GetClass()
 		end
 		
 		-- Hack to disable default pushback effects
@@ -106,21 +108,16 @@ function GM:PlayerHurt( ply, attacker, healthleft, healthtaken )
 	
 		-- Reset movetype
 		ply:SetMoveType(MOVETYPE_WALK)
-		
-		-- Get multipliers
-		local hitgroupMult = self.Multipliers.Hitgroups[ply.LastDmg[1]]
-		hitgroupMult = hitgroupMult && hitgroupMult || 1.0
 
-		local weapMult = self.Multipliers.Weapons[ply.LastDmg[2]]
-		weapMult = weapMult and weapMult or 1.0
-		
-		ply.KnockbackMultiplier = ply.KnockbackMultiplier and ply.KnockbackMultiplier or 1.0
+		-- Get multipliers
+		local hitgroupMult = self.Multipliers.Hitgroups[ ply.LastDmg.Hitgroup ] or 1.0
+		local weapMult = self.Multipliers.Weapons[ ply.LastDmg.Weapon ] or 1.0
 
 		-- Knockback effects = (multiplier * weapon multiplier * hitgroup multiplier) * damage delt
-		local knockback = (ply.KnockbackMultiplier * weapMult * hitgroupMult) * healthtaken
+		local knockback = (ply:GetKnockbackMultiplier() * weapMult * hitgroupMult) * healthtaken
 
 		-- Apply force
-		local startvec = ply.LastDmg[3]
+		local startvec = ply.LastDmg.Pos
 		local endvec = ply:GetPos()
 		local vec = (endvec - startvec):GetNormal() * knockback
 		
