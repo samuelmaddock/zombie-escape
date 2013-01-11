@@ -94,9 +94,6 @@ if SERVER then
 				self:DropPickupEntity()
 			end
 
-			player_manager.OnPlayerSpawn( self )
-			player_manager.RunClass( self, "Spawn" )
-
 			self:Spawn()
 
 			timer.Simple(3, function()
@@ -106,6 +103,9 @@ if SERVER then
 			end)
 			
 		end
+
+		player_manager.OnPlayerSpawn( self )
+		player_manager.RunClass( self, "Spawn" )
 
 	end
 

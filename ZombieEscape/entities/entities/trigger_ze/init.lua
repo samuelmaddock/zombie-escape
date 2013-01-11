@@ -51,3 +51,7 @@ function ENT:StartTouch(ent)
 	end
 
 end
+
+function ENT:UpdateTransmitState()
+	return TRANSMIT_NEVER
+end

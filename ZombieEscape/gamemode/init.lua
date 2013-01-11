@@ -381,15 +381,19 @@ function GM:EntityTakeDamage( ent, dmginfo )
 		
 		-- Damage delt to player by grenade
 		if IsValid(attacker) and inflictor:GetClass() == "npc_grenade_frag" then
-			attacker.GrenadeOwner = true -- fix for zombies throwing grenade prior to infection
-			
+
+			-- fix for zombies throwing grenade prior to infection
+			if attacker:IsPlayer() then
+				inflictor:SetOwner(attacker)
+			end
+
 			-- Human has grenaded a zombie
 			local dmgblast = bit.band(DMG_BLAST, dmginfo:GetDamageType()) != 0
-			if ent:IsZombie() and attacker:IsPlayer() and !attacker:IsZombie() and dmgblast then
+			local owner = attacker:GetOwner()
+			if ent:IsZombie() and dmgblast and IsValid(owner) and owner:IsPlayer() and !owner:IsZombie() then
 				ent:Ignite(math.random(3, 5), 0)
 			end
-		else
-			attacker.GrenadeOwner = nil
+
 		end
 
 	else
