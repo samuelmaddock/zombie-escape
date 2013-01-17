@@ -58,7 +58,7 @@ end
 function PLAYER:CalcView( view )
 
 	if self.Player:IsZombie() then
-		view.fov = GAMEMODE.CVars.ZombieFOV:GetInt()
+		view.fov = CVars.ZombieFOV:GetInt()
 	end
 
 	local ragdoll = self.Player:GetRagdollEntity() 

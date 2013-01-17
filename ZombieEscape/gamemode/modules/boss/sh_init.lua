@@ -1,0 +1,1 @@
+CVars.BossDebug = CreateConVar( "ze_boss_debug", 0, {FCVAR_REPLICATED}, "Debug mode for finding boss entities." )

@@ -28,7 +28,7 @@ GM:AddBoss("Alien", "fboss_ee_model", "fboss_ee_math")			-- post-endboss minibos
 --[[-------------------------------------------------------------------
 		Map Fixes
 ---------------------------------------------------------------------]]
-hook.Add( "OnRoundChange", "RemoveWaterSplashes", function()
+hook.Add( "PostCleanUpMap", "RemoveWaterSplashes", function()
 
 	-- Remove shitty entities that cause water splashing
 	for _, v in pairs( ents.FindByName("splash_*") ) do

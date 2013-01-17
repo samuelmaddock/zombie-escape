@@ -9,6 +9,8 @@ PLAYER.DisplayName			= "Zombie"
 --
 function PLAYER:Spawn()
 
+	self.Player:RemoveAllItems()
+
 	local mdl = table.Random(GAMEMODE.ZombieModels)
 
 	 -- Map specific zombie models
@@ -21,11 +23,11 @@ function PLAYER:Spawn()
 	local scale = math.Clamp( 1 - (#team.GetPlayers(TEAM_BOTH) / GAMEMODE.PlayerScale), 0, 1 )
 	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
 
-	local health = GAMEMODE.CVars.ZHealthMin:GetInt() + GAMEMODE.CVars.ZHealthMax:GetInt()*scale
+	local health = CVars.ZHealthMin:GetInt() + CVars.ZHealthMax:GetInt()*scale
 	self.Player:SetHealth(health)
 	self.Player:SetMaxHealth(health)
 
-	self.Player:SetSpeed( GAMEMODE.CVars.ZSpeed:GetInt() )
+	self.Player:SetSpeed( CVars.ZSpeed:GetInt() )
 	
 	self.Player:Flashlight(false)
 	self.Player:StripWeapons() -- zombies can't use guns, silly!

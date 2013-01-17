@@ -8,22 +8,21 @@ include('player_class/player_ze.lua')
 include('player_class/player_human.lua')
 include('player_class/player_zombie.lua')
 include('player_class/player_spectator.lua')
+
 include('animations.lua')
 include('sh_meta.lua')
-include('sh_resources.lua')
-include('sh_weapon.lua')
-include('team.lua')
-include('weapons.lua')
-include('css.lua')
+include('sh_load.lua')
 
-GM.CVars = {}
-GM.CVars.BossDebug = CreateConVar( "ze_boss_debug", 0, {FCVAR_REPLICATED}, "Debug mode for finding boss entities." )
+CVars = {}
 
 TEAM_SPECTATOR = 1
 TEAM_ZOMBIES = 2
 TEAM_HUMANS = 3
 
 TEAM_BOTH = { TEAM_ZOMBIES, TEAM_HUMANS }
+
+Loader.Load( "extensions" )
+Loader.Load( "modules" )
 
 function GM:CreateTeams()
 	

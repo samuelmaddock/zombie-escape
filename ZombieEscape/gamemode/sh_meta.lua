@@ -40,38 +40,6 @@ end
 
 if SERVER then
 
-	util.AddNetworkString("SelectWeapons")
-	util.AddNetworkString("CloseWeaponSelection")
-
-	function PlayerMeta:Zombify()
-		
-		-- Zombies shouldn't be holding ZE map/weapon pickups
-		local pickup = self:GetPickupEntity()
-		if IsValid(pickup) then
-			pickup:Remove()
-		end
-		
-		self.bMotherZombie = false
-		self:GoTeam(TEAM_ZOMBIES, true) -- respawning causes stuck issues
-		
-		GAMEMODE:RoundChecks() -- check for winner
-
-	end
-
-	function PlayerMeta:ZScream()
-		self:EmitSound( GAMEMODE.ZombieScream )
-		self.LastScream = CurTime()
-	end
-
-	function PlayerMeta:ZMoan()
-		self:EmitRandomSound(GAMEMODE.ZombieMoan)
-		self.NextMoan = CurTime() + math.random(30,90)
-	end
-
-	function PlayerMeta:IsMotherZombie()
-		return self:IsZombie() and self.bMotherZombie
-	end
-
 	function PlayerMeta:GoTeam(teamId, bNoRespawn)
 
 		if !teamId then return end
@@ -113,7 +81,7 @@ if SERVER then
 
 		self:StripAmmo()
 
-		local ammo = GAMEMODE.CVars.Ammo:GetInt()
+		local ammo = CVars.Ammo:GetInt()
 		for _, type in pairs(GAMEMODE.AmmoTypes) do
 			self:GiveAmmo(ammo, type, true)
 		end
@@ -129,70 +97,15 @@ if SERVER then
 		
 	end
 
-	function PlayerMeta:CanBuyWeapons()
-		return self:IsHuman() and ( ( !self.Weapons or !self.Weapons[1] or !self.Weapons[2] ) or
-			self.IsInBuyzone or !GAMEMODE.CVars.Buyzone:GetBool() )
-	end
-
-	function PlayerMeta:WeaponMenu()
-		net.Start("SelectWeapons")
-		net.Send(self)
-	end
-
-	function PlayerMeta:CloseWeaponMenu()
-		net.Start("CloseWeaponSelection")
-		net.Send(self)
-	end
-
 	function PlayerMeta:SetSpeed(speed, crouchSpeed)
+
 		self:SetWalkSpeed(speed)
 		self:SetRunSpeed(speed)
 
 		if crouchSpeed then
 			self:SetCrouchedWalkSpeed(crouchSpeed)
 		end
-	end
-
-	function PlayerMeta:SendMessage(str)
-		if !str then return end
-		net.Start("MapMessage")
-			net.WriteString(str)
-		net.Send(self)
-	end
-
-	function PlayerMeta:CanPickupEntity()
-		return self:IsHuman() and !IsValid(self.PickupEntity)
-	end
-
-	function PlayerMeta:GetPickupEntity()
-		return self.PickupEntity
-	end
-
-	function PlayerMeta:SetPickupEntity(ent)
-		self.PickupEntity = ent
-		ent.TeamOnPickup = self:Team()
-		ent:SetOwner(self)
-	end
-
-	function PlayerMeta:DropPickupEntity()
-
-		local ent = self:GetPickupEntity()
-		if !IsValid(ent) then return end
-
-		ent:OnDrop()
-
-		self:AnimRestartGesture( GESTURE_SLOT_CUSTOM, ACT_GMOD_GESTURE_ITEM_DROP, true )
-
-		self.PickupEntity = nil
-
-	end
-
-	function PlayerMeta:GetKnockbackMultiplier()
-		if self:IsZombie() then
-			return self:IsMotherZombie() and GAMEMODE.CVars.ZMotherKnockback:GetFloat() or GAMEMODE.CVars.ZKnockback:GetFloat()
-		else
-			return 0.0 -- shouldn't be affected by knockback if player isn't a zombie
-		end
+		
 	end
 
 end

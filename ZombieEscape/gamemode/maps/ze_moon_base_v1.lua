@@ -10,3 +10,16 @@ GM.PlayerModelOverride = {
 GM:IgnoreMessages({
 	"your sound"
 })
+
+--[[-------------------------------------------------------------------
+		Map Fixes
+---------------------------------------------------------------------]]
+hook.Add( "PostCleanUpMap", "RemoveWaterSplashes", function()
+
+	for _, v in pairs( ents.FindByName("volume_*") ) do
+		if IsValid(v) then
+			v:Remove()
+		end
+	end
+
+end )

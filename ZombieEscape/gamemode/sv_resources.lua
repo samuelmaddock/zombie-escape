@@ -1,0 +1,16 @@
+resource.AddFile("materials/models/weapons/v_zombiearms/zombie_classic_sheet.vmt")
+resource.AddFile("models/weapons/v_zombiearms.mdl")
+
+resource.AddFile("materials/models/player/aliendrone_v3/drone_arms.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/drone_head.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/drone_legs.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/drone_torso.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/slow_alien_blood.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/slow_alien_gebiss.vmt")
+resource.AddFile("materials/models/player/aliendrone_v3/slow_alien_schwanz.vmt")
+resource.AddFile("models/player/aliendrone.mdl")
+
+resource.AddFile("materials/models/player/spacesuit/glove_d.vmt")
+resource.AddFile("materials/models/player/spacesuit/helmet_d.vmt")
+resource.AddFile("materials/models/player/spacesuit/outfitm_d.vmt")
+resource.AddFile("models/player/spacesuit.mdl")

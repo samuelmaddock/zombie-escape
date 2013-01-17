@@ -3,6 +3,7 @@ AddCSLuaFile()
 local PLAYER = {}
 
 PLAYER.DisplayName			= "Human"
+PLAYER.StartArmor			= 100
 
 --
 -- Called serverside only when the player spawns
@@ -13,7 +14,9 @@ function PLAYER:Spawn()
 	local col = self.Player:GetInfo( "cl_playercolor" )
 	self.Player:SetPlayerColor( Vector( col ) )*/
 
-	self.Player:SetSpeed( GAMEMODE.CVars.HumanSpeed:GetInt() )
+	self.Player:RemoveAllItems()
+
+	self.Player:SetSpeed( CVars.HumanSpeed:GetInt() )
 
 	-- Set player to random citizen model
 	local mdl = player_manager.TranslatePlayerModel( table.Random(GAMEMODE.ValidHumans) )
