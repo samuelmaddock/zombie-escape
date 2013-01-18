@@ -132,8 +132,9 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 			end
 
 			attacker:AddFrags(1)
-
 			ply:EmitRandomSound(self.ZombieDeath)
+
+			hook.Call( "OnHumanKilledZombie", self, ply, attacker )
 
 		end
 

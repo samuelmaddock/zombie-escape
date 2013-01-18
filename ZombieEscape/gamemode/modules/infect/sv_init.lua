@@ -243,7 +243,8 @@ hook.Add( "EntityTakeDamage", "RelayDamage", function( ent, dmginfo )
 			local dmgblast = bit.band(DMG_BLAST, dmginfo:GetDamageType()) != 0
 			local owner = attacker:GetOwner()
 			if ent:IsZombie() and dmgblast and IsValid(owner) and owner:IsPlayer() and !owner:IsZombie() then
-				ent:Ignite(math.random(3, 5), 0)
+				ent:Ignite( math.random(3, 5), 0 )
+				hook.Call( "OnZombieIgnited", GAMEMODE, ent, owner )
 			end
 
 		else

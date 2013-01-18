@@ -1,6 +1,4 @@
-module( 'team' )
-
-function IsAlive( id )
+function team.IsAlive( id )
 	
 	for _, ply in pairs(team.GetPlayers(id)) do
 		if IsValid(ply) and ply:Alive() then
@@ -12,8 +10,8 @@ function IsAlive( id )
 
 end
 
-local GetPlayersOld = GetPlayers
-function GetPlayers( teamId )
+local GetPlayersOld = team.GetPlayers
+function team.GetPlayers( teamId )
 
 	if !teamId then return end
 
@@ -33,8 +31,8 @@ function GetPlayers( teamId )
 
 end
 
-local NumPlayersOld = NumPlayers
-function NumPlayers( teamId )
+local NumPlayersOld = team.NumPlayers
+function team.NumPlayers( teamId )
 
 	if !teamId then return end
 

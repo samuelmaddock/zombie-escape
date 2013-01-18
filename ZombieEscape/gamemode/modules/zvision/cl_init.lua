@@ -15,8 +15,8 @@ local tab = {}
 
 function ZombieVision()
 
-	if LocalPlayer().IsZombie and !LocalPlayer():IsZombie() and delay then
-		delay = nil
+	if LocalPlayer().IsZombie and !LocalPlayer():IsZombie() then
+		if delay then delay = nil end
 		return
 	end
 
