@@ -26,6 +26,8 @@ Loader.Load( "modules" )
 
 function GM:CreateTeams()
 	
+	self.BaseClass.CreateTeams( self )
+
 	team.SetUp(TEAM_HUMANS, "Humans", Color(42,190,235,255) )
 	team.SetUp(TEAM_ZOMBIES, "Zombies", Color(0,180,0,255))
 
@@ -37,4 +39,12 @@ function GM:CreateTeams()
 		team.SetSpawnPoint(TEAM_ZOMBIES, "info_player_terrorist")
 	end
 
+end
+
+function GM:GetGameDescription()
+	return "Zombie Escape"
+end
+
+function GM:GetGamemodeDescription()
+	return self:GetGameDescription()
 end
