@@ -32,6 +32,8 @@ end
 
 function GM:PlayerSpawn( ply )
 
+	self.BaseClass.PlayerSpawn( self, ply )
+
 	if !ply:IsSpectator() then
 		ply:UnSpectate()
 	end
@@ -177,6 +179,10 @@ end
 -----------------------------------------------------------]]
 function GM:PlayerNoClip( pl, on )
 	
+	if !self.BaseClass.PlayerNoClip( self, pl, on ) then
+		return false
+	end
+
 	-- Allow noclip if we're in single player
 	if game.SinglePlayer() then return true end
 	if GetConVar("sv_cheats"):GetBool() then return true end

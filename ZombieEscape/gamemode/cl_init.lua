@@ -8,9 +8,13 @@ CVars.ZombieFOV = CreateClientConVar( "ze_zfov", 110, true, false )
 -- Because vignettes make everything look nicer	
 local VignetteMat = Material("ze/vignette")
 function GM:HUDPaintBackground()
+
+	self.BaseClass.HUDPaintBackground( self )
+
 	surface.SetDrawColor(0,0,0,200)
 	surface.SetMaterial(VignetteMat)
-	-- surface.DrawTexturedRect(0,0,ScrW(),ScrH())
+	surface.DrawTexturedRect(0,0,ScrW(),ScrH())
+
 end
 
 /*---------------------------------------------------------
@@ -20,6 +24,8 @@ end
 GM.HideHUD = { "CHudCrosshair" }
 GM.ShowHUD = { "CHudGMod", "CHudChat" }
 function GM:HUDShouldDraw(name)
+
+	self.BaseClass.HUDShouldDraw( self, name )
 
 	-- Hide certain HUD elements
 	if table.HasValue(self.HideHUD, name) then
@@ -46,6 +52,8 @@ function GM:HUDShouldDraw(name)
 end
 
 function GM:PlayerBindPress( ply, bind, pressed )
+
+	self.BaseClass.PlayerBindPress( self, ply, bind, pressed )
 
 	if ( bind == "+menu" && pressed ) then
 		LocalPlayer():ConCommand( "lastinv" )

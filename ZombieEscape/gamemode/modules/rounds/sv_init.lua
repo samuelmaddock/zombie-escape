@@ -1,6 +1,7 @@
 CVars.ZSpawnMin	= CreateConVar( "ze_ztimer_min", 15, {FCVAR_REPLICATED}, "Minimum time from the start of the round until picking the mother zombie(s)." )
-CVars.ZSpawnMax 	= CreateConVar( "ze_ztimer_max", 30, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
-CVars.MaxRounds	= CreateConVar( "ze_max_rounds", 10, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch" )
+CVars.ZSpawnMax = CreateConVar( "ze_ztimer_max", 30, {FCVAR_REPLICATED}, "Maximum time from the start of the round until picking the mother zombie(s)." )
+CVars.MaxRounds	= CreateConVar( "ze_max_rounds", 10, {FCVAR_REPLICATED}, "Maximum amount of rounds played prior to map switch. Set to 0 to disable." )
+CVars.AFK 		= CreateConVar( "ze_afk", 1, {FCVAR_REPLICATED}, "Enable infecting afk players." )
 
 GM.PlayerScale = math.Clamp( game.MaxPlayers(), 50, math.max(game.MaxPlayers(),50) ) -- amount of players
 
@@ -116,7 +117,7 @@ function GM:RoundRestart( callback )
 		pcall( callback )
 	end
 	
-	if self:GetRound() >= self:GetMaxRounds() then
+	if self:GetMaxRounds() != 0 and self:GetRound() >= self:GetMaxRounds() then
 
 		hook.Call( "ChangeMap", self )
 
@@ -157,8 +158,6 @@ end
 
 
 function GM:RoundStart()
-
-	print("RoundStart")
 
 	if !game.SinglePlayer() and !self.Restarting then return end
 	
@@ -203,7 +202,10 @@ function GM:RoundStart()
 
 		-- Simple AFK check
 		timer.Destroy("HumanAFKCheck")
-		timer.Create("HumanAFKCheck", 60, 1, function() self:AFKCheck() end)
+
+		if CVars.AFK:GetBool() then
+			timer.Create("HumanAFKCheck", 60, 1, function() self:AFKCheck() end)
+		end
 	end
 	
 end
