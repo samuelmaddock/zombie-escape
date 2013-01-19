@@ -178,14 +178,15 @@ end
 		  the player is allowed to noclip, false to block
 -----------------------------------------------------------]]
 function GM:PlayerNoClip( pl, on )
-	
-	if !self.BaseClass.PlayerNoClip( self, pl, on ) then
-		return false
-	end
 
 	-- Allow noclip if we're in single player
 	if game.SinglePlayer() then return true end
 	if GetConVar("sv_cheats"):GetBool() then return true end
+	
+	-- Allow base gamemode to decide
+	if !self.BaseClass.PlayerNoClip( self, pl, on ) then
+		return false
+	end
 	
 	return false
 	

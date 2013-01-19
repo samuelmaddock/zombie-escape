@@ -212,8 +212,6 @@ end
 
 function GM:SendWinner( TeamId, bReset )
 
-	print( "Sending WinningTeam" )
-
 	net.Start( "WinningTeam" )
 		net.WriteUInt( TeamId, 2 )
 		net.WriteBit( bReset )

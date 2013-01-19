@@ -1,4 +1,4 @@
-GM.Name     = "Zombie Escape"
+GM.Name     = "ZombieEscape"
 GM.Author   = "Samuel 'samm5506' Maddock"
 GM.Website  = "http://samuelmaddock.com/"
 
