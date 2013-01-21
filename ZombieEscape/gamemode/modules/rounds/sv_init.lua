@@ -195,7 +195,6 @@ function GM:RoundStart()
 	if !game.SinglePlayer() then
 		-- Random infect
 		timer.Simple(Time, function()
-			math.randomseed( os.time() * #player.GetAll() / game.MaxPlayers() )
 			self:RandomInfect()
 			self.InfectionStarted = true
 		end)

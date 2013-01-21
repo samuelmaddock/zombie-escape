@@ -23,7 +23,7 @@ local function DrawBossHealth()
 		if !IsValid(boss.Ent) or boss.Health <= 1 then BossEntities[k] = nil return end
 		if (LocalPlayer():GetPos() - boss.Ent:GetPos()):Length() > 4096 then return end
 
-		halo.Add({boss.Ent}, BossGlowColor)
+		halo.Add({boss.Ent}, HSVToColor( 120 * ( boss.Health / boss.MaxHealth ), 1, 1 ) )
 
 		-- Let's do some calculations first
 		maxBarHealth = (boss.MaxHealth > 999) and 1000 or 100

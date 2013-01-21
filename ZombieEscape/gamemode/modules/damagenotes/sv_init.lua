@@ -1,28 +1,24 @@
 util.AddNetworkString( "DamageNotes" )
 
-hook.Add( "EntityTakeDamage", "RelayDamage", function( ent, dmginfo )
+function OnDamageDelt( ent, dmginfo )
 	
 	local inflictor = dmginfo:GetInflictor()
 	local attacker = dmginfo:GetAttacker()
 	local amount = dmginfo:GetDamage()
 
-	if !IsValid(ent) or !IsValid(inflictor) or ent:IsNPC() then return end
+	if !IsValid(inflictor) or !IsValid(ent) or ent:IsNPC() then return end
 	
-	if ent:IsPlayer() then
+	-- Send damage display to players
+	if ent:IsPlayer() and ent:IsZombie() then
 
-		-- Send damage display to players
-		if inflictor:IsPlayer() and !inflictor:IsZombie() and ( !inflictor.LastDamageNote or inflictor.LastDamageNote < CurTime() ) and ent:IsZombie() then
-
-			local offset = Vector( math.random(-8,8), math.random(-8,8), math.random(-8,8) )
-			net.Start("DamageNotes")
-				net.WriteFloat(math.Round(amount))
-				net.WriteVector(ent:GetPos() + offset)
-			net.Send(inflictor)
-			
-			inflictor.LastDamageNote = CurTime() + 0.15 -- prevent spamming of damage notes
-
+		if inflictor:IsPlayer() and !inflictor:IsZombie() then
+			inflictor:EnqueueDamageNote( ent, amount )
+		elseif attacker:IsPlayer() and !attacker:IsZombie() then
+			attacker:EnqueueDamageNote( ent, amount )
 		end
 
 	end
 	
-end )
+end
+hook.Add( "EntityTakeDamage", "RelayDamageNote", OnDamageDelt )
+hook.Add( "OnDamagedByExplosion", "RelayDamageNoteExplosion", OnDamageDelt )

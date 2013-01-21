@@ -23,6 +23,8 @@ function GM:RandomInfect()
 
 	local ply
 	
+	math.randomseed( os.time() * #player.GetAll() / game.MaxPlayers() )
+	
 	-- Get random player to infect
 	local Players = team.GetPlayers(TEAM_HUMANS)
 	for _, pl in RandomPairs(Players) do
