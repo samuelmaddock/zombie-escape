@@ -1,6 +1,6 @@
+util.AddNetworkString("BossDefeated")
 util.AddNetworkString("BossSpawn")
 util.AddNetworkString("BossTakeDamage")
-util.AddNetworkString("BossDefeated")
 
 /*---------------------------------------------------------
 	Boss Object
@@ -18,9 +18,7 @@ function BOSS:Setup(name, modelEnt, counterEnt)
 	self.__index = self
 	
 	boss.Name = name
-	boss.Type = -1
-	boss.KilledOnRound = -1
-	boss.Entities = {}
+	boss:Reset()
 
 	boss.Targets = {}
 	boss.Targets.Model = modelEnt
@@ -33,8 +31,14 @@ end
 function BOSS:IsValid()
 	return IsValid( self:GetCounter() ) and
 		IsValid( self:GetClientModel() ) and
-		-- self:MaxHealth() > 10 and
-		self.KilledOnRound != GAMEMODE:GetRound()
+		self:GetType() != -1 --and
+		-- self.KilledOnRound != GAMEMODE:GetRound()
+end
+
+function BOSS:Reset()
+	self.Type = -1
+	self.bInitialized = nil
+	self.Entities = {}
 end
 
 function BOSS:HasCounter(ent)
@@ -66,7 +70,7 @@ function BOSS:MaxHealth()
 end
 
 function BOSS:GetType()
-	return self.Type
+	return self.Type or -1
 end
 
 function BOSS:GetCounterTarget()
@@ -83,8 +87,9 @@ end
 
 function BOSS:GetCounter()
 
-	if !IsValid(self.Entities.Counter) then
+	if self:GetType() == -1 or !IsValid(self.Entities.Counter) then
 
+		-- Attempt to find health counter entity
 		for _, v in pairs(ents.FindByName(self.Targets.Counter)) do
 			if IsValid(v) and v:GetName() == self.Targets.Counter then
 				if v:GetClass() == "math_counter" then
@@ -110,9 +115,11 @@ function BOSS:GetClientModel()
 	
 	if !IsValid(self.Entities.Model) then
 
+		-- Attempt to find valid client entity
 		for _, v in pairs(ents.FindByName(self.Targets.Model)) do
 			if IsValid(v) and v:GetName() == self.Targets.Model then
 				self.Entities.Model = v
+				break
 			end
 		end
 
@@ -120,6 +127,61 @@ function BOSS:GetClientModel()
 
 	return self.Entities.Model
 	
+end
+
+function BOSS:OnDamageTaken( activator )
+
+	if !self.bInitialized then
+
+		-- Broadcast boss spawn
+		net.Start("BossSpawn")
+			net.WriteFloat( self:GetClientModel():EntIndex() )
+			net.WriteString( self:GetName() )
+		net.Broadcast()
+
+		self.bInitialized = true
+
+	end
+
+	-- Broadcast health stats
+	net.Start("BossTakeDamage")
+		net.WriteFloat( self:GetClientModel():EntIndex() )
+		net.WriteFloat( self:Health() )
+		net.WriteFloat( self:MaxHealth() )
+	net.Broadcast()
+	
+	-- Output debug info
+	if CVars.BossDebug:GetInt() > 0 then
+		Msg("BOSS TAKE DAMAGE:\n")
+		Msg("\tMath: " .. tostring(self:GetCounter()) .. "\n")
+		Msg("\tProp: " .. tostring(self:GetClientModel()) .. "\n")
+		Msg("\tActivator: " .. tostring(activator) .. "\n")
+	end
+
+end
+
+function BOSS:OnDeath( activator )
+
+	-- Announce death to players
+	net.Start("BossDefeated")
+		net.WriteFloat( self:GetClientModel():EntIndex() )
+	net.Broadcast()
+
+	-- Reset boss
+	self.KilledOnRound = GAMEMODE:GetRound()
+	self:Reset()
+
+	-- Output debug info
+	if CVars.BossDebug:GetInt() > 0 then
+		Msg("BOSS DEFEATED:\n")
+		Msg("\tMath: " .. tostring(self:GetCounter()) .. "\n")
+		Msg("\tProp: " .. tostring(self:GetClientModel()) .. "\n")
+		Msg("\tActivator: " .. tostring(activator) .. "\n")
+	end
+
+	-- Call hook for any developers looking to integrate more
+	hook.Call( "OnBossDefeated", GAMEMODE, self, activator )
+
 end
 
 
@@ -174,42 +236,15 @@ end
 /*---------------------------------------------------------
 	Boss Updates
 ---------------------------------------------------------*/
-function GM:BossDamageTaken(ent, activator)
+function GM:BossDamageTaken( ent, activator )
 
 	if !IsValid(ent) then return end
 	if self.NextBossUpdate && self.NextBossUpdate > CurTime() then return end -- prevent umsg spam
 
 	local boss = self:GetBoss(ent)
-	if boss then
-		
-		if !boss:IsValid() then return end
-
-		if !boss.bInitialized then
-
-			net.Start("BossSpawn")
-				net.WriteFloat( boss:GetClientModel():EntIndex() )
-				net.WriteString( boss:GetName() )
-			net.Broadcast()
-
-			boss.bInitialized = true
-
-		end
-
-		net.Start("BossTakeDamage")
-			net.WriteFloat( boss:GetClientModel():EntIndex() )
-			net.WriteFloat( boss:Health() )
-			net.WriteFloat( boss:MaxHealth() )
-		net.Broadcast()
-		
-		if CVars.BossDebug:GetInt() > 0 then
-			Msg("BOSS TAKE DAMAGE:\n")
-			Msg("\tMath: " .. tostring(boss:GetCounter()) .. "\n")
-			Msg("\tProp: " .. tostring(boss:GetClientModel()) .. "\n")
-			Msg("\tActivator: " .. tostring(activator) .. "\n")
-		end
-
+	if IsValid(boss) then
+		boss:OnDamageTaken( activator )
 		self.NextBossUpdate = CurTime() + 0.15
-
 	end
 
 end
@@ -219,26 +254,8 @@ function GM:BossDeath(ent, activator)
 	if !IsValid(ent) then return end
 
 	local boss = self:GetBoss(ent)
-	if boss then
-		
-		if !boss:IsValid() or !boss.bInitialized then return end
-
-		net.Start("BossDefeated")
-			net.WriteFloat( boss:GetClientModel():EntIndex() )
-		net.Broadcast()
-
-		boss.bInitialized = false
-		boss.KilledOnRound = GAMEMODE:GetRound()
-
-		if CVars.BossDebug:GetInt() > 0 then
-			Msg("BOSS DEFEATED:\n")
-			Msg("\tMath: " .. tostring(boss:GetCounter()) .. "\n")
-			Msg("\tProp: " .. tostring(boss:GetClientModel()) .. "\n")
-			Msg("\tActivator: " .. tostring(activator) .. "\n")
-		end
-
-		hook.Call( "OnBossDefeated", self, boss, activator )
-
+	if IsValid(boss) and boss.bInitialized then
+		boss:OnDeath( activator )
 	end
 
 end

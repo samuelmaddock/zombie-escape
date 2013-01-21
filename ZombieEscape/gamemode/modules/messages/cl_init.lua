@@ -104,9 +104,13 @@ local function ParseMessageDuration(str)
 end
 
 function AddMapMessage()
+
+	local timescale = GetConVarNumber("host_timescale")
+	timescale = ( game.GetTimeScale() > 1 ) and game.GetTimeScale() or timescale
+
 	local msg	= {}
 	msg.text	= net.ReadString()
-	msg.time 	= SysTime()
+	msg.time 	= SysTime() / timescale
 	msg.len		= ParseMessageDuration(msg.text)
 	msg.velx	= -5
 	msg.vely	= 0
@@ -118,5 +122,6 @@ function AddMapMessage()
 	if !game.SinglePlayer() then
 		MsgC( Color(147,255,25), "[ZE] ", msg.text, "\n" )
 	end
+
 end
 net.Receive( "MapMessage", AddMapMessage )
