@@ -47,6 +47,27 @@ function util.ImpactTrace( ply, tr, iDamageType, pCustomImpactName, effect )
 	end
 end
 
+function util.Tracer( vecStart, vecEnd, iEntIndex, iAttachment, flVelocity, pCustomTracerName )
+
+	local data = EffectData()
+	data:SetStart( vecStart )
+	data:SetOrigin( vecEnd )
+	data:SetEntity( ents.GetByIndex( iEntIndex ) )
+	data:SetScale( flVelocity )
+	data:SetRadius( 0.1 )
+
+	if ( iAttachment ) then
+		data:SetAttachment( iAttachment )
+	end
+
+	if ( pCustomTracerName ) then
+		util.Effect( pCustomTracerName, data )
+	else
+		util.Effect( "Tracer", data )
+	end
+
+end
+
 local function GetBulletTypeParameters( iBulletType )
 
 	local fPenetrationPower, flPenetrationDistance
@@ -145,11 +166,10 @@ function PlayerMeta:FireBullets( bullet )
 
 	bullet.Attacker = bullet.Attacker and bullet.Attacker or self
 
-	math.randomseed(CurTime())
+	math.randomseed( os.time() / CurTime() * #player.GetAll() )
 	local x, y
 
 	for i = 1, bullet.Num do
-
 		
 		x = math.Rand(-0.5, 0.5) + math.Rand(-0.5, 0.5)
 		y = math.Rand(-0.5, 0.5) + math.Rand(-0.5, 0.5)
@@ -172,6 +192,38 @@ function PlayerMeta:FireBullets( bullet )
 			pcall( bullet.Callback )
 		end
 
+	end
+
+end
+
+function PlayerMeta:MakeTracer( vecStart, vecEnd, tracerName )
+
+	if CLIENT then
+
+		local vm = self:GetViewModel()
+		if IsValid(vm) then
+			local attachId = vm:LookupAttachment("1") -- css weapon are stupid
+			local attach = vm:GetAttachment( attachId )
+			vecStart = attach.Pos
+		end
+
+	end
+
+	if SERVER then
+		SuppressHostEvents( self )
+	end
+	
+	local data = EffectData()
+	data:SetOrigin( vecEnd )
+	data:SetStart( vecStart )
+	data:SetScale( 5000 )
+	data:SetRadius( 0.1 )
+	data:SetEntity( 0.1 )
+
+	util.Effect( tracerName or "Tracer", data, true, true )
+
+	if SERVER then
+		SuppressHostEvents( NULL )
 	end
 
 end
@@ -299,6 +351,8 @@ function PlayerMeta:FireCSBullet(
 				end
 			end
 
+			self:MakeTracer( tr.StartPos, tr.HitPos )
+
 		end
 
 		if SERVER then
@@ -373,6 +427,7 @@ function PlayerMeta:FireCSBullet(
 
 		if bDoEffects then
 			util.ImpactTrace(self, exitTr, iDamageType)
+			-- util.ParticleTracerEx( "vortigaunt_beam", exitTr.StartPos, exitTr.HitPos, true, 0, -1 )
 		end
 
 		flPenetrationPower = flPenetrationPower - flTraceDistance / flPenetrationModifier

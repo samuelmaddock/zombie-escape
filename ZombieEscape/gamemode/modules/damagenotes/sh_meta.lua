@@ -19,26 +19,27 @@ function PlayerMeta:EnqueueDamageNote( ent, amount )
 
 	-- Check timer
 	local TimerName = "DamageNote" .. ent:EntIndex()
-	local TimerFunc = function()
-
-		if !IsValid(self) or !IsValid(ent) then return end
-
-		local totaldmg = self.DamageNotes[ent]
-		local offset = Vector( math.random(-8,8), math.random(-8,8), math.random(-8,8) )
-
-		net.Start("DamageNotes")
-			net.WriteFloat( math.Round(totaldmg) )
-			net.WriteVector( ent:GetPos() + offset )
-		net.Send(self)
-
-		self.DamageNotes[ent] = nil
-
-		timer.Destroy( TimerName )
-
-	end
 
 	if !timer.Exists( TimerName ) then
-		timer.Create( TimerName, TimerDelay, 1, TimerFunc )
+
+		timer.Create( TimerName, TimerDelay, 1, function()
+
+			if !IsValid(self) or !IsValid(ent) then return end
+
+			local totaldmg = self.DamageNotes[ent]
+			local offset = Vector( math.random(-8,8), math.random(-8,8), math.random(-8,8) )
+
+			net.Start("DamageNotes")
+				net.WriteFloat( math.Round(totaldmg) )
+				net.WriteVector( ent:GetPos() + offset )
+			net.Send(self)
+
+			self.DamageNotes[ent] = nil
+
+			timer.Destroy( TimerName )
+
+		end )
+
 	end
 
 end
