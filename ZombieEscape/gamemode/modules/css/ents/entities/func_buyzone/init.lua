@@ -35,6 +35,6 @@ end
 
 
 function ENT:PassesTriggerFilters(ent)
-	if ent == NULL or !IsValid(ent) or !ent:IsValid() or !ent:IsPlayer() then return false end 
+	if !IsValid(ent) or !ent:IsPlayer() then return false end 
 	return ( self.Team == 0 || ent:Team() == self.Team )
 end
