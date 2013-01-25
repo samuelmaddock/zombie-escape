@@ -55,8 +55,6 @@ function DrawWinningOverlay()
 		return
 	end
 
-	print("DrawWinningOverlay 2")
-
 	if fade == nil then
 		fade = RealTime()
 	end
@@ -65,8 +63,6 @@ function DrawWinningOverlay()
 
 	local fadeamount = math.Clamp( (RealTime()-fade) / 2, 0, 1)
 	surface.SetDrawColor(255,255,255,255*fadeamount)
-
-	print("DrawWinningOverlay 3")
 
 	if WinningTeam == TEAM_HUMANS then
 		DrawHumansWin()
@@ -85,10 +81,6 @@ net.Receive("WinningTeam", function(um)
 
 	local winner = net.ReadUInt(2)
 	local bReset = tobool(net.ReadBit())
-
-	print("RECEIVED WINNING TEAM")
-	print("Winner ", winner)
-	print("Reset ", bReset)
 
 	WinningTeam = !bReset and tonumber(winner) or nil
 
