@@ -57,7 +57,7 @@ function GM:ShowSpare1(ply)
 		
 	else
 
-		if ply:IsHuman() then
+		if ply:IsHuman() and !ply.IsInBuyzone then
 			ply:SendMessage("You must be in a buyzone to select weapons")
 		end
 		

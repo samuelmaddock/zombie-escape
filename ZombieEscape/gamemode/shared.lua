@@ -48,3 +48,23 @@ end
 function GM:GetGamemodeDescription()
 	return self:GetGameDescription()
 end
+
+timer.Create( "PlayerThinkTimer", 1.0, 0, function()
+
+	if SERVER then
+
+		for _, ply in pairs( player.GetAll() ) do
+
+			if IsValid( ply ) then
+				player_manager.RunClass( ply, "Think" )
+			end
+
+		end
+
+	else
+		if IsValid( LocalPlayer() ) then
+			player_manager.RunClass( LocalPlayer(), "Think" )
+		end
+	end
+	
+end)

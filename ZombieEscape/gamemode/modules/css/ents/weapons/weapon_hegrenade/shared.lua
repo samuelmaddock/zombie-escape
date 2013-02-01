@@ -277,20 +277,10 @@ end
 
 
 /*---------------------------------------------------------
-   Name: SWEP:PreThink( )
-   Desc: Called before every frame
----------------------------------------------------------*/
-function SWEP:PreThink()
-end
-
-
-/*---------------------------------------------------------
    Name: SWEP:Think( )
    Desc: Called every frame
 ---------------------------------------------------------*/
 function SWEP:Think()
-
-	self:PreThink();
 
 	if ((self.fThrewGrenade && CurTime() > self.Primary.Delay)) then
 		self.fThrewGrenade = false;
@@ -375,8 +365,13 @@ function SWEP:Deploy()
 	self.m_bRedraw = false;
 	self.m_fDrawbackFinished = false;
 
-	self.Weapon:SendWeaponAnim( ACT_VM_DRAW )
-	self:SetDeploySpeed( self.Weapon:SequenceDuration() )
+	if self:CanPrimaryAttack() then
+		self.Weapon:SendWeaponAnim( ACT_VM_DRAW )
+		self:SetDeploySpeed( self.Weapon:SequenceDuration() )
+	else
+		self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
+	end
+	
 	self:SetNextPrimaryFire(CurTime())
 	self:SetNextSecondaryFire(CurTime())
 
@@ -596,7 +591,7 @@ end
    Desc: Helper function for checking for no ammo
 ---------------------------------------------------------*/
 function SWEP:CanPrimaryAttack()
-	return true
+	return self.Owner.GetAmmoCount and self.Owner:GetAmmoCount("Grenade") > 0
 end
 
 
@@ -605,7 +600,7 @@ end
    Desc: Helper function for checking for no ammo
 ---------------------------------------------------------*/
 function SWEP:CanSecondaryAttack()
-	return true
+	return self:CanPrimaryAttack()
 end
 
 
@@ -616,7 +611,7 @@ end
 ---------------------------------------------------------*/
 function SWEP:SetDeploySpeed( speed )
 
-	self.m_WeaponDeploySpeed = tonumber( speed / GetConVarNumber( "phys_timescale" ) )
+	self.m_WeaponDeploySpeed = tonumber( speed )
 
 	self.Weapon:SetNextPrimaryFire( CurTime() + speed )
 	self.Weapon:SetNextSecondaryFire( CurTime() + speed )

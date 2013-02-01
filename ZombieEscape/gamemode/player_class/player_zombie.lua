@@ -23,7 +23,9 @@ function PLAYER:Spawn()
 	local scale = math.Clamp( 1 - (#team.GetPlayers(TEAM_BOTH) / GAMEMODE.PlayerScale), 0, 1 )
 	scale = (scale > 0.7) and 1 or scale -- only take effect with larger amount of players
 
-	local health = CVars.ZHealthMin:GetInt() + CVars.ZHealthMax:GetInt()*scale
+	local MinHealth = CVars.ZHealthMin:GetInt()
+	local MaxHealth = ( CVars.ZHealthMax:GetInt() - MinHealth ) * scale
+	local health = MaxHealth + MinHealth
 	self.Player:SetHealth(health)
 	self.Player:SetMaxHealth(health)
 
@@ -47,6 +49,45 @@ function PLAYER:Loadout()
 
 	self.Player:RemoveAllAmmo()
 	self.Player:SwitchToDefaultWeapon()
+
+end
+
+function PLAYER:Think()
+
+	local ply = self.Player
+
+	if SERVER and ply:Alive() then
+
+		-- Zombie moan
+		if ply.NextMoan and ply.NextMoan < CurTime() then
+			ply:ZMoan()
+		end
+		
+		-- Health regeneration
+		if CVars.ZHealthRegen:GetBool() then
+			local health = ply:Health()
+			if ply.NextHealthRegen && ply.NextHealthRegen < CurTime() && health < ply:GetMaxHealth() then
+				local newhealth = math.Clamp( health + math.random(50, 150), 0, ply:GetMaxHealth() )
+				ply:SetHealth( newhealth )
+				ply.NextHealthRegen = CurTime() + math.random(2,3)
+			end
+		end
+		
+		-- Weapon check
+		if !ply:HasWeapon("zombie_arms") then
+			ply:Give("zombie_arms")
+			ply:SelectWeapon("zombie_arms")
+		end
+
+		-- Flashlight should always be disabled
+		if ply:FlashlightIsOn() then
+			ply:Flashlight(false)
+		end
+
+		-- Grenade speed reduction
+		ply:CheckIgnite()
+
+	end
 
 end
 
