@@ -38,6 +38,10 @@ function GM:PlayerSpawn( ply )
 
 	self.BaseClass.PlayerSpawn( self, ply )
 
+	player_manager.OnPlayerSpawn( ply )
+	player_manager.RunClass( ply, "Spawn" )
+	player_manager.RunClass( ply, "Loadout" )
+
 end
 
 function GM:PlayerSwitchFlashlight(ply)
