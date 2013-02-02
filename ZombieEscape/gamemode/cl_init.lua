@@ -21,19 +21,19 @@ end
 	HUDShouldDraw
 	Determine whether to draw parts of HUD
 ---------------------------------------------------------*/
-GM.HideHUD = { "CHudCrosshair", "CHudZoom" }
-GM.ShowHUD = { "CHudGMod", "CHudChat" }
+GM.ZEHideHUD = { "CHudCrosshair", "CHudZoom" }
+GM.ZEShowHUD = { "CHudGMod", "CHudChat" }
 function GM:HUDShouldDraw(name)
 
 	self.BaseClass.HUDShouldDraw( self, name )
 
 	-- Hide certain HUD elements
-	if table.HasValue(self.HideHUD, name) then
+	if table.HasValue(self.ZEHideHUD, name) then
 		return false
 	end
 
 	-- Don't draw too much over the win overlays
-	if WinningTeam != nil and !table.HasValue(self.ShowHUD,name) then
+	if WinningTeam != nil and !table.HasValue(self.ZEShowHUD,name) then
 		return false
 	end
 
