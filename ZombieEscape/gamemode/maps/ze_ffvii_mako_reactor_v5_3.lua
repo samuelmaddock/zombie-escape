@@ -22,3 +22,5 @@ GM:AddTrigger(Vector(-9972,8600,-5272), Vector(-10099,8454,-4364), function(ply)
 		ply:SetEyeAngles(Angle(0,180,0))
 	end
 end)
+
+GM.DisableZombiePickups = true

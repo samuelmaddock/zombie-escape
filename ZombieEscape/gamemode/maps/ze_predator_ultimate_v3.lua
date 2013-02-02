@@ -47,3 +47,4 @@ hook.Add( "PostCleanUpMap", "RemoveWaterSplashes", function()
 end )
 
 GM:IgnoreMessages({"TYPE MAT_COLORCORRECTION 1 IN CONSOLE FOR BETTER VISUALS"})
+GM.DisableZombiePickups = true

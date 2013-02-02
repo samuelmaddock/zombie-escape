@@ -1,7 +1,14 @@
 local PlayerMeta = FindMetaTable("Player")
 
 function PlayerMeta:CanPickupEntity()
-	return self:IsHuman() and !IsValid(self.PickupEntity)
+
+	-- Allow zombies to pickup items unless otherwise disabled
+	if GAMEMODE.DisableZombiePickups and self:IsZombie() then
+		return
+	end
+
+	return !IsValid(self.PickupEntity)
+
 end
 
 function PlayerMeta:GetPickupEntity()
@@ -23,6 +30,7 @@ function PlayerMeta:DropPickupEntity()
 
 	self:AnimRestartGesture( GESTURE_SLOT_CUSTOM, ACT_GMOD_GESTURE_ITEM_DROP, true )
 
+	self.LastPickupEntity = ent
 	self.PickupEntity = nil
 
 end

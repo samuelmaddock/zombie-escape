@@ -32,14 +32,11 @@ end
 
 function GM:PlayerSpawn( ply )
 
-	self.BaseClass.PlayerSpawn( self, ply )
-
 	if !ply:IsSpectator() then
 		ply:UnSpectate()
 	end
 
-	player_manager.OnPlayerSpawn( ply )
-	player_manager.RunClass( ply, "Spawn" )
+	self.BaseClass.PlayerSpawn( self, ply )
 
 end
 
@@ -197,6 +194,6 @@ end
 ---------------------------------------------------------*/
 local mapLua = string.format("maps/%s.lua", game.GetMap())
 if file.Exists( string.format("gamemodes/%s/gamemode/" .. mapLua, GM.FolderName), "GAME" ) then
-	Msg("Including map lua file\n")
+	MsgZE("Including map Lua file.")
 	include(mapLua)
 end

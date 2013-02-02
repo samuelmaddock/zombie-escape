@@ -32,8 +32,6 @@ function GM:ShouldCollide( ent1, ent2 )
 
 end
 
-hook.Add( "OnEntityCreated", "CustomPlayerCollisions", function( ent )
-	if ent:IsPlayer() then
-		ent:SetCustomCollisionCheck(true)
-	end
+hook.Add( "OnEntityCreated", "CSSCustomCollisions", function( ent )
+	ent:SetCustomCollisionCheck(true)
 end )

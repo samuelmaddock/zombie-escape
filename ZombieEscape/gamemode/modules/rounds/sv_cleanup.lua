@@ -39,7 +39,7 @@ local function CorrectLasers()
 end
 
 local SaveEntities = { "func_brush", "env_global" }
-local EntitiesToRemove = { "game_player_equip", "prop_ragdoll", "weapon_*" }
+local EntitiesToRemove = { "prop_ragdoll", "weapon_*" }
 function GM:CleanUpMap()
 
 	hook.Call( "PreCleanUpMap", self )

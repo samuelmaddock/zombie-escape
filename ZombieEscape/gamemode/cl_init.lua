@@ -21,7 +21,7 @@ end
 	HUDShouldDraw
 	Determine whether to draw parts of HUD
 ---------------------------------------------------------*/
-GM.HideHUD = { "CHudCrosshair" }
+GM.HideHUD = { "CHudCrosshair", "CHudZoom" }
 GM.ShowHUD = { "CHudGMod", "CHudChat" }
 function GM:HUDShouldDraw(name)
 

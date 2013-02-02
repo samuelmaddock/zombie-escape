@@ -17,3 +17,15 @@ function PlayerMeta:CloseWeaponMenu()
 	net.Start("CloseWeaponSelection")
 	net.Send(self)
 end
+
+function PlayerMeta:GiveWeapons()
+
+	hook.Call( "PlayerLoadout", GAMEMODE, self )
+
+	if !self.Weapons then return end
+	
+	for id, class in pairs(self.Weapons) do
+		GAMEMODE:OnRequestWeapon(self, class, true)
+	end
+
+end

@@ -7,7 +7,7 @@ function GM:SendMapMessage(str)
 
 	if self:ShouldIgnoreMessage(string.lower(str)) then return end
 
-	MsgC( Color(147,255,25), "[ZE] ", tostring(str), "\n" )
+	MsgZE(str)
 
 	net.Start("MapMessage")
 		net.WriteString(str)

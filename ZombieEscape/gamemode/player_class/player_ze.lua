@@ -49,22 +49,7 @@ end
 
 -- Clientside only
 function PLAYER:CalcView( view )
-
-	if self.Player:IsZombie() then
-		view.fov = CVars.ZombieFOV:GetInt()
-	end
-
-	local ragdoll = self.Player:GetRagdollEntity() 
-	if IsValid( ragdoll ) then
-		local attach = ragdoll:GetAttachment( ragdoll:LookupAttachment("eyes") )
-		if attach then
-			view.origin = attach.Pos
-			view.angles = attach.Ang
-		end
- 	end
-
- 	return view
-
+	return view
 end
 
 function PLAYER:CreateMove( cmd ) end		-- Creates the user command on the client
@@ -74,7 +59,17 @@ function PLAYER:ShouldDrawLocal() end		-- Return true if we should draw the loca
 function PLAYER:StartMove( cmd, mv ) end	-- Copies from the user command to the move
 function PLAYER:Move( mv ) end				-- Runs the move (can run multiple times for the same client)
 function PLAYER:FinishMove( mv ) end		-- Copy the results of the move back to the Player
-function PLAYER:Think() end 				-- Called from timer every second
+
+-- Called from timer every second
+function PLAYER:Think()
+
+	-- For some reason, some maps strip the player's HEV suit
+	if SERVER and self.Player:Alive() and !self.Player:IsSuitEquipped() then
+		self.Player:EquipSuit()
+		self.Player:GiveWeapons()
+	end
+
+end
 
 /*---------------------------------------------------------------------------
 	Animations

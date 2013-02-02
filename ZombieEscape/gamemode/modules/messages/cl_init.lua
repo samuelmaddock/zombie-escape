@@ -8,10 +8,10 @@ local MapMessages = {}
 local colBar
 local colBarDark = Color(100,100,100,255)
 
-function ClearMessages()
+local function ClearMessages()
 	MapMessages = {}
 end
-net.Receive( "WinningTeam", ClearMessages )
+hook.Add( "OnReceivedWinningTeam", "ClearMessages", ClearMessages )
 
 function DrawMapMessages()
 
@@ -120,7 +120,7 @@ function AddMapMessage()
 	table.insert( MapMessages, msg )
 	
 	if !game.SinglePlayer() then
-		MsgC( Color(147,255,25), "[ZE] ", msg.text, "\n" )
+		MsgZE(msg.text)
 	end
 
 end

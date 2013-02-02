@@ -1,7 +1,7 @@
 --[[---------------------------------------------
 		Controls to open menu
 -----------------------------------------------]]
-control.Add( KEY_F3, function( enabled, held )
+control.Add( KEY_B, function( enabled, held )
 
 	if held then return end
 	
@@ -24,7 +24,7 @@ function GM:OpenWeaponSelection()
 		self:LoadWeapons()
 	end
 
-	if self.WeaponMenu then
+	if ValidPanel(self.WeaponMenu) then
 		self.WeaponMenu:Remove()
 	end
 
@@ -36,7 +36,7 @@ end
 
 function GM:HideWeaponSelection()
 
-	if self.WeaponMenu then
+	if ValidPanel(self.WeaponMenu) then
 		self.WeaponMenu:Remove()
 	end
 
@@ -46,7 +46,7 @@ end
 
 function GM:ReceivedWeapon(type)
 
-	if !self.WeaponMenu then return end
+	if !ValidPanel(self.WeaponMenu) then return end
 
 	if type == WEAPON_PRIMARY then
 		self.WeaponMenu:SetupWeapons(WEAPON_SECONDARY)

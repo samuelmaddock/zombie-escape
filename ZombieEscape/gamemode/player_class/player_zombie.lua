@@ -58,6 +58,11 @@ function PLAYER:Think()
 
 	if SERVER and ply:Alive() then
 
+		-- For some reason, some maps strip the player's HEV suit
+		if !ply:IsSuitEquipped() then
+			ply:EquipSuit()
+		end
+
 		-- Zombie moan
 		if ply.NextMoan and ply.NextMoan < CurTime() then
 			ply:ZMoan()

@@ -68,3 +68,14 @@ timer.Create( "PlayerThinkTimer", 1.0, 0, function()
 	end
 	
 end)
+
+local prefix_ze = "[ZE] "
+local color_ze = Color(147,255,25)
+function MsgZE( str )
+
+	if !str then return end
+	str = tostring(str)
+
+	MsgC( color_ze, prefix_ze, str, "\n" )
+
+end

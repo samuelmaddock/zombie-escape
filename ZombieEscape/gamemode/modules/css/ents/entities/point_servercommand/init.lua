@@ -95,7 +95,7 @@ function ENT:AcceptInput(name, activator, caller, data)
 
 			data = FixCommand(data)
 
-			Msg(tostring(self) .. " ran '" .. data .. "'\n")
+			MsgZE(tostring(self) .. " ran '" .. data .. "'")
 			game.ConsoleCommand(data.."\n")
 
 		end

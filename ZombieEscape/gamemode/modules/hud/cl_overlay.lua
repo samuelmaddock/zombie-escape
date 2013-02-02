@@ -1,5 +1,8 @@
 WinningTeam = nil
 
+local scale, fade
+local grungeOverlay = surface.GetTextureID("ze/grungeoverlay")
+
 /*---------------------------------------------------------
 	Humans Win
 ---------------------------------------------------------*/
@@ -46,8 +49,6 @@ end
 /*---------------------------------------------------------
 	Winning Team Overlay
 ---------------------------------------------------------*/
-local scale, fade
-local grungeOverlay = surface.GetTextureID("ze/grungeoverlay")
 function DrawWinningOverlay()
 
 	if WinningTeam == nil then
@@ -77,11 +78,13 @@ end
 hook.Add( "HUDPaint", "WinningOverlays", DrawWinningOverlay )
 
 
-net.Receive("WinningTeam", function(um)
+net.Receive( "WinningTeam", function(um)
 
 	local winner = net.ReadUInt(2)
 	local bReset = tobool(net.ReadBit())
 
 	WinningTeam = !bReset and tonumber(winner) or nil
 
-end)
+	hook.Call( "OnReceivedWinningTeam", GAMEMODE, WinningTeam )
+
+end )

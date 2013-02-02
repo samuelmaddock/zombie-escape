@@ -2,9 +2,10 @@ util.AddNetworkString( "WeaponsData" )
 util.AddNetworkString( "ReceiveWeapon" )
 util.AddNetworkString( "RequestWeaponMenu" )
 
-function GM:OnRequestWeapon(ply, class)
+function GM:OnRequestWeapon( ply, class, force )
 
-	if !ply:Alive() or !ply:IsHuman() or !ply:CanBuyWeapons() then return end
+	if !ply:Alive() or !ply:IsHuman() or
+		(!ply:CanBuyWeapons() and !force) then return end
 
 	local weapon = self:GetWeaponByClass(class)
 	if !weapon then return end

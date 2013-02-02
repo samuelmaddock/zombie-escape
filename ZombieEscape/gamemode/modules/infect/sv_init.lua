@@ -16,7 +16,7 @@ function GM:RandomInfect()
 	if team.NumPlayers(TEAM_ZOMBIES) < 1 then
 		local NonZombies = math.floor(team.NumPlayers(TEAM_HUMANS) - (team.NumPlayers(TEAM_HUMANS) * (1/ratio)))
 		if #self.PreviousZombies > NonZombies then
-			Msg("[ZE] Clearing previous zombies, " .. tostring(#self.PreviousZombies) .. ", " .. tostring(NonZombies) .. "\n")
+			MsgZE("Clearing previous zombies, " .. tostring(#self.PreviousZombies) .. ", " .. tostring(NonZombies))
 			self.PreviousZombies = {}
 		end
 	end
@@ -60,7 +60,8 @@ function GM:RandomInfect()
 
 	if Zombies * ratio > team.NumPlayers(TEAM_HUMANS) then
 		self.PreviousZombies = team.GetPlayers(TEAM_ZOMBIES)
-		return Msg("[ZE] " .. tostring(Zombies) .. " zombies have been infected.\n")
+		MsgZE(tostring(Zombies) .. " zombies have been infected.")
+		return
 	else
 		if Zombies < 1 then
 			return ErrorNoHalt("GM.RandomInfect: Failed to infect a zombie, no players?\n")
