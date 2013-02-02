@@ -48,10 +48,7 @@ function PLAYER:Loadout()
 end
 
 -- Clientside only
-function PLAYER:CalcView( view )
-	return view
-end
-
+function PLAYER:CalcView( view ) end
 function PLAYER:CreateMove( cmd ) end		-- Creates the user command on the client
 function PLAYER:ShouldDrawLocal() end		-- Return true if we should draw the local player
 

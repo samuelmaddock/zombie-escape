@@ -5,4 +5,4 @@ CVars.Buyzone 	= CreateConVar( "ze_buyzone", 1, {FCVAR_REPLICATED}, "Whether or 
 -- GM.AmmoTypes = {"smg1","pistol","357","ar2","buckshot","sniperround"}
 GM.AmmoTypes = {"ammo_50AE","ammo_762mm","ammo_556mm","ammo_556mm_box","ammo_338mag","ammo_9mm","ammo_buckshot","ammo_45acp","ammo_357sig","ammo_57mm"}
 GM.ValidHumans = {"male14","male18","male12","male17","male13","male10","male16","male15","male11",
-	"female8","female9","female10","female11","female12","female7"}
+	"female10","female11","female12"}

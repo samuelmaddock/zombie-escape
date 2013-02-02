@@ -69,13 +69,13 @@ if SERVER then
 					self.SpawnInfo = { pos = self:GetPos() }
 				end
 			end)
-			
+
 		else
 
 			player_manager.OnPlayerSpawn( self )
 			player_manager.RunClass( self, "Spawn" )
 			player_manager.RunClass( self, "Loadout" )
-			
+
 		end
 
 	end

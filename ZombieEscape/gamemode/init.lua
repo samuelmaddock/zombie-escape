@@ -189,6 +189,13 @@ function GM:PlayerNoClip( pl, on )
 	
 end
 
+--[[---------------------------------------------------------
+   Name: gamemode:PlayerSetModel( )
+   Desc: Set the player's model
+-----------------------------------------------------------]]
+function GM:PlayerSetModel( pl )
+end
+
 /*---------------------------------------------------------
 	Include Map Lua Files
 ---------------------------------------------------------*/
