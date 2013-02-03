@@ -1,57 +1,57 @@
 /*---------------------------------------------------------
 	Player Transparency
 		Distance opacity opacity
+		Thanks to Jetboom for the code (Zombie Survival)
 ---------------------------------------------------------*/
 CVars.PlayerOpacity = CreateClientConVar( "ze_playeropacity", 1, true, false )
+CVars.PlayerOpacityDistance = CreateClientConVar( "ze_playeropacity_dist", 80, true, false )
 
-local function HideWeapon(ply, percent)
-	local weapon = ply:GetActiveWeapon()
-	if IsValid(weapon) then
-		weapon:SetColor(Color(255,255,255,255*percent))
-	end
-end
+local undomodelblend = false
+local undozombievision = false
+local matWhite = Material("models/debug/debugwhite")
 
-local function HidePlayer(ply, percent)
-	ply:SetColor(Color(255,255,255,255*percent))
-	HideWeapon(ply,percent)
-end
+function GM:PrePlayerDraw( ply )
 
-local bHide = false
-local min, max = 35, 100
-hook.Add("Think", "HideTeamPlayers", function()
+	if !IsValid(LocalPlayer()) then return end
+	if !CVars.PlayerOpacity:GetBool() then return end
 
-	bHide = CVars.PlayerOpacity:GetBool()
+	if LocalPlayer():Team() == ply:Team() then
 
-	-- Player transparency
-	for _, ply in pairs( team.GetPlayers(TEAM_BOTH) ) do
+		local radius = CVars.PlayerOpacityDistance:GetInt() or 80
+		if radius > 0 then
 
-		-- Ignore invalid players and local player
-		if !IsValid(ply) or ply == LocalPlayer() then
-			continue
-		end
+			local eyepos = EyePos()
+			local dist = ply:NearestPoint(eyepos):Distance(eyepos)
 
-		-- Apply distance based transparency to team players
-		if ply:Team() == LocalPlayer():Team() then
+			if dist < radius then
 
-			local dist = ( ply:GetPos() - LocalPlayer():GetPos() ):Length()
+				local blend = math.max((dist / radius) ^ 1.4, 0.04)
+				render.SetBlend(blend)
 
-			if bHide and dist < min then
-				HidePlayer(ply,0)
-			elseif bHide and dist > min and dist < max then
-				HidePlayer(ply, math.Clamp((dist-min)/max,0,1))
-			else
-				HidePlayer(ply,1)
+				if blend < 0.4 then
+					render.ModelMaterialOverride(matWhite)
+					render.SetColorModulation(0.2, 0.2, 0.2)
+				end
+
+				undomodelblend = true
+
 			end
 
-			if ply:IsZombie() then
-				HideWeapon(ply,0)
-			end
-
-		else
-			-- Non-friendly players should be completely opaque
-			HidePlayer(ply,1)
 		end
+	end
+
+end
+
+function GM:PostPlayerDraw( ply )
+
+	if undomodelblend then
+
+		render.SetBlend(1)
+		render.ModelMaterialOverride()
+		render.SetColorModulation(1, 1, 1)
+
+		undomodelblend = false
 
 	end
 
-end)
+end
