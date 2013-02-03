@@ -45,9 +45,7 @@ function GM:HUDShouldDraw(name)
 		return false
 	end
 
-	self.BaseClass.HUDShouldDraw( self, name )
-	
-	return true
+	return self.BaseClass.HUDShouldDraw( self, name )
 
 end
 
