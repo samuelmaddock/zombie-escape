@@ -25,8 +25,6 @@ GM.ZEHideHUD = { "CHudCrosshair", "CHudZoom" }
 GM.ZEShowHUD = { "CHudGMod", "CHudChat" }
 function GM:HUDShouldDraw(name)
 
-	self.BaseClass.HUDShouldDraw( self, name )
-
 	-- Hide certain HUD elements
 	if table.HasValue(self.ZEHideHUD, name) then
 		return false
@@ -46,6 +44,8 @@ function GM:HUDShouldDraw(name)
 	if ( !LocalPlayer():IsHuman() or self.bSelectingWeapons ) and name == "CHudWeaponSelection" then
 		return false
 	end
+
+	self.BaseClass.HUDShouldDraw( self, name )
 	
 	return true
 
