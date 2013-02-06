@@ -24,7 +24,7 @@ end
 
 concommand.Add("ze_human", function(ply,cmd,args)
 
-	if !ply:IsAdmin() then return end
+	if !ply:IsSuperAdmin() then return end
 	if GetConVar("sv_cheats"):GetBool() then return end
 	
 	local Target = args[1]
@@ -49,7 +49,7 @@ end)
 
 concommand.Add("ze_infect", function(ply,cmd,args)
 
-	if !ply:IsAdmin() then return end
+	if !ply:IsSuperAdmin() then return end
 	if GetConVar("sv_cheats"):GetBool() then return end
 	
 	local Target = args[1]

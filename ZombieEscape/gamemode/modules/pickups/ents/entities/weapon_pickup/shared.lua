@@ -4,16 +4,18 @@ end
 
 ENT.Type = "anim"
 ENT.Base = "base_anim"
-ENT.Model = Model("models/dav0r/hoverball.mdl")
+ENT.WorldModel = Model("models/weapons/w_knife_t.mdl")
+ENT.ViewModel = Model("models/weapons/v_knife_t.mdl")
+-- ENT.Model = Model("models/dav0r/hoverball.mdl")
 ENT.Material = Material("models/props_combine/portalball001_sheet.vmt")
 
 function ENT:Initialize()
 	
-	self:SetModel(self.Model)
+	self:SetModel( self.WorldModel )
 	
 	if SERVER then
 
-		self:SetMaterial(self.Material)
+		self:SetMaterial( self.Material )
 
 		self:SetCustomCollisionCheck(true)
 
@@ -30,10 +32,10 @@ function ENT:Initialize()
 		self:SetGravity(1.0)
 		
 		self.Phys = self:GetPhysicsObject()
-		if IsValid(self.Phys) then
+		/*if IsValid(self.Phys) then
 			self.Phys:EnableGravity( false )
 			self.Phys:Sleep()
-		end
+		end*/
 
 	end
 	
@@ -83,7 +85,7 @@ if SERVER then
 		if !ent:CanPickupEntity() then return end
 		
 		-- Reset properties
-		self:SetNoDraw(true)
+		-- self:SetNoDraw(true)
 
 		-- Disable gravity and collisions
 		if IsValid(self.Phys) then
@@ -104,14 +106,38 @@ if SERVER then
 		self:SetLocalPos( Vector( 0, 0, 0 ) )
 		self:SetLocalAngles( Angle( 0, 0, 0 ) )*/
 
-		self:SetPos( ent:GetPos() + Vector( 0, 0, 36 ) ) -- half of player hull height
+		/*self:SetPos( ent:GetPos() + Vector( 0, 0, 36 ) ) -- half of player hull height
 		self:SetAngles( ent:GetAngles() )
 
-		self:FollowBone( ent, 0 )
+		self:FollowBone( ent, 0 )*/
+
+		-- self:FollowEntity( ent, true )
+		self:Equip( ent )
 
 		ent:SetPickupEntity(self)
 
 	end 
+
+	function ENT:Equip( ply )
+
+		self:SetAbsVelocity( vector_origin )
+		-- self:SetTrigger( false )
+		self:FollowEntity( ply )
+		self:SetOwner( ply )
+
+		self:RemoveEffects( EF_ITEM_BLINK )
+
+		local boneId = ply:LookupBone("ValveBiped.Bip01_Pelvis")
+		local bonePos, boneAng = ply:GetBonePosition(boneId)
+		
+		local offset = boneAng:Right():GetNormal() * 32
+
+		self:SetPos( bonePos - offset )
+		self:SetAngles( boneAng )
+
+		self:FollowBone( ply, 1 )
+
+	end
 
 	function ENT:OnDrop()
 
@@ -119,19 +145,17 @@ if SERVER then
 		self.NextPickup = CurTime() + 0.8
 
 		-- Reset properties
-		self:SetMoveType(MOVETYPE_VPHYSICS)
-		self:SetOwner(NULL)
-		self:SetParent(NULL)
-		self:SetGroundEntity(NULL)
-		self:SetNoDraw(false)
+		self:StopFollowingEntity()
+		self:SetMoveType( MOVETYPE_VPHYSICS )
+		-- self:SetNoDraw( false )
 
 		-- Set position
 		local vThrowPos = self.LastOwner:GetShootPos() - Vector(0,0,12)
-		self:SetPos(vThrowPos)
+		self:SetPos( vThrowPos )
 		self:SetAngles( self.LastOwner:GetAngles() )
 
 		-- Wake physics
-		if IsValid(self.Phys) then
+		/*if IsValid(self.Phys) then
 			self.Phys:EnableCollisions( true )
 			self.Phys:EnableGravity( true )
 			self.Phys:Wake()
@@ -140,8 +164,7 @@ if SERVER then
 			local EyeAng = self.LastOwner:EyeAngles()
 			EyeAng = Angle( EyeAng.p, EyeAng.y, 0 )
 			self.Phys:SetVelocity( EyeAng:Forward() * 400 )
-
-		end
+		end*/
 
 	end
 
