@@ -198,6 +198,14 @@ end
 
 function PlayerMeta:MakeTracer( vecStart, vecEnd, tracerName )
 
+	-- Only show every 4 bullets
+	if self.BulletCount and self.BulletCount < 4 then
+		self.BulletCount = self.BulletCount + 1
+		return
+	else
+		self.BulletCount = 1
+	end
+
 	if CLIENT then
 
 		local vm = self:GetViewModel()
@@ -208,19 +216,19 @@ function PlayerMeta:MakeTracer( vecStart, vecEnd, tracerName )
 		end
 
 	end
-
-	if SERVER then
-		SuppressHostEvents( self )
-	end
 	
 	local data = EffectData()
 	data:SetOrigin( vecEnd )
 	data:SetStart( vecStart )
 	data:SetScale( 5000 )
 	data:SetRadius( 0.1 )
-	data:SetEntity( 0.1 )
+	-- data:SetEntity( 0.1 )
 
-	util.Effect( tracerName or "Tracer", data, true, true )
+	if SERVER then
+		SuppressHostEvents( self )
+	end
+
+	util.Effect( tracerName or "Tracer", data )
 
 	if SERVER then
 		SuppressHostEvents( NULL )
