@@ -8,7 +8,7 @@ end
 
 if ( CLIENT ) then
 
-	SWEP.PrintName			= "mac10"			
+	SWEP.PrintName			= "MAC-10"			
 	SWEP.Author				= "Counter-Strike"
 	SWEP.Slot				= 2
 	SWEP.SlotPos			= 4
@@ -42,7 +42,4 @@ SWEP.Primary.Delay			= 0.09
 SWEP.Primary.DefaultClip	= 75
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "ammo_556mm"
-
-SWEP.IronSightsPos 		= Vector( 6.7, -3, 3 )
-SWEP.IronSightsAng 		= Vector( 0, 5, 5 )
 

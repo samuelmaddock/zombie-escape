@@ -48,8 +48,6 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 
-SWEP.IronSightsPos 		= Vector( 5.7, -3, 3 )
-
 
 /*---------------------------------------------------------
 	Reload does nothing

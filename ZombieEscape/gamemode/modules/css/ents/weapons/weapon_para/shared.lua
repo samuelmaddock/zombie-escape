@@ -8,7 +8,7 @@ end
 
 if ( CLIENT ) then
 
-	SWEP.PrintName			= "Para"			
+	SWEP.PrintName			= "M249 PARA"			
 	SWEP.Author				= "Counter-Strike"
 	SWEP.Slot				= 3
 	SWEP.SlotPos			= 1
@@ -49,5 +49,3 @@ SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
-
-SWEP.IronSightsPos 		= Vector( -4.4, -3, 2 )

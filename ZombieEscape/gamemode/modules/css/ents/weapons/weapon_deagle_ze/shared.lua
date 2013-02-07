@@ -42,5 +42,3 @@ SWEP.Primary.Delay			= 0.3
 SWEP.Primary.DefaultClip	= 48
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "ammo_50AE"
-
-SWEP.IronSightsPos 		= Vector( 5.15, -2, 2.6 )

@@ -56,7 +56,9 @@ SWEP.Secondary.Ammo			= "none"
 SWEP.PenetrationPower = 4 // thickness of a wall that this bullet can penetrate
 SWEP.PenetrationDistance = 128 // distance at which the bullet is capable of penetrating a wall
 
-
+SWEP.Zoom = {}
+SWEP.Zoom.Level = 0
+SWEP.Zoom.Sound = Sound( "Default.Zoom" )
 
 
 /*---------------------------------------------------------
@@ -71,6 +73,7 @@ function SWEP:Initialize()
 	
 	self:SetWeaponHoldType( self.HoldType )
 	self.Weapon:SetNetworkedBool( "Ironsights", false )
+	self.Weapon:SetNetworkedInt( "Zoom", 0 )
 	
 end
 
@@ -140,13 +143,6 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	bullet.Tracer	= 4									// Show a tracer on every x bullets 
 	bullet.Force	= 5									// Amount of force to give to phys objects
 	bullet.Damage	= dmg
-
-	bullet.Callback = function()
-
-		-- create tracer effect
-		-- set magnitude to affect speed
-
-	end
 	
 	self.Owner:FireBullets( bullet )
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK ) 		// View model animation
@@ -255,9 +251,7 @@ end
 	SetIronsights
 ---------------------------------------------------------*/
 function SWEP:SetIronsights( b )
-
 	self.Weapon:SetNetworkedBool( "Ironsights", b )
-
 end
 
 
@@ -267,14 +261,22 @@ SWEP.NextSecondaryAttack = 0
 ---------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 
-	if ( !self.IronSightsPos ) then return end
 	if ( self.NextSecondaryAttack > CurTime() ) then return end
-	
-	bIronsights = !self.Weapon:GetNetworkedBool( "Ironsights", false )
-	
-	self:SetIronsights( bIronsights )
-	
-	self.NextSecondaryAttack = CurTime() + 0.3
+
+	if self.IronSightsPos then
+		
+		bIronsights = !self.Weapon:GetNetworkedBool( "Ironsights", false )
+		
+		self:SetIronsights( bIronsights )
+		
+		self.NextSecondaryAttack = CurTime() + 0.3
+
+	elseif self.Zoom.Level > 0 then
+		self:ZoomIn()
+		self.NextSecondaryAttack = CurTime() + 0.3
+	else
+		return
+	end
 	
 end
 
@@ -285,6 +287,11 @@ end
 	
 ---------------------------------------------------------*/
 function SWEP:DrawHUD()
+
+	if self:ShouldZoom() then
+		self:DrawScope()
+		return
+	end
 
 	// No crosshair when ironsights is on
 	if ( self.Weapon:GetNetworkedBool( "Ironsights" ) ) then return end
@@ -338,4 +345,95 @@ end
 function SWEP:Deploy()
 	self.Weapon:SetNextPrimaryFire( CurTime() )
 	self.Weapon:SetNextSecondaryFire( CurTime() )
+end
+
+/*---------------------------------------------------------
+	Zoom
+---------------------------------------------------------*/
+function SWEP:IsZoomed()
+	return self.Weapon:GetNetworkedInt( "Zoom" ) > 0
+end
+
+function SWEP:ZoomLevel()
+	return self.Weapon:GetNetworkedInt( "Zoom" )
+end
+
+function SWEP:DisableZoom()
+	self.Weapon:SetNetworkedInt( "Zoom", 0 )
+end
+
+function SWEP:ZoomIn()
+
+	self.Weapon:EmitSound( self.Zoom.Sound )
+
+	local level = (self:ZoomLevel() + 1) % (self.Zoom.Level + 1)
+	self.Weapon:SetNetworkedInt( "Zoom", level )
+
+	-- self.m_zoomFullyActiveTime = CurTime() + 0.15
+
+end
+
+if CLIENT then
+
+	function SWEP:ShouldZoom()
+		return self:IsZoomed() and
+			self:Clip1() > 0 and
+			self:GetNextPrimaryFire() < CurTime()
+	end
+
+	function SWEP:AdjustMouseSensitivity()
+		return self:ShouldZoom() and ( 1 / (self:ZoomLevel() * 5) ) or 1
+	end
+
+	local ZoomHidden = {
+		"CHudHealth",
+		"CHudSuitPower",
+		"CHudBattery",
+		"CHudAmmo",
+		"CHudSecondaryAmmo",
+		"CHudCrosshair"
+	}
+
+	function SWEP:HUDShouldDraw( name )	
+		return (self:ShouldZoom() and table.HasValue(ZoomHidden,name)) and false or true
+	end
+
+	function SWEP:TranslateFOV( fov )
+		return self:ShouldZoom() and ( fov / (self:ZoomLevel() * 5) ) or fov
+	end
+
+	local ScopeMat = surface.GetTextureID( "sprites/scope" )
+	local ScopeLensMat = surface.GetTextureID( "overlays/scope_lens" )
+	local ScopeRefractMat = surface.GetTextureID( "gmod/scope-refract" )
+
+	function SWEP:DrawScope()
+
+		local sw = (ScrW() > ScrH()) and ScrH() or ScrW()	-- Scope width
+		local p = (ScrW() - sw) / 2 -- scope width padding
+
+		surface.SetDrawColor( 0, 0, 0, 255 )
+
+		-- Scope refraction texture
+		local offset = sw * 0.22 -- texture inset correction
+		surface.SetTexture( ScopeRefractMat )
+		surface.DrawTexturedRect( p - offset, -offset, sw + offset*2, ScrH() + offset*2 )
+
+		-- Scope lens texture
+		surface.SetTexture( ScopeLensMat )
+		surface.DrawTexturedRect( p, 0, sw, ScrH() )
+
+		-- Scope texture
+		surface.SetTexture( ScopeMat )
+		surface.DrawTexturedRect( p, 0, sw, ScrH() )
+
+		-- Padding
+		surface.DrawRect( 0, 0, p, ScrH() )
+		surface.DrawRect( ScrW() - p, 0, p, ScrH() )
+
+		-- Crosshair
+		surface.DrawLine( ScrW() / 2, 0, ScrW() / 2, ScrH() )
+		surface.DrawLine( 0, ScrH() / 2, ScrW(), ScrH() / 2 )
+
+	end
+
 end

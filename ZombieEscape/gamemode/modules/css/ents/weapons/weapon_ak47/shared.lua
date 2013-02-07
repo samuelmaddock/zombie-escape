@@ -45,6 +45,3 @@ SWEP.Primary.Ammo			= "ammo_762mm"
 
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
-
-SWEP.IronSightsPos 		= Vector( 6.1, -7, 2.5 )
-SWEP.IronSightsAng 		= Vector( 2.8, 0, 0 )

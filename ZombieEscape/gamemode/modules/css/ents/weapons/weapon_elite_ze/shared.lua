@@ -32,24 +32,11 @@ SWEP.Primary.Recoil			= 1.2
 SWEP.Primary.Damage			= 15
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Cone			= 0.04
-SWEP.Primary.ClipSize		= 15
+SWEP.Primary.ClipSize		= 30
 SWEP.Primary.Delay			= 0.15
-SWEP.Primary.DefaultClip	= 15
+SWEP.Primary.DefaultClip	= 30
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "ammo_9mm"
-
-SWEP.Secondary.Sound		= Sound( "Weapon_Elite.Single" )
-SWEP.Secondary.Recoil		= 1.2
-SWEP.Secondary.Damage		= 15
-SWEP.Secondary.NumShots		= 1
-SWEP.Secondary.Cone			= 0.04
-SWEP.Secondary.ClipSize		= 15
-SWEP.Secondary.Delay		= 0.15
-SWEP.Secondary.DefaultClip	= 15
-SWEP.Secondary.Automatic	= false
-SWEP.Secondary.Ammo			= "ammo_9mm"
-
-SWEP.IronSightsPos 		= nil
 
 function SWEP:Initialize()
 
@@ -61,6 +48,8 @@ function SWEP:Initialize()
 	
 	self:SetWeaponHoldType( self.HoldType )
 	self.Weapon:SetNetworkedBool( "Ironsights", false )
+
+	self.m_bFireRight = false
 	
 end
 
@@ -73,12 +62,28 @@ function SWEP:PrimaryAttack()
 	
 	if ( !self:CanPrimaryAttack() ) then return end
 	
+	self.m_bFireRight = !self.m_bFireRight
+
 	// Play shoot sound
 	self.Weapon:EmitSound( self.Primary.Sound )
 	
 	// Shoot the bullet
 	self:CSShootBullet( self.Primary.Damage, self.Primary.Recoil, self.Primary.NumShots, self.Primary.Cone, true )
 	
+	if self.m_bFireRight then
+		if self.Weapon:Clip1() > 1 then
+			self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
+		else
+			self.Weapon:SendWeaponAnim( ACT_VM_DRYFIRE_LEFT )
+		end
+	else
+		if self.Weapon:Clip1() > 1 then
+			self.Weapon:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
+		else
+			self.Weapon:SendWeaponAnim( ACT_VM_DRYFIRE )
+		end
+	end
+
 	// Remove 1 bullet from our clip
 	self:TakePrimaryAmmo( 1 )
 	
@@ -86,38 +91,6 @@ function SWEP:PrimaryAttack()
 	
 	// Punch the player's view
 	self.Owner:ViewPunch( Angle( math.Rand(-0.2,-0.1) * self.Primary.Recoil, math.Rand(-0.1,0.1) *self.Primary.Recoil, 0 ) )
-	
-	// In singleplayer this function doesn't get called on the client, so we use a networked float
-	// to send the last shoot time. In multiplayer this is predicted clientside so we don't need to 
-	// send the float.
-	if ( (game.SinglePlayer() && SERVER) || CLIENT ) then
-		self.Weapon:SetNetworkedFloat( "LastShootTime", CurTime() )
-	end
-	
-end
-
-/*---------------------------------------------------------
-	SecondaryAttack
----------------------------------------------------------*/
-function SWEP:SecondaryAttack()
-
-	self.Weapon:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
-	
-	if ( !self:CanSecondaryAttack() ) then return end
-	
-	// Play shoot sound
-	self.Weapon:EmitSound( self.Secondary.Sound )
-	
-	// Shoot the bullet
-	self:CSShootBullet( self.Secondary.Damage, self.Secondary.Recoil, self.Secondary.NumShots, self.Secondary.Cone, false )
-	
-	// Remove 1 bullet from our clip
-	self:TakeSecondaryAmmo( 1 )
-	
-	if ( self.Owner:IsNPC() ) then return end
-	
-	// Punch the player's view
-	self.Owner:ViewPunch( Angle( math.Rand(-0.2,-0.1) * self.Secondary.Recoil, math.Rand(-0.1,0.1) *self.Secondary.Recoil, 0 ) )
 	
 	// In singleplayer this function doesn't get called on the client, so we use a networked float
 	// to send the last shoot time. In multiplayer this is predicted clientside so we don't need to 

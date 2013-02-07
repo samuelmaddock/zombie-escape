@@ -166,7 +166,7 @@ function PlayerMeta:FireBullets( bullet )
 
 	bullet.Attacker = bullet.Attacker and bullet.Attacker or self
 
-	math.randomseed( os.time() / CurTime() * #player.GetAll() )
+	math.randomseed( CurTime() )
 	local x, y
 
 	for i = 1, bullet.Num do
@@ -239,8 +239,8 @@ end
 local waterContents = bit.bor( CONTENTS_WATER, CONTENTS_SLIME )
 
 function PlayerMeta:FireCSBullet(
-	vecSrc,			// shooting postion
-	shootAngles,	//shooting angle
+	vecSrc,			// shooting position
+	shootAngles,	// shooting angle
 	vecSpread,		// spread vector
 	flDistance,		// max distance 
 	iPenetration,	// how many obstacles can be penetrated
