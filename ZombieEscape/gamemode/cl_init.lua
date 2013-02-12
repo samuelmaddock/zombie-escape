@@ -6,13 +6,13 @@ include('shared.lua')
 CVars.ZombieFOV = CreateClientConVar( "ze_zfov", 110, true, false )
 
 -- Because vignettes make everything look nicer	
-local VignetteMat = Material("ze/vignette")
+local vignette = surface.GetTextureID("ze/vignette")
 function GM:HUDPaintBackground()
 
 	self.BaseClass.HUDPaintBackground( self )
 
 	surface.SetDrawColor(0,0,0,200)
-	surface.SetMaterial(VignetteMat)
+	surface.SetTexture(vignette)
 	surface.DrawTexturedRect(0,0,ScrW(),ScrH())
 
 end
