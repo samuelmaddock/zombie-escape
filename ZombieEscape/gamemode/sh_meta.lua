@@ -24,7 +24,18 @@ function EntityMeta:IsPressed()
 	return value and value == 0
 end
 
+function EntityMeta:ApplyPlayerProperties( ply )
+	self.GetPlayerColor = function() return ply:GetPlayerColor() end
+	self:SetBodygroup( ply:GetBodygroup(1), 1 )
+	self:SetMaterial( ply:GetMaterial() )
+	self:SetSkin( ply:GetSkin() or 1 )
+end
+
 local PlayerMeta = FindMetaTable("Player")
+
+function PlayerMeta:GetTranslatedModel()
+	return util.TranslateToPlayerModel( self:GetModel() )
+end
 
 function PlayerMeta:IsSpectator()
 	return self:Team() == TEAM_SPECTATOR

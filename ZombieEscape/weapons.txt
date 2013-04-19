@@ -52,6 +52,13 @@
 		"type"			"1"
 	}
 
+	"AWP"
+	{
+		"class"			"weapon_awp_ze"
+		"multiplier"	"1.8"
+		"type"			"1"
+	}
+
 
 	// Secondary weapons
 
