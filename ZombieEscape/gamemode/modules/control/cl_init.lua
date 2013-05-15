@@ -40,12 +40,12 @@ function Check()
 	end
 
 end
-hook.Add( "Think", "TheaterControlsThink", control.Check )
+hook.Add( "Think", "ControlsThink", control.Check )
 
 function Add( key, onToggle )
 
 	if !key or !onToggle then return end
-	
+
 	KeyControls[ key ] = {
 		Enabled = false,
 		LastPress = 0,
