@@ -1,14 +1,12 @@
 
-if (SERVER) then
+if SERVER then
 
-	AddCSLuaFile( "shared.lua" )
+	AddCSLuaFile()
 	SWEP.Weight				= 5
 	SWEP.AutoSwitchTo		= false
 	SWEP.AutoSwitchFrom		= false
 
-end
-
-if ( CLIENT ) then
+else
 
 	SWEP.DrawAmmo			= true
 	SWEP.DrawCrosshair		= false
@@ -61,8 +59,6 @@ SWEP.Zoom.Level = 0
 SWEP.Zoom.Sound = Sound( "Default.Zoom" )
 
 
-/*---------------------------------------------------------
----------------------------------------------------------*/
 function SWEP:Initialize()
 
 	if ( SERVER ) then
@@ -72,24 +68,28 @@ function SWEP:Initialize()
 	end
 
 	self:SetWeaponHoldType( self.HoldType )
-	self.Weapon:SetNetworkedBool( "Ironsights", false )
-	self.Weapon:SetNetworkedInt( "Zoom", 0 )
 
 end
 
+function SWEP:SetupDataTables()
 
-/*---------------------------------------------------------
-	Reload does nothing
----------------------------------------------------------*/
+	self:NetworkVar( "Bool", 0, "Ironsights" )
+	self:NetworkVar( "Int", 0, "ZoomLevel" )
+
+	if SERVER then
+
+		self:SetIronsights( false )
+		self:SetZoomLevel( 0 )
+
+	end
+
+end
+
 function SWEP:Reload()
 	self.Weapon:DefaultReload( ACT_VM_RELOAD );
 	self:SetIronsights( false )
 end
 
-
-/*---------------------------------------------------------
-   Think does nothing
----------------------------------------------------------*/
 function SWEP:Think()
 end
 
@@ -187,7 +187,7 @@ function SWEP:GetViewModelPosition( pos, ang )
 
 	if ( !self.IronSightsPos ) then return pos, ang end
 
-	local bIron = self.Weapon:GetNetworkedBool( "Ironsights" )
+	local bIron = self:GetIronsights()
 
 	if ( bIron != self.bLastIron ) then
 
@@ -247,14 +247,6 @@ function SWEP:GetViewModelPosition( pos, ang )
 end
 
 
-/*---------------------------------------------------------
-	SetIronsights
----------------------------------------------------------*/
-function SWEP:SetIronsights( b )
-	self.Weapon:SetNetworkedBool( "Ironsights", b )
-end
-
-
 SWEP.NextSecondaryAttack = 0
 /*---------------------------------------------------------
 	SecondaryAttack
@@ -265,7 +257,7 @@ function SWEP:SecondaryAttack()
 
 	if self.IronSightsPos then
 
-		bIronsights = !self.Weapon:GetNetworkedBool( "Ironsights", false )
+		bIronsights = !self:GetIronsights()
 
 		self:SetIronsights( bIronsights )
 
@@ -294,7 +286,7 @@ function SWEP:DrawHUD()
 	end
 
 	// No crosshair when ironsights is on
-	if ( self.Weapon:GetNetworkedBool( "Ironsights" ) ) then return end
+	if self:GetIronsights() then return end
 
 	local x, y
 
@@ -352,23 +344,19 @@ end
 	Zoom
 ---------------------------------------------------------*/
 function SWEP:IsZoomed()
-	return self.Weapon:GetNetworkedInt( "Zoom" ) > 0
-end
-
-function SWEP:ZoomLevel()
-	return self.Weapon:GetNetworkedInt( "Zoom" )
+	return self:GetZoomLevel() > 0
 end
 
 function SWEP:DisableZoom()
-	self.Weapon:SetNetworkedInt( "Zoom", 0 )
+	self:SetZoomLevel( 0 )
 end
 
 function SWEP:ZoomIn()
 
 	self.Weapon:EmitSound( self.Zoom.Sound )
 
-	local level = (self:ZoomLevel() + 1) % (self.Zoom.Level + 1)
-	self.Weapon:SetNetworkedInt( "Zoom", level )
+	local level = (self:GetZoomLevel() + 1) % (self.Zoom.Level + 1)
+	self:SetZoomLevel( level )
 
 	-- self.m_zoomFullyActiveTime = CurTime() + 0.15
 
@@ -383,7 +371,7 @@ if CLIENT then
 	end
 
 	function SWEP:AdjustMouseSensitivity()
-		return self:ShouldZoom() and ( 1 / (self:ZoomLevel() * 5) ) or 1
+		return self:ShouldZoom() and ( 1 / (self:GetZoomLevel() * 5) ) or 1
 	end
 
 	local ZoomHidden = {}
@@ -399,7 +387,7 @@ if CLIENT then
 	end
 
 	function SWEP:TranslateFOV( fov )
-		return self:ShouldZoom() and ( fov / (self:ZoomLevel() * 5) ) or fov
+		return self:ShouldZoom() and ( fov / (self:GetZoomLevel() * 5) ) or fov
 	end
 
 	local ScopeMat = surface.GetTextureID( "sprites/scope" )
