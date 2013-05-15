@@ -22,6 +22,26 @@ function PLAYER:Spawn()
 	local mdl = player_manager.TranslatePlayerModel( table.Random(GAMEMODE.ValidHumans) )
 	self.Player:SetModel(mdl)
 
+end
+
+--
+-- Called on spawn to give the player their default loadout
+--
+function PLAYER:Loadout()
+
+	self.Player:RemoveAllAmmo()
+	self.Player:SwitchToDefaultWeapon()
+
+	-- Give basic weapons
+	for _, weapon in pairs( GAMEMODE:GetWeaponsByType(WEAPON_ADDON) ) do
+		self.Player:Give(weapon.class)
+	end
+
+	self.Player:SelectWeapon("weapon_crowbar")
+
+	-- Give ammo
+	self.Player:ResetAmmo()
+
 	-- Display weapons menu on first spawn
 	if !self.Player.Weapons then
 		self.Player:WeaponMenu()
@@ -40,26 +60,6 @@ function PLAYER:Spawn()
 		end)
 
 	end
-
-end
-
---
--- Called on spawn to give the player their default loadout
---
-function PLAYER:Loadout()
-
-	self.Player:RemoveAllAmmo()
-	self.Player:SwitchToDefaultWeapon()
-
-	-- Give basic weapons
-	for _, weapon in pairs( GAMEMODE:GetWeaponsByType(WEAPON_ADDON) ) do
-		self.Player:Give(weapon.class)
-	end
-
-	self.Player:SelectWeapon("weapon_crowbar")
-	
-	-- Give ammo
-	self.Player:ResetAmmo()
 
 end
 
