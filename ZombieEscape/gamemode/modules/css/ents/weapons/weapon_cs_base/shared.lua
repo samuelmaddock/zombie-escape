@@ -415,15 +415,15 @@ if CLIENT then
 		-- Scope refraction texture
 		local offset = sw * 0.22 -- texture inset correction
 		surface.SetTexture( ScopeRefractMat )
-		surface.DrawTexturedRect( p - offset, -offset, sw + offset*2, ScrH() + offset*2 )
+		surface.DrawTexturedRect( p - offset, -offset, sw + offset*2, sw + offset*2 )
 
 		-- Scope lens texture
 		surface.SetTexture( ScopeLensMat )
-		surface.DrawTexturedRect( p, 0, sw, ScrH() )
+		surface.DrawTexturedRect( p, 0, sw, sw )
 
 		-- Scope texture
 		surface.SetTexture( ScopeMat )
-		surface.DrawTexturedRect( p, 0, sw, ScrH() )
+		surface.DrawTexturedRect( p, 0, sw, sw )
 
 		-- Padding
 		surface.DrawRect( 0, 0, p, ScrH() )
