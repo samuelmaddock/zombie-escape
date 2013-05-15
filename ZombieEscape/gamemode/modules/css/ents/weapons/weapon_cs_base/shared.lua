@@ -345,6 +345,7 @@ end
 function SWEP:Deploy()
 	self.Weapon:SetNextPrimaryFire( CurTime() )
 	self.Weapon:SetNextSecondaryFire( CurTime() )
+	self.Weapon:DisableZoom()
 end
 
 /*---------------------------------------------------------
