@@ -28,9 +28,9 @@ function GM:CreateTeams()
 
 	self.BaseClass.CreateTeams( self )
 
-	team.SetUp( TEAM_SPECTATOR, "Spectators", Color(80,80,80,255) )
-	team.SetUp( TEAM_HUMANS, "Humans", Color(42,190,235,255) )
-	team.SetUp( TEAM_ZOMBIES, "Zombies", Color(0,180,0,255) )
+	team.SetUp( TEAM_SPECTATOR, "Spectators", Color(255,253,122) )
+	team.SetUp( TEAM_HUMANS, "Humans", Color(42,190,235) )
+	team.SetUp( TEAM_ZOMBIES, "Zombies", Color(0,180,0) )
 
 	if self.SwapSpawns then
 		team.SetSpawnPoint( TEAM_HUMANS, "info_player_terrorist" )
