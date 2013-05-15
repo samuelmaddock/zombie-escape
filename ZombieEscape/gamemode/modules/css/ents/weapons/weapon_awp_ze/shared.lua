@@ -1,9 +1,9 @@
 
 if SERVER then
-	AddCSLuaFile()
-end
 
-if CLIENT then
+	AddCSLuaFile()
+
+else
 
 	SWEP.PrintName			= "AWP"
 	SWEP.Author				= "Counter-Strike"
@@ -11,7 +11,7 @@ if CLIENT then
 	SWEP.Slot				= 3
 	SWEP.SlotPos			= 1
 	SWEP.IconLetter			= "n"
-	
+
 	killicon.AddFont( "weapon_awp_ze", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
 
 end
@@ -43,3 +43,7 @@ SWEP.Primary.Ammo			= "ammo_338mag"
 
 SWEP.Zoom = {}
 SWEP.Zoom.Level = 2
+
+function SWEP:CanSecondaryAttack()
+	return true
+end

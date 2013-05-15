@@ -246,29 +246,19 @@ function SWEP:GetViewModelPosition( pos, ang )
 
 end
 
-
-SWEP.NextSecondaryAttack = 0
-/*---------------------------------------------------------
-	SecondaryAttack
----------------------------------------------------------*/
 function SWEP:SecondaryAttack()
-
-	if ( self.NextSecondaryAttack > CurTime() ) then return end
 
 	if self.IronSightsPos then
 
-		bIronsights = !self:GetIronsights()
-
-		self:SetIronsights( bIronsights )
-
-		self.NextSecondaryAttack = CurTime() + 0.3
+		self:SetIronsights( !self:GetIronsights() )
 
 	elseif self.Zoom.Level > 0 then
+
 		self:ZoomIn()
-		self.NextSecondaryAttack = CurTime() + 0.3
-	else
-		return
+
 	end
+
+	self:SetNextSecondaryFire( CurTime() + 0.3 )
 
 end
 
