@@ -42,6 +42,8 @@ function GM:PlayerSpawn( ply )
 	player_manager.RunClass( ply, "Spawn" )
 	player_manager.RunClass( ply, "Loadout" )
 
+	ply:ResetViewRoll()
+
 end
 
 function GM:PlayerSwitchFlashlight(ply)

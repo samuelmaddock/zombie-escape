@@ -54,7 +54,7 @@ if SERVER then
 	function PlayerMeta:GoTeam(teamId, bNoRespawn)
 
 		if !teamId then return end
-		
+
 		if self:Team() != teamId then
 			self:SetTeam(teamId)
 		end
@@ -108,7 +108,7 @@ if SERVER then
 		if IsValid(prevweap) then
 			self:SelectWeapon(prevweap:GetClass())
 		end
-		
+
 	end
 
 	function PlayerMeta:SetSpeed(speed, crouchSpeed)
@@ -119,7 +119,16 @@ if SERVER then
 		if crouchSpeed then
 			self:SetCrouchedWalkSpeed(crouchSpeed)
 		end
-		
+
+	end
+
+	-- Copied from TTT
+	function PlayerMeta:ResetViewRoll()
+		local ang = self:EyeAngles()
+		if ang.r != 0 then
+			ang.r = 0
+			self:SetEyeAngles(ang)
+		end
 	end
 
 end
