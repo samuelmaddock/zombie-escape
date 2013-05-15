@@ -42,7 +42,8 @@ function EntityMeta:FollowEntity( ent, bBoneMerge )
 			self:AddEffects( EF_BONEMERGE )
 		end
 
-		self:SetSolid( false ) -- AddSolidFlags( FSOLID_NOT_SOLID )
+		self.OldSolidType = self:GetSolid()
+		self:SetSolid( SOLID_NONE ) -- AddSolidFlags( FSOLID_NOT_SOLID )
 		self:SetLocalPos( vector_origin )
 		self:SetLocalAngles( Angle(0,0,0) )
 	else
@@ -59,7 +60,8 @@ function EntityMeta:StopFollowingEntity()
 
 	self:SetParent( NULL )
 	self:RemoveEffects( EF_BONEMERGE )
-	self:SetSolid( true ) -- RemoveSolidFlags( FSOLID_NOT_SOLID )
+	self:SetSolid( self.OldSolidType or SOLID_VPHYSICS ) -- RemoveSolidFlags( FSOLID_NOT_SOLID )
+	self.OldSolidType = nil
 	self:SetMoveType( MOVETYPE_NONE )
 	self:CollisionRulesChanged()
 
