@@ -11,8 +11,8 @@ local humansWin = surface.GetTextureID("ze/humanswin") -- text
 local hw, hh = surface.GetTextureSize(humansWin)
 local function DrawHumansWin()
 
-	surface.SetTexture(starOverlay)
-	surface.DrawTexturedRect(0,0,ScrH(),ScrH())
+	-- surface.SetTexture(starOverlay)
+	-- surface.DrawTexturedRect(0,0,ScrH(),ScrH())
 
 	local w, h = math.floor(hw*scale), math.floor(hh*scale)
 	local x, y = ScrW()/2 - w/2, math.floor(60*scale)
@@ -31,13 +31,13 @@ local zombiesWin = surface.GetTextureID("ze/zombieswin") -- text
 local zw, zh = surface.GetTextureSize(zombiesWin)
 local function DrawZombiesWin()
 
-	surface.SetTexture(bloodOverlay)
-	surface.DrawTexturedRect(0,0,ScrW(),ScrH())
+	-- surface.SetTexture(bloodOverlay)
+	-- surface.DrawTexturedRect(0,0,ScrW(),ScrH())
 
-	local w, h = math.floor(handw*scale), math.floor(handh*scale)
-	local x, y = ScrW() - w - 128, ScrH() - h
-	surface.SetTexture(zombieHand)
-	surface.DrawTexturedRect(x,y,w,h)
+	-- local w, h = math.floor(handw*scale), math.floor(handh*scale)
+	-- local x, y = ScrW() - w - 128, ScrH() - h
+	-- surface.SetTexture(zombieHand)
+	-- surface.DrawTexturedRect(x,y,w,h)
 
 	local w, h = math.floor(zw*scale), math.floor(zh*scale)
 	local x, y = ScrW()/2 - w/2, math.floor(100*scale)
@@ -71,8 +71,8 @@ function DrawWinningOverlay()
 		DrawZombiesWin()
 	end
 
-	surface.SetTexture(grungeOverlay)
-	surface.DrawTexturedRect(0,0,ScrW(),ScrH())
+	-- surface.SetTexture(grungeOverlay)
+	-- surface.DrawTexturedRect(0,0,ScrW(),ScrH())
 
 end
 hook.Add( "HUDPaint", "WinningOverlays", DrawWinningOverlay )
