@@ -53,17 +53,17 @@ function GM:ShowSpare1(ply)
 	if !IsValid(ply) then return end
 
 	if !table.HasValue(TEAM_BOTH, ply:Team()) then -- Spectator
-	
+
 		self:PlayerRequestJoin(ply)
-		
+
 	else
 
 		if ply:IsHuman() and !ply.IsInBuyzone then
 			ply:SendMessage("You must be in a buyzone to select weapons")
 		end
-		
+
 	end
-	
+
 end
 
 function GM:PlayerRequestJoin(ply)
@@ -73,7 +73,7 @@ function GM:PlayerRequestJoin(ply)
 
 		local bLateJoin = CVars.ZSpawnLateJoin:GetBool()
 		local bWithinTimeLimit = self.RoundStarted and ( self.RoundStarted + CVars.ZSpawnTimeLimit:GetInt() ) > CurTime() -- player may spawn as zombie prior to timelimit
-		
+
 		if !self.InfectionStarted then -- pre-infection
 
 			ply:GoTeam(TEAM_HUMANS)
@@ -92,12 +92,12 @@ function GM:PlayerRequestJoin(ply)
 			end
 
 		end
-		
+
 	else
-	
+
 		ply:GoTeam(TEAM_SPECTATOR)
 		ply:SendMessage("You will start playing next round!")
-		
+
 	end
 
 end
@@ -120,7 +120,7 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 	end
 
 	ply:CreateRagdoll()
-	
+
 	if IsValid(attacker) and attacker:IsPlayer() then
 
 		if ply == attacker then -- suicide
@@ -142,12 +142,12 @@ function GM:DoPlayerDeath( ply, attacker, dmginfo )
 		end
 
 	end
-	
+
 	-- Prevent respawning
 	if self.RoundStarted then
 		ply.DiedOnRound = self:GetRound()
 	end
-	
+
 	ply:GoTeam( TEAM_SPECTATOR, true )
 
 end
@@ -183,14 +183,14 @@ function GM:PlayerNoClip( pl, on )
 	-- Allow noclip if we're in single player
 	if game.SinglePlayer() then return true end
 	if GetConVar("sv_cheats"):GetBool() then return true end
-	
+
 	-- Allow base gamemode to decide
 	if !self.BaseClass.PlayerNoClip( self, pl, on ) then
 		return false
 	end
-	
+
 	return false
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -198,6 +198,21 @@ end
    Desc: Set the player's model
 -----------------------------------------------------------]]
 function GM:PlayerSetModel( pl )
+end
+
+--[[---------------------------------------------------------
+   Name: gamemode:PlayerSelectSpawn( player )
+   Desc: Find a spawn point entity for this player
+-----------------------------------------------------------]]
+function GM:PlayerSelectSpawn( ply )
+
+	local ent = GAMEMODE:PlayerSelectTeamSpawn( ply:Team(), ply )
+	if IsValid(ent) then
+		return ent
+	end
+
+	return self.BaseClass.PlayerSelectSpawn( self, ply )
+
 end
 
 /*---------------------------------------------------------
