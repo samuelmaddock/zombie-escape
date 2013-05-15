@@ -13,19 +13,19 @@ local BOSS = {}
 function BOSS:Setup(name, modelEnt, counterEnt)
 
 	local boss = {}
-	
+
 	setmetatable( boss, self )
 	self.__index = self
-	
+
 	boss.Name = name
 	boss:Reset()
 
 	boss.Targets = {}
 	boss.Targets.Model = modelEnt
 	boss.Targets.Counter = counterEnt
-	
+
 	return boss
-	
+
 end
 
 function BOSS:IsValid()
@@ -108,11 +108,11 @@ function BOSS:GetCounter()
 	end
 
 	return self.Entities.Counter
-	
+
 end
 
 function BOSS:GetClientModel()
-	
+
 	if !IsValid(self.Entities.Model) then
 
 		-- Attempt to find valid client entity
@@ -126,7 +126,7 @@ function BOSS:GetClientModel()
 	end
 
 	return self.Entities.Model
-	
+
 end
 
 function BOSS:OnDamageTaken( activator )
@@ -149,7 +149,7 @@ function BOSS:OnDamageTaken( activator )
 		net.WriteFloat( self:Health() )
 		net.WriteFloat( self:MaxHealth() )
 	net.Broadcast()
-	
+
 	-- Output debug info
 	if CVars.BossDebug:GetInt() > 0 then
 		Msg("BOSS TAKE DAMAGE:\n")
@@ -188,8 +188,14 @@ end
 /*---------------------------------------------------------
 	Bosses
 ---------------------------------------------------------*/
+
 GM.Bosses = {}
-GM.ValidBossEntities = { "math_counter", "func_physbox_multiplayer" }
+
+GM.ValidBossEntities = {}
+GM.ValidBossEntities[ "math_counter" ] 				= true
+GM.ValidBossEntities[ "func_physbox_multiplayer" ] 	= true
+
+
 -- AddBoss( name, model entity, math counter )
 function GM:AddBoss(name, propEnt, healthEnt)
 
@@ -207,7 +213,7 @@ function GM:GetBoss(ent)
 		Msg("\n")
 	end
 
-	if !table.HasValue(self.ValidBossEntities, ent:GetClass()) then
+	if !self.ValidBossEntities[ ent:GetClass() ] then
 		return
 	end
 
@@ -227,7 +233,7 @@ function GM:GetBoss(ent)
 			return boss
 		end
 	end
-	
+
 	return nil
 
 end

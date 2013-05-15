@@ -6,7 +6,7 @@ include('shared.lua')
 CVars.ZombieFOV = CreateClientConVar( "ze_zfov", 110, true, false )
 CVars.Vignette = CreateClientConVar( "ze_vignette", 1, true, false )
 
--- Because vignettes make everything look nicer	
+-- Because vignettes make everything look nicer
 local VignetteMat = Material("ze/vignette")
 function GM:HUDPaintBackground()
 
@@ -24,17 +24,24 @@ end
 	HUDShouldDraw
 	Determine whether to draw parts of HUD
 ---------------------------------------------------------*/
-GM.ZEHideHUD = { "CHudCrosshair", "CHudZoom" }
-GM.ZEShowHUD = { "CHudGMod", "CHudChat" }
+
+GM.ZEHideHUD = {}
+GM.ZEHideHUD[ "CHudCrosshair" ] = true
+GM.ZEHideHUD[ "CHudZoom" ] 		= true
+
+GM.ZEShowHUD = {}
+GM.ZEShowHUD[ "CHudGMod" ] 	= true
+GM.ZEShowHUD[ "CHudChat" ] 	= true
+
 function GM:HUDShouldDraw(name)
 
 	-- Hide certain HUD elements
-	if table.HasValue(self.ZEHideHUD, name) then
+	if self.ZEHideHUD[ name ] then
 		return false
 	end
 
 	-- Don't draw too much over the win overlays
-	if WinningTeam != nil and !table.HasValue(self.ZEShowHUD,name) then
+	if WinningTeam != nil and !self.ZEShowHUD[ name ] then
 		return false
 	end
 
@@ -60,7 +67,7 @@ function GM:PlayerBindPress( ply, bind, pressed )
 		LocalPlayer():ConCommand( "lastinv" )
 		return true
 	end
-	
+
 	return false
 
 end

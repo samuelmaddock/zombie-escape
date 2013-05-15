@@ -12,7 +12,7 @@ else
 	SWEP.DrawAmmo = false
 	SWEP.DrawCrosshair = false
 	SWEP.DrawWeaponInfoBox = false
-	
+
 	killicon.Add( "zombie_arms", "HUD/killicons/default", Color( 255, 80, 0, 255 ) )
 end
 
@@ -47,11 +47,11 @@ SWEP.HitSound = {
 	Sound("npc/zombie/claw_strike2.wav"),
 	Sound("npc/zombie/claw_strike3.wav")
 }
-SWEP.HitTable = {
-	"prop_physics",
-	"func_breakable"
-}
-	
+
+SWEP.HitTable = {}
+SWEP.HitTable[ "prop_physics" ] 	= true
+SWEP.HitTable[ "func_breakable" ] 	= true
+
 function SWEP:Initialize()
 	self:DrawShadow(false)
 	self:SetWeaponHoldType(self.HoldType)
@@ -69,7 +69,7 @@ end
 
 function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	
+
 	local tracedata = {
 		start = self.Owner:GetShootPos(),
 		endpos 	= self.Owner:GetShootPos() + (self.Owner:GetAimVector() * 85),
@@ -77,22 +77,22 @@ function SWEP:PrimaryAttack()
 		maxs = self.Maxs,
 		filter = { self.Owner }
 	}
-	
+
 	-- Zombies shouldn't hit other zombies, otherwise: http://i.imgur.com/YEXSS.jpg
 	for _, ply in pairs(team.GetPlayers(TEAM_ZOMBIES)) do
 		table.insert( tracedata.filter, ply )
 	end
-	
+
 	local tr = util.TraceHull(tracedata)
-	
+
 	local EmitSound = table.Random(self.MissSound)
-	
+
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 	self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
-	
+
 	if(tr.Hit) then
 		EmitSound = table.Random(self.HitSound)
-		if(IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or table.HasValue(self.HitTable, tr.Entity:GetClass()))) then
+		if(IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC() or self.HitTable[ tr.Entity:GetClass() ])) then
 			if(SERVER) then
 				local dmginfo = DamageInfo()
 				dmginfo:SetDamage(math.random(45,55))
@@ -105,7 +105,7 @@ function SWEP:PrimaryAttack()
 			--EmitSound = self.HitSoundWall
 		end
 	end
-	
+
 	if(IsFirstTimePredicted()) then
 		if(EmitSound) then
 			self.Weapon:EmitSound(EmitSound)
