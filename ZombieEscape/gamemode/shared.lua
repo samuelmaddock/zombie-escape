@@ -25,7 +25,7 @@ Loader.Load( "extensions" )
 Loader.Load( "modules" )
 
 function GM:CreateTeams()
-	
+
 	self.BaseClass.CreateTeams( self )
 
 	team.SetUp(TEAM_HUMANS, "Humans", Color(42,190,235,255) )
@@ -66,7 +66,7 @@ timer.Create( "PlayerThinkTimer", 1.0, 0, function()
 			player_manager.RunClass( LocalPlayer(), "Think" )
 		end
 	end
-	
+
 end)
 
 local prefix_ze = "[ZE] "
@@ -79,3 +79,6 @@ function MsgZE( str )
 	MsgC( color_ze, prefix_ze, str, "\n" )
 
 end
+
+-- Remove unused default hooks
+hook.Remove( "PlayerTick", "TickWidgets" )
