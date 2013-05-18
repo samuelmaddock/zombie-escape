@@ -1,5 +1,5 @@
 AddCSLuaFile()
-DEFINE_BASECLASS( "player_ze" )
+DEFINE_BASECLASS( "player_default" )
 
 if ( CLIENT ) then
 
