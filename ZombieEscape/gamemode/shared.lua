@@ -14,6 +14,7 @@ include('sh_meta.lua')
 include('sh_load.lua')
 
 CVars = {}
+CVars.Version = CreateConVar( "ze_version", "1.1.0.1", {FCVAR_REPLICATED,FCVAR_PRINTABLEONLY}, "Zombie Escape gamemode version." )
 
 TEAM_SPECTATOR = 1
 TEAM_ZOMBIES = 2
