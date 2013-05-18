@@ -68,81 +68,100 @@ function util.Tracer( vecStart, vecEnd, iEntIndex, iAttachment, flVelocity, pCus
 
 end
 
+local BulletTypeParameters = {
+	ammo_50AE = {
+		fPenetrationPower 		= 30,
+		flPenetrationDistance 	= 1000,
+	},
+	ammo_762mm = {
+		fPenetrationPower 		= 39,
+		flPenetrationDistance 	= 5000,
+	},
+	ammo_556mm = {
+		fPenetrationPower 		= 35,
+		flPenetrationDistance 	= 4000,
+	},
+	ammo_556mm_box = {
+		fPenetrationPower 		= 35,
+		flPenetrationDistance 	= 4000,
+	},
+	ammo_338mag = {
+		fPenetrationPower 		= 45,
+		flPenetrationDistance 	= 8000,
+	},
+	ammo_9mm = {
+		fPenetrationPower 		= 21,
+		flPenetrationDistance 	= 800,
+	},
+	ammo_buckshot = {
+		fPenetrationPower 		= 0,
+		flPenetrationDistance 	= 0,
+	},
+	ammo_45acp = {
+		fPenetrationPower 		= 15,
+		flPenetrationDistance 	= 500,
+	},
+	ammo_357sig = {
+		fPenetrationPower 		= 25,
+		flPenetrationDistance 	= 800,
+	},
+	ammo_57mm = {
+		fPenetrationPower 		= 30,
+		flPenetrationDistance 	= 2000,
+	},
+	default = {
+		fPenetrationPower 		= 0,
+		flPenetrationDistance 	= 0,
+	}
+}
+
 local function GetBulletTypeParameters( iBulletType )
-
-	local fPenetrationPower, flPenetrationDistance
-
-	if iBulletType == "ammo_50AE" then
-		fPenetrationPower = 30
-		flPenetrationDistance = 1000
-	elseif iBulletType == "ammo_762mm" then
-		fPenetrationPower = 39
-		flPenetrationDistance = 5000
-	elseif iBulletType == "ammo_556mm" or iBulletType == "ammo_556mm_box" then
-		fPenetrationPower = 35
-		flPenetrationDistance = 4000
-	elseif iBulletType == "ammo_338mag" then
-		fPenetrationPower = 45
-		flPenetrationDistance = 8000
-	elseif iBulletType == "ammo_9mm" then
-		fPenetrationPower = 21
-		flPenetrationDistance = 800
-	elseif iBulletType == "ammo_buckshot" then
-		fPenetrationPower = 0
-		flPenetrationDistance = 0
-	elseif iBulletType == "ammo_45acp" then
-		fPenetrationPower = 15
-		flPenetrationDistance = 500
-	elseif iBulletType == "ammo_357sig" then
-		fPenetrationPower = 25
-		flPenetrationDistance = 800
-	elseif iBulletType == "ammo_57mm" 	then
-		fPenetrationPower = 30
-		flPenetrationDistance = 2000
-	else
-		fPenetrationPower = 0
-		flPenetrationDistance = 0
-	end
-
-	return fPenetrationPower, flPenetrationDistance
-
+	local params = BulletTypeParameters[iBulletType] or BulletTypeParameters.default
+	return params.fPenetrationPower, params.flPenetrationDistance
 end
 
+local MaterialParameters = {
+	[MAT_METAL] = {
+		flPenetrationModifier 	= 0.5,
+		flDamageModifier 		= 0.3,
+	},
+	[MAT_DIRT] = {
+		flPenetrationModifier 	= 0.5,
+		flDamageModifier 		= 0.3,
+	},
+	[MAT_CONCRETE] = {
+		flPenetrationModifier 	= 0.4,
+		flDamageModifier 		= 0.25,
+	},
+	[MAT_GRATE] = {
+		flPenetrationModifier 	= 1.0,
+		flDamageModifier 		= 0.99,
+	},
+	[MAT_VENT] = {
+		flPenetrationModifier 	= 0.5,
+		flDamageModifier 		= 0.45,
+	},
+	[MAT_TILE] = {
+		flPenetrationModifier 	= 0.65,
+		flDamageModifier 		= 0.3,
+	},
+	[MAT_COMPUTER] = {
+		flPenetrationModifier 	= 0.4,
+		flDamageModifier 		= 0.45,
+	},
+	[MAT_WOOD] = {
+		flPenetrationModifier 	= 1.0,
+		flDamageModifier 		= 0.6,
+	},
+	default = {
+		flPenetrationModifier 	= 1.0,
+		flDamageModifier 		= 0.5,
+	}
+}
+
 local function GetMaterialParameters( mat )
-
-	local flPenetrationModifier, flDamageModifier
-
-	if mat == MAT_METAL then
-		flPenetrationModifier = 0.5
-		flDamageModifier = 0.3
-	elseif mat == MAT_DIRT then
-		flPenetrationModifier = 0.5
-		flDamageModifier = 0.3
-	elseif mat == MAT_CONCRETE then
-		flPenetrationModifier = 0.4
-		flDamageModifier = 0.25
-	elseif mat == MAT_GRATE then
-		flPenetrationModifier = 1.0
-		flDamageModifier = 0.99
-	elseif mat == MAT_VENT then
-		flPenetrationModifier = 0.5
-		flDamageModifier = 0.45
-	elseif mat == MAT_TILE then
-		flPenetrationModifier = 0.65
-		flDamageModifier = 0.3
-	elseif mat == MAT_COMPUTER then
-		flPenetrationModifier = 0.4
-		flDamageModifier = 0.45
-	elseif mat == MAT_WOOD then
-		flPenetrationModifier = 1.0
-		flDamageModifier = 0.6
-	else
-		flPenetrationModifier = 1.0
-		flDamageModifier = 0.5
-	end
-	
-	return flPenetrationModifier, flDamageModifier
-
+	local params = MaterialParameters[mat] or MaterialParameters.default
+	return params.flPenetrationModifier, params.flDamageModifier
 end
 
 local function TraceToExit( trace )
@@ -435,7 +454,6 @@ function PlayerMeta:FireCSBullet(
 
 		if bDoEffects then
 			util.ImpactTrace(self, exitTr, iDamageType)
-			-- util.ParticleTracerEx( "vortigaunt_beam", exitTr.StartPos, exitTr.HitPos, true, 0, -1 )
 		end
 
 		flPenetrationPower = flPenetrationPower - flTraceDistance / flPenetrationModifier
