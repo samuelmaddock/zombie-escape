@@ -24,8 +24,12 @@ PLAYER.AvoidPlayers			= false		-- Automatically swerves around other players
 -- Set up the network table accessors
 --
 function PLAYER:SetupDataTables()
+
+	BaseClass.SetupDataTables( self )
+
 	self.Player:NetworkVar( "Float", 0, "VelocityModifier" )
 	self.Player:NetworkVar( "Float", 1, "Stamina" )
+
 end
 
 --
@@ -39,6 +43,8 @@ end
 -- Called serverside only when the player spawns
 --
 function PLAYER:Spawn()
+
+	BaseClass.Spawn( self )
 
 end
 

@@ -1,4 +1,3 @@
-
 if SERVER then
 
 	AddCSLuaFile()
@@ -23,7 +22,7 @@ SWEP.Category			= "Counter-Strike"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= "models/weapons/v_snip_awp.mdl"
+SWEP.ViewModel			= "models/weapons/cstrike/c_snip_awp.mdl"
 SWEP.WorldModel			= "models/weapons/w_snip_awp.mdl"
 
 SWEP.Weight				= 30

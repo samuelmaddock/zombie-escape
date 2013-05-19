@@ -1,8 +1,9 @@
 if SERVER then
-	AddCSLuaFile( "shared.lua" )
-end
 
-if CLIENT then
+	AddCSLuaFile()
+
+else
+
 	SWEP.PrintName	= "Dual Elites"			
 	SWEP.Author			= "Counter-Strike"
 	SWEP.Slot				= 2
@@ -11,6 +12,7 @@ if CLIENT then
 	SWEP.ViewModelFlip = false
 	
 	killicon.AddFont( "weapon_elite", "CSKillIcons", SWEP.IconLetter, Color( 255, 80, 0, 255 ) )
+
 end
 
 SWEP.HoldType			= "duel"
@@ -20,7 +22,7 @@ SWEP.Category			= "Counter-Strike"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= Model("models/weapons/v_pist_elite.mdl")
+SWEP.ViewModel			= Model("models/weapons/cstrike/c_pist_elite.mdl")
 SWEP.WorldModel			= Model("models/weapons/w_pist_elite.mdl")
 
 SWEP.Weight				= 5

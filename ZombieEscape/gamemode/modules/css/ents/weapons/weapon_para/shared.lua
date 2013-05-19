@@ -1,12 +1,8 @@
+if SERVER then
 
-
-if ( SERVER ) then
-
-	AddCSLuaFile( "shared.lua" )
+	AddCSLuaFile()
 	
-end
-
-if ( CLIENT ) then
+else
 
 	SWEP.PrintName			= "M249 PARA"			
 	SWEP.Author				= "Counter-Strike"
@@ -27,7 +23,7 @@ SWEP.Category			= "Counter-Strike"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= "models/weapons/v_mach_m249para.mdl"
+SWEP.ViewModel			= "models/weapons/cstrike/c_mach_m249para.mdl"
 SWEP.WorldModel			= "models/weapons/w_mach_m249para.mdl"
 
 SWEP.Weight				= 5

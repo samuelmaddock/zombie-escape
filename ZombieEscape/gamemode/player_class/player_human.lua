@@ -1,4 +1,5 @@
 AddCSLuaFile()
+DEFINE_BASECLASS( "player_ze" )
 
 local PLAYER = {}
 
@@ -10,9 +11,11 @@ PLAYER.StartArmor			= 100
 --
 function PLAYER:Spawn()
 
-	/*-- Set player color
+	BaseClass.Spawn( self )
+
+	-- Set player color
 	local col = self.Player:GetInfo( "cl_playercolor" )
-	self.Player:SetPlayerColor( Vector( col ) )*/
+	self.Player:SetPlayerColor( Vector( col ) )
 
 	self.Player:RemoveAllItems()
 

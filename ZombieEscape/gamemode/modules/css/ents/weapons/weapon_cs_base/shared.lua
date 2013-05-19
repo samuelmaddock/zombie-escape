@@ -10,8 +10,8 @@ else
 
 	SWEP.DrawAmmo			= true
 	SWEP.DrawCrosshair		= false
-	SWEP.ViewModelFOV		= 82
-	SWEP.ViewModelFlip		= true
+	SWEP.ViewModelFOV		= 60
+	SWEP.ViewModelFlip		= false
 	SWEP.CSMuzzleFlashes	= true
 
 	// This is the font that's used to draw the death icons
@@ -58,6 +58,7 @@ SWEP.Zoom = {}
 SWEP.Zoom.Level = 0
 SWEP.Zoom.Sound = Sound( "Default.Zoom" )
 
+SWEP.UseHands = true
 
 function SWEP:Initialize()
 

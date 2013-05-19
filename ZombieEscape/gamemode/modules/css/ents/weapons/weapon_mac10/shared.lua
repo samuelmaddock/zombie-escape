@@ -1,12 +1,8 @@
-
-
-if ( SERVER ) then
+if SERVER then
 
 	AddCSLuaFile( "shared.lua" )
 	
-end
-
-if ( CLIENT ) then
+else
 
 	SWEP.PrintName			= "MAC-10"			
 	SWEP.Author				= "Counter-Strike"
@@ -25,7 +21,7 @@ SWEP.Category			= "Counter-Strike"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= "models/weapons/v_smg_mac10.mdl"
+SWEP.ViewModel			= "models/weapons/cstrike/c_smg_mac10.mdl"
 SWEP.WorldModel			= "models/weapons/w_smg_mac10.mdl"
 
 SWEP.Weight				= 5
@@ -42,4 +38,3 @@ SWEP.Primary.Delay			= 0.09
 SWEP.Primary.DefaultClip	= 75
 SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "ammo_556mm"
-
