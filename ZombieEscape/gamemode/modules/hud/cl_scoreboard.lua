@@ -1,14 +1,13 @@
 
 surface.CreateFont( "ScoreboardDefault",
 {
-	font		= "Helvetica",
-	size		= 22,
-	weight		= 800
+	font		= "Bebas",
+	size		= 22
 })
 
 surface.CreateFont( "ScoreboardDefaultTitle",
 {
-	font		= "Helvetica",
+	font		= "Bebas",
 	size		= 32,
 	weight		= 800
 })
@@ -35,6 +34,7 @@ local PLAYER_LINE =
 		self.Name		= self:Add( "DLabel" )
 		self.Name:Dock( FILL )
 		self.Name:SetFont( "ScoreboardDefault" )
+		self.Name:SetTextColor( color_white )
 		self.Name:DockMargin( 8, 0, 0, 0 )
 
 		self.Mute		= self:Add( "DImageButton" )
@@ -45,23 +45,26 @@ local PLAYER_LINE =
 		self.Ping:Dock( RIGHT )
 		self.Ping:SetWidth( 50 )
 		self.Ping:SetFont( "ScoreboardDefault" )
+		self.Ping:SetTextColor( color_white )
 		self.Ping:SetContentAlignment( 5 )
 
 		self.Deaths		= self:Add( "DLabel" )
 		self.Deaths:Dock( RIGHT )
 		self.Deaths:SetWidth( 50 )
 		self.Deaths:SetFont( "ScoreboardDefault" )
+		self.Deaths:SetTextColor( color_white )
 		self.Deaths:SetContentAlignment( 5 )
 
 		self.Kills		= self:Add( "DLabel" )
 		self.Kills:Dock( RIGHT )
 		self.Kills:SetWidth( 50 )
 		self.Kills:SetFont( "ScoreboardDefault" )
+		self.Kills:SetTextColor( color_white )
 		self.Kills:SetContentAlignment( 5 )
 
 		self:Dock( TOP )
-		self:DockPadding( 3, 3, 3, 3 )
-		self:SetHeight( 32 + 3*2 )
+		-- self:DockPadding( 3, 3, 3, 3 )
+		self:SetHeight( 32 )
 		self:DockMargin( 2, 0, 2, 2 )
 
 	end,
@@ -122,7 +125,7 @@ local PLAYER_LINE =
 		-- Connecting players go at the very bottom
 		--
 		if ( self.Player:Team() == TEAM_CONNECTING || self.Player:Team() == TEAM_SPECTATOR ) then
-			self:SetZPos( 2000 )
+			self:SetZPos( 5000 )
 		end
 
 		--
@@ -130,7 +133,7 @@ local PLAYER_LINE =
 		-- so if we set the z order according to kills they'll be ordered that way!
 		-- Careful though, it's a signed short internally, so needs to range between -32,768k and +32,767
 		--
-		self:SetZPos( (self.Player:Team() * -100) + (self.NumKills * -50) + self.NumDeaths )
+		self:SetZPos( (-self.Player:EntIndex()) + (self.Player:Team() * -100) + (self.NumKills * -50) + self.NumDeaths )
 
 	end,
 
@@ -144,12 +147,15 @@ local PLAYER_LINE =
 		-- We draw our background a different colour based on the status of the player
 		--
 
-		if ( self.Player:Team() == TEAM_CONNECTING || self.Player:Team() == TEAM_SPECTATOR) then
+		if self.Player:Team() == TEAM_CONNECTING then
 			draw.RoundedBox( 4, 0, 0, w, h, Color( 200, 200, 200, 200 ) )
 			return
 		end
 
-		draw.RoundedBox( 4, 0, 0, w, h, team.GetColor(self.Player:Team()) )
+		local col = team.GetColor(self.Player:Team())
+		col.a = 88
+
+		draw.RoundedBox( 0, 0, 0, w, h, col )
 
 	end,
 }
@@ -241,6 +247,7 @@ function GM:ScoreboardShow()
 	if ( IsValid( g_Scoreboard ) ) then
 		g_Scoreboard:Show()
 		g_Scoreboard:MakePopup()
+		g_Scoreboard:SetKeyBoardInputEnabled(false)
 	end
 
 end
