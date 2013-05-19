@@ -1,4 +1,5 @@
 resource.AddFile("materials/ze/vignette.vmt")
+resource.AddFile("resource/fonts/bebas.ttf")
 resource.AddFile("resource/fonts/segoeui.ttf")
 
 -- Overlay
