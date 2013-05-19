@@ -71,3 +71,11 @@ function GM:PlayerBindPress( ply, bind, pressed )
 	return false
 
 end
+
+--[[---------------------------------------------------------
+   Name: gamemode:HUDPaint( )
+   Desc: Use this section to paint your HUD
+-----------------------------------------------------------]]
+function GM:HUDDrawTargetID()
+	return false
+end
