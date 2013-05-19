@@ -4,28 +4,18 @@ local function DrawName( ply, opacityScale )
 
 	if !IsValid(ply) or !ply:Alive() then return end
 	
-	local pos = ply:GetPos()
+	local pos = ply:GetPos() + Vector( 0, 0, 60 )
 	local ang = LocalPlayer():EyeAngles()
 	
 	ang:RotateAroundAxis( ang:Forward(), 90 )
 	ang:RotateAroundAxis( ang:Right(), 90 )
 	
-	if ply:InVehicle() then
-		pos = pos + Vector( 0, 0, 30 )
-	else
-		pos = pos + Vector( 0, 0, 60 )
-	end
-	
 	local dist = LocalPlayer():GetPos():Distance( ply:GetPos() )
 	if ( dist >= 1200 ) then return end -- no need to draw anything if the player is far away
 	
-	local opacity = math.Clamp( 310.526 - ( 0.394737 * dist ), 0, 150 )
-	
-	opacityScale = opacityScale and opacityScale or 1
-
 	local name = "  " .. string.upper( ply:GetName() )
 	local col = team.GetColor( ply:Team() )
-	col.a = opacity * opacityScale
+	col.a = math.Clamp( 310.526 - ( 0.394737 * dist ), 0, 200 ) * ( opacityScale or 1 )
 
 	cam.Start3D2D( pos, Angle( 0, ang.y, 90 ), 0.15 )
 
