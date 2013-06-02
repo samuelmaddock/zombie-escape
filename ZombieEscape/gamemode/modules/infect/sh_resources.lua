@@ -35,5 +35,5 @@ GM.ZombieDeath = {
 GM.ZombieModels = {
 	Model("models/player/zombie_classic.mdl"),
 	Model("models/player/zombie_fast.mdl"),
-	Model("models/player/zombie_soldier.mdl")
+	-- Model("models/player/zombie_soldier.mdl")
 }
