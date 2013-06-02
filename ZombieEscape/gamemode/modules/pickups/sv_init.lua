@@ -22,6 +22,14 @@ function GM:SetupEntityFixes()
 
 end*/
 
+hook.Add( "Initialize", "SetupPickupEntities", function()
+
+	for _, weapon in pairs( { "weapon_knife" } ) do
+		scripted_ents.Alias( weapon, "weapon_deagle" )
+	end
+
+end )
+
 /*---------------------------------------------------------
 	Key Value Fixes
 ---------------------------------------------------------*/

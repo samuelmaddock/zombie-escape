@@ -19,7 +19,7 @@
 
 	"P90"
 	{
-		"class"			"weapon_p90_ze"
+		"class"			"weapon_p90"
 		"multiplier"	"1.0"
 		"type"			"1"
 	}
@@ -54,7 +54,7 @@
 
 	"AWP"
 	{
-		"class"			"weapon_awp_ze"
+		"class"			"weapon_awp"
 		"multiplier"	"1.8"
 		"type"			"1"
 	}
@@ -64,21 +64,21 @@
 
 	"Elites"
 	{
-		"class"			"weapon_elite_ze"
+		"class"			"weapon_elite"
 		"multiplier"	"1.1"
 		"type"			"2"
 	}
 
 	"Glock"
 	{
-		"class"			"weapon_glock_ze"
+		"class"			"weapon_glock"
 		"multiplier"	"1.1"
 		"type"			"2"
 	}
 
 	"Deagle"
 	{
-		"class"			"weapon_deagle_ze"
+		"class"			"weapon_deagle"
 		"multiplier"	"1.2"
 		"type"			"2"
 	}

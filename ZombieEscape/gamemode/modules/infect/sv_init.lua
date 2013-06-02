@@ -181,6 +181,8 @@ end )
 ---------------------------------------------------------*/
 function GM:PlayerCanPickupWeapon( ply, weapon )
 
+	print("PlayerCanPickupWeapon", ply, weapon)
+
 	if !IsValid(ply) or !IsValid(weapon) then return false end
 	if GetConVar( "sv_cheats" ):GetBool() then return true end
 

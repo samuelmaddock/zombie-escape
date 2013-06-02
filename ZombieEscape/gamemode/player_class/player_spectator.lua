@@ -9,8 +9,7 @@ PLAYER.DisplayName			= "Specator"
 --
 function PLAYER:Spawn()
 
-	self.Player:Spectate( OBS_MODE_ROAMING )
-	self.Player:SetMoveType( MOVETYPE_OBSERVER )
+	hook.Call( "PlayerSpawnAsSpectator", GAMEMODE or GM, self.Player )
 
 end
 

@@ -1,5 +1,5 @@
 -- Movement ended up being too laggy. So, I'm removing it for now.
-if true then return end
+-- if true then return end
 
 local STAMINA_MAX = 100
 local STAMINA_COST_JUMP = 25

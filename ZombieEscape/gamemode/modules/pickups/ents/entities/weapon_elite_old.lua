@@ -1,5 +1,5 @@
 if SERVER then
-	AddCSLuaFile('shared.lua')
+	AddCSLuaFile()
 end
 
 ENT.Type = "anim"
