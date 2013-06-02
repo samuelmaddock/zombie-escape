@@ -41,7 +41,7 @@ hook.Add( "PostDrawTranslucentRenderables", "DrawPlayerNames", function()
 		end
 
 		-- Fade over time
-		DrawName( ply, 0.11 * ((time - RealTime()) / fadeTime) )
+		DrawName( ply, 0.33 * ((time - RealTime()) / fadeTime) )
 
 	end
 
