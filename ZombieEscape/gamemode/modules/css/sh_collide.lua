@@ -28,6 +28,11 @@ function GM:ShouldCollide( ent1, ent2 )
 		return true
 	end
 
+	-- No team collisions
+	if ent1:IsPlayer() and ent2:IsPlayer() then
+		return false
+	end
+
 	return self.BaseClass:ShouldCollide( ent1, ent2 )
 
 end
