@@ -103,7 +103,7 @@ function ENT:AcceptInput( name, activator, caller, data )
 		
 	elseif name == "getvalue" then
 		-- Update outvalue before firing
-		for k, v in pairs(self.Outputs.OnGetValue) do
+		for k, v in pairs(self.Outputs.OnGetValue or {}) do
 			v.param = self.m_OutValue
 		end
 		self:TriggerOutput("OnGetValue", activator)
