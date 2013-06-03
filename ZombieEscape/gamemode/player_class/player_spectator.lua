@@ -9,7 +9,7 @@ PLAYER.DisplayName			= "Specator"
 --
 function PLAYER:Spawn()
 
-	hook.Call( "PlayerSpawnAsSpectator", GAMEMODE or GM, self.Player )
+	hook.Call( "PlayerSpawnAsSpectator", GAMEMODE, self.Player )
 
 end
 
