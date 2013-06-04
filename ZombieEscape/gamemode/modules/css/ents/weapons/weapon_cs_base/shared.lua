@@ -329,6 +329,7 @@ function SWEP:Deploy()
 	self.Weapon:SetNextPrimaryFire( CurTime() )
 	self.Weapon:SetNextSecondaryFire( CurTime() )
 	self.Weapon:DisableZoom()
+	print("P90 SWEP.DEploy")
 end
 
 /*---------------------------------------------------------

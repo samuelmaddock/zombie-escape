@@ -47,7 +47,7 @@ SWEP.Primary.NumAmmo		= SWEP.Primary.NumShots
 SWEP.Primary.Cone			= vector_origin
 SWEP.Primary.ClipSize		= -1				// Size of a clip
 SWEP.Primary.Delay			= 0.5
-SWEP.Primary.DefaultClip	= 1					// Default number of bullets in a clip
+SWEP.Primary.DefaultClip	= -1					// Default number of bullets in a clip
 SWEP.Primary.Automatic		= false				// Automatic/Semi Auto
 SWEP.Primary.Ammo			= "grenade"
 SWEP.Primary.AmmoType		= "npc_grenade_frag"
@@ -353,6 +353,11 @@ function SWEP:Think()
 
 	if ( self.m_bRedraw ) then
 		self:Reload()
+	end
+
+	if SERVER and pPlayer:GetAmmoCount( self.Primary.Ammo ) == 0 then
+		self:Remove()
+		pPlayer:SelectAvailableWeapon()
 	end
 
 end

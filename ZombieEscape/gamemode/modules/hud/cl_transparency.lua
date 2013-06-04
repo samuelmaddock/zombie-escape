@@ -7,7 +7,6 @@ CVars.PlayerOpacity = CreateClientConVar( "ze_playeropacity", 1, true, false )
 CVars.PlayerOpacityDistance = CreateClientConVar( "ze_playeropacity_dist", 80, true, false )
 
 local undomodelblend = false
-local undozombievision = false
 local matWhite = Material("models/debug/debugwhite")
 
 function GM:PrePlayerDraw( ply )

@@ -9,6 +9,26 @@ function GM:GetFallDamage(ply, speed)
 	return speed * CS_DAMAGE_FOR_FALL_SPEED * 1.25
 end
 
+--[[---------------------------------------------------------
+   Name: gamemode:OnPlayerHitGround()
+        Return true to disable default action
+-----------------------------------------------------------]]
+local FallDamageSounds = {
+	"player/damage1.wav",
+	"player/damage2.wav",
+	"player/damage3.wav"
+}
+
+function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
+
+	if flFallSpeed > CS_PLAYER_MAX_SAFE_FALL_SPEED then
+		ply:EmitSound( table.Random(FallDamageSounds), 100, 100 )
+	end
+
+	return true
+
+end
+
 /*---------------------------------------------------------
 	Replace common CS:S weapons with pickup weapon
 

@@ -122,6 +122,13 @@ if SERVER then
 
 	end
 
+	function PlayerMeta:SelectAvailableWeapon()
+		local weap = table.Random( self:GetWeapons() or {} )
+		if weap then
+			self:SelectWeapon( weap:GetClass() )
+		end
+	end	
+
 	-- Copied from TTT
 	function PlayerMeta:ResetViewRoll()
 		local ang = self:EyeAngles()
