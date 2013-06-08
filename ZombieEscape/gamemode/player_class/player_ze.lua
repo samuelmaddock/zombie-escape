@@ -14,7 +14,7 @@ PLAYER.DisplayName			= "ZE Base"
 
 PLAYER.DuckSpeed			= 0.3		-- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed			= 0.3		-- How fast to go from ducking, to not ducking
-PLAYER.JumpPower			= 200		-- How powerful our jump should be
+PLAYER.JumpPower			= 215		-- How powerful our jump should be
 PLAYER.DropWeaponOnDie		= false		-- Do we drop our weapon when we die
 PLAYER.TeammateNoCollide 	= true		-- Do we collide with teammates or run straight through them
 PLAYER.AvoidPlayers			= false		-- Automatically swerves around other players
