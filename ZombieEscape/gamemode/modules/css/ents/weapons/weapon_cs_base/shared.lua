@@ -6,6 +6,10 @@ if SERVER then
 	SWEP.AutoSwitchTo		= false
 	SWEP.AutoSwitchFrom		= false
 
+	resource.AddFile( "sprites/scope" )
+	resource.AddFile( "overlays/scope_lens" )
+	resource.AddFile( "gmod/scope-refract" )
+
 else
 
 	SWEP.DrawAmmo			= true
@@ -329,7 +333,6 @@ function SWEP:Deploy()
 	self.Weapon:SetNextPrimaryFire( CurTime() )
 	self.Weapon:SetNextSecondaryFire( CurTime() )
 	self.Weapon:DisableZoom()
-	print("P90 SWEP.DEploy")
 end
 
 /*---------------------------------------------------------
