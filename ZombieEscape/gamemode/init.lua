@@ -105,7 +105,10 @@ function GM:PlayerRequestJoin(ply)
 end
 
 function GM:PlayerCanHearPlayersVoice( ply1, ply2 )
-	return IsValid(ply1) and IsValid(ply2) and (ply1:Team() != ply2:Team())
+	if not GetConVar("sv_alltalk"):GetBool() then
+		return IsValid(ply1) and IsValid(ply2) and (ply1:Team() != ply2:Team())
+	end
+	return true
 end
 
 /*---------------------------------------------------------

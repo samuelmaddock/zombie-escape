@@ -5,6 +5,7 @@ CVars.ZKnockback		= CreateConVar( "ze_zknockback", '3.2', {FCVAR_REPLICATED}, "K
 CVars.ZMotherKnockback = CreateConVar( "ze_zmotherknockback", '2.3', {FCVAR_REPLICATED}, "Knockback multiplier for mother zombies." )
 CVars.ZombieRatio 	= CreateConVar( "ze_zombie_ratio", 7, {FCVAR_REPLICATED}, "Ratio of zombies to spawn." )
 CVars.ZHealthRegen   = CreateConVar( "ze_zhealth_regen", 1, {FCVAR_REPLICATED}, "Whether or not zombie health should regenerate." )
+CVars.DebugNoInfect = CreateConVar( "ze_debug_noinfect", 0, FCVAR_NONE, "Disable the ability for zombies to infect humans." )
 
 GM.PreviousZombies = {}
 
@@ -95,6 +96,11 @@ function GM:PlayerShouldTakeDamage( ply, attacker, inflictor )
 				return false
 			end
 		
+			-- Debug disabled infections
+			if IsDebugMode() and CVars.DebugNoInfect:GetBool() then
+				return false
+			end
+
 			attacker:SetHealth( attacker:Health() + ply:Health() ) -- zombies receive victim's health
 			
 			ply:Zombify()

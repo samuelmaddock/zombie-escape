@@ -24,37 +24,41 @@ end
 
 concommand.Add("ze_human", function(ply,cmd,args)
 
-	if !ply:IsSuperAdmin() then return end
-	if GetConVar("sv_cheats"):GetBool() then return end
+	if IsValid(ply) and !ply:IsSuperAdmin() then return end
+	if not ( GetConVar("sv_cheats"):GetBool() or IsDebugMode() ) then return end
 	
 	local Target = args[1]
-	if !Target then
-		ply:ChatPrint("The syntax is 'human <playername>'")
+	if !isstring(Target) then
+		ply:ChatPrint("The syntax is 'ze_human <playername>'")
 		return
 	end
 	
 	Target = FindPartialTarget(Target)
 	if Target and IsValid(Target) and Target:IsPlayer() then
 		if !Target:IsHuman() then
+			local pos = Target:GetPos()
 			Target:GoTeam(TEAM_HUMANS)
-			ply:ChatPrint("Your target has been humanized!")
+			Target:SetPos(pos)
+			if IsValid(ply) then
+				ply:ChatPrint("Your target has been humanized!")
+			end
 		else
-			ply:ChatPrint("Your target is already a human")
+			if IsValid(ply) then
+				ply:ChatPrint("Your target is already a human")
+			end
 		end
-	else
-		ply:ChatPrint(Target)
 	end
 
 end)
 
 concommand.Add("ze_infect", function(ply,cmd,args)
 
-	if !ply:IsSuperAdmin() then return end
-	if GetConVar("sv_cheats"):GetBool() then return end
+	if IsValid(ply) and !ply:IsSuperAdmin() then return end
+	if not ( GetConVar("sv_cheats"):GetBool() or IsDebugMode() ) then return end
 	
 	local Target = args[1]
-	if !Target then
-		ply:ChatPrint("The syntax is 'infect <playername>'")
+	if !isstring(Target) then
+		ply:ChatPrint("The syntax is 'ze_infect <playername>'")
 		return
 	end
 	
@@ -65,12 +69,14 @@ concommand.Add("ze_infect", function(ply,cmd,args)
 			if !Target:Alive() then
 				Target:Spawn()
 			end
-			ply:ChatPrint("Your target has been infected!")
+			if IsValid(ply) then
+				ply:ChatPrint("Your target has been infected!")
+			end
 		else
-			ply:ChatPrint("Your target is already infected")
+			if IsValid(ply) then
+				ply:ChatPrint("Your target is already infected")
+			end
 		end
-	else
-		ply:ChatPrint(Target)
 	end
 	
 end)
