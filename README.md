@@ -63,4 +63,4 @@ Also be sure to check out any CS:S Zombie Escape servers for any popular maps.
 #### Links ####
 * [Facepunch thread](http://www.facepunch.com/showthread.php?t=1187359)
 * [Zombie Escape Wiki](http://zombieescape.wikia.com/wiki/Zombie_Escape_Wiki) (for CS:S)
-* [Maps](http://gamebanana.com/csszm/maps/cats/2471)
+* [Maps](http://css.gamebanana.com/maps/cats/8024)
