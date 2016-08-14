@@ -1,6 +1,8 @@
 ENT.Base = "base_point"
 ENT.Type = "point"
 
+ENT.InputDispatch = {}
+
 function ENT:Initialize()
 	-- Any better way I should be doing this?
 	if !self.m_OutValue then self.m_OutValue = 0 end
@@ -9,14 +11,14 @@ function ENT:Initialize()
 
 	-- Make sure max and min are ordered properly or clamp won't work.
 	if self.m_flMin > self.m_flMax then
-		flTemp = self.m_flMax
+		local flTemp = self.m_flMax
 		self.m_flMax = self.m_flMin
 		self.m_flMin = flTemp
 	end
 	
 	-- Clamp initial value to within the valid range.
 	if ((self.m_flMin != 0) || (self.m_flMax != 0)) then
-		flStartValue = math.Clamp(self.m_OutValue, self.m_flMin, self.m_flMax)
+		local flStartValue = math.Clamp(self.m_OutValue, self.m_flMin, self.m_flMax)
 		self.m_OutValue = flStartValue
 	end
 	
@@ -26,14 +28,22 @@ function ENT:Initialize()
 	self.m_bDisabled = false
 end
 
+function ENT:DefineInputFunc( name, func )
+	name = string.lower(name)
+	self.InputDispatch[name] = func
+end
+
 function ENT:KeyValue( key, value )
 
+	local lkey = string.lower(key)
+
 	-- Set the initial value of the counter.
-	if key == "startvalue" then
+	if lkey == "startvalue" then
 		self.m_OutValue = tonumber(value)
-	elseif key == "min" then
+		return true
+	elseif lkey == "min" then
 		self.m_flMin = tonumber(value)
-	elseif key == "max" then
+	elseif lkey == "max" then
 		self.m_flMax = tonumber(value)
 	end
 
@@ -42,14 +52,6 @@ function ENT:KeyValue( key, value )
 end
 
 function ENT:AcceptInput( name, activator, caller, data )
-
-	name = string.lower(name)
-
-	local outValue = self.m_OutValue
-	local min, max = self.m_flMin, self.m_flMax
-	
-	local flData = tonumber(data)
-	
 	--[[Msg("MATH COUNTER INPUT:\n")
 	Msg("\tSelf: " .. tostring(self) .. "\n")
 	Msg("\tName: " .. tostring(name) .. "\n")
@@ -57,80 +59,43 @@ function ENT:AcceptInput( name, activator, caller, data )
 	Msg("\tCaller: " .. tostring(caller) .. "\n")
 	Msg("\tData: " .. tostring(data) .. "\n")]]
 
-	if name == "add" then
-	
-		local fNewValue = outValue + flData
-		self:UpdateOutValue(activator, fNewValue)
-		
-	elseif name == "divide" and flData != 0 then
-	
-		local fNewValue = outValue / flData
-		self:UpdateOutValue(activator, fNewValue)
-		
-	elseif name == "multiply" then
-	
-		local fNewValue = outValue * flData
-		self:UpdateOutValue(activator, fNewValue)
-		
-	elseif name == "setvalue" then
-	
-		self:UpdateOutValue(activator, flData)
-		
-	elseif name == "setvaluenofire" then
-	
-		self:UpdateOutValue(activator, flData, true)
-		
-	elseif name == "subtract" then
-	
-		local fNewValue = outValue - flData
-		self:UpdateOutValue(activator, fNewValue)
-		
-	elseif name == "sethitmax" then
-	
-		self.m_flMax = flData
-		if ( self.m_flMax < self.m_flMin ) then
-			self.m_flMin = self.m_flMax
-		end
-		self:UpdateOutValue(nil, self.m_OutValue)
-		
-	elseif name == "sethitmin" then
-	
-		self.m_flMin = flData
-		if ( self.m_flMax < self.m_flMin ) then
-			self.m_flMax = self.m_flMin
-		end
-		self:UpdateOutValue(nil, self.m_OutValue)
-		
-	elseif name == "getvalue" then
-		
-		-- Update outvalue before firing
-		if self.Outputs.OnGetValue then
-			for k, v in pairs(self.Outputs.OnGetValue) do
-				v.param = self.m_OutValue
-			end
-		end
+	local inputdata = {
+		name = name,
+		pActivator = activator,
+		pCaller = caller,
+		value = data
+	}
 
-		self:TriggerOutput("OnGetValue", activator)
+	name = string.lower(name)
 
-	elseif name == "enable" then
-		self.m_bDisabled = false
-	elseif name == "disable" then
-		self.m_bDisabled = true	
-	else
-		return false
+	local inputActionFunc = self.InputDispatch[name]
+	local returnValue
+
+	if isfunction(inputActionFunc) then
+		returnValue = inputActionFunc(self, inputdata)
 	end
-	
+
+	self:PostAcceptInput()
+
+	if returnValue then
+		return tobool(returnValue)
+	end
+
+	return true
+end
+
+function ENT:PostAcceptInput()
 	-- Setup initial value
-	if !self.m_InitialValue || self.m_InitialValue < self:GetOutValue() then
-		self.m_InitialValue = self:GetOutValue()
+	if !self.m_InitialValue || self.m_InitialValue < self.m_OutValue then
+		self.m_InitialValue = self.m_OutValue
 	end
 	
 	-- Update boss values, but don't send clamped min value
-	if !self.m_LastValue || self.m_LastValue != self:GetOutValue() then
+	if !self.m_LastValue || self.m_LastValue != self.m_OutValue then
 		hook.Call("MathCounterUpdate", GAMEMODE, self, activator)
 	end
 	
-	self.m_LastValue = self:GetOutValue()
+	self.m_LastValue = self.m_OutValue
 	
 	/*if !self.m_InitialValue || self.m_InitialValue < self:GetOutValue() then -- starting health
 		self.m_InitialValue = self:GetOutValue()
@@ -139,15 +104,114 @@ function ENT:AcceptInput( name, activator, caller, data )
 		self.m_InitialValue = self:GetOutValue()
 		hook.Call("MathCounterUpdate", GAMEMODE, self, activator)
 	end*/
+end
 
-	return true
-	
+function ENT:InputSetHitMax(inputdata)
+	self.m_flMax = tonumber(inputdata.value)
+
+	if ( self.m_flMax < self.m_flMin ) then
+		self.m_flMin = self.m_flMax
+	end
+
+	self:UpdateOutValue(inputdata.pActivator, self.m_OutValue)
+end
+
+function ENT:InputSetHitMin(inputdata)
+	self.m_flMin = tonumber(inputdata.value)
+
+	if ( self.m_flMax < self.m_flMin ) then
+		self.m_flMax = self.m_flMin
+	end
+
+	self:UpdateOutValue(inputdata.pActivator, self.m_OutValue)
+end
+
+function ENT:InputAdd(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring ADD because it is disabled\n")
+		return
+	end
+
+	local fNewValue = self.m_OutValue + tonumber(inputdata.value)
+	self:UpdateOutValue( inputdata.pActivator, fNewValue )
+end
+
+function ENT:InputDivide(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring DIVIDE because it is disabled\n")
+		return
+	end
+
+	local flValue = tonumber(inputdata.value)
+	if (flValue != 0) then
+		local fNewValue = self.m_OutValue / flValue
+		self:UpdateOutValue( inputdata.pActivator, fNewValue )
+	else
+		ErrorNoHalt("LEVEL DESIGN ERROR: Divide by zero in math_value\n")
+		self:UpdateOutValue( inputdata.pActivator, self.m_OutValue )
+	end
+end
+
+function ENT:InputMultiply(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring MULTIPLY because it is disabled\n")
+		return
+	end
+
+	local fNewValue = self.m_OutValue * tonumber(inputdata.value)
+	self:UpdateOutValue( inputdata.pActivator, fNewValue )
+end
+
+function ENT:InputSetValue(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring SETVALUE because it is disabled\n")
+		return
+	end
+
+	self:UpdateOutValue( inputdata.pActivator, tonumber(inputdata.value) )
+end
+
+function ENT:InputSetValueNoFire(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring SETVALUENOFIRE because it is disabled\n")
+		return
+	end
+
+	local flNewValue = tonumber(inputdata.value)
+	if (( self.m_flMin != 0 ) || (self.m_flMax != 0 )) then
+		flNewValue = math.Clamp(flNewValue, self.m_flMin, self.m_flMax)
+	end
+
+	self:UpdateOutValue( inputdata.pActivator, flNewValue, true )
+end
+
+function ENT:InputSubtract(inputdata)
+	if( self.m_bDisabled ) then
+		Msg("Math Counter "..self:GetName().." ignoring SUBTRACT because it is disabled\n")
+		return
+	end
+
+	local fNewValue = self.m_OutValue - tonumber(inputdata.value)
+	self:UpdateOutValue( inputdata.pActivator, fNewValue )
+end
+
+function ENT:InputGetValue(inputdata)
+	self:TriggerOutput("OnGetValue", inputdata.pActivator, self.m_OutValue)
+end
+
+function ENT:InputEnable(inputdata)
+	self.m_bDisabled = false
+end
+
+function ENT:InputDisable(inputdata)
+	self.m_bDisabled = true
 end
 
 function ENT:UpdateOutValue(pActivator, fNewValue, bNoOutput)
-	if( self.m_bDisabled ) then
-		ErrorNoHalt("Math Counter " .. self:GetName() .. " ignoring new value because it is disabled\n")
-		return
+	if !fNewValue then
+		ErrorNoHalt("Math Counter " .. self:GetName() .. " received new out value which was nil (activator="..tostring(pActivator)..").\n")
+		debug.Trace()
+		fNewValue = 0
 	end
 
 	if ((self.m_flMin != 0) || (self.m_flMax != 0)) then
@@ -181,9 +245,9 @@ end
 
 function ENT:SetOutValue(fNewValue, pActivator, bNoOutput)
 	self.m_OutValue = fNewValue
-	if !bNoOutput and self.Outputs and self.Outputs.OutValue then
-		self.Outputs.OutValue[1].param = self.m_OutValue
-		self:TriggerOutput("OutValue", pActivator)
+
+	if !bNoOutput then
+		self:TriggerOutput("OutValue", pActivator, self.m_OutValue)
 	end
 end
 
@@ -195,18 +259,14 @@ function ENT:UpdateTransmitState()
 	return TRANSMIT_NEVER
 end
 
-/*function ENT:StoreOutput(name, info)
-	local rawData = string.Explode(",",info);
-	
-	local Output = {}
-	Output.entities = rawData[1] or ""
-	Output.input = rawData[2] or ""
-	Output.param = rawData[3] or ""
-	Output.delay = tonumber(rawData[4]) or 0
-	Output.times = tonumber(rawData[5]) or -1
-	
-	self.Outputs = self.Outputs or {}
-	self.Outputs[name] = self.Outputs[name] or {}
-	
-	table.insert(self.Outputs[name], 1, Output);
-end*/
+ENT:DefineInputFunc("Add", ENT.InputAdd)
+ENT:DefineInputFunc("Divide", ENT.InputDivide)
+ENT:DefineInputFunc("Multiply", ENT.InputMultiply)
+ENT:DefineInputFunc("SetValue", ENT.InputSetValue)
+ENT:DefineInputFunc("SetValueNoFire", ENT.InputSetValueNoFire)
+ENT:DefineInputFunc("Subtract", ENT.InputSubtract)
+ENT:DefineInputFunc("SetHitMax", ENT.InputSetHitMax)
+ENT:DefineInputFunc("SetHitMin", ENT.InputSetHitMin)
+ENT:DefineInputFunc("GetValue", ENT.InputGetValue)
+ENT:DefineInputFunc("Enable", ENT.InputEnable)
+ENT:DefineInputFunc("Disable", ENT.InputDisable)
