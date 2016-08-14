@@ -102,11 +102,16 @@ function ENT:AcceptInput( name, activator, caller, data )
 		self:UpdateOutValue(nil, self.m_OutValue)
 		
 	elseif name == "getvalue" then
+		
 		-- Update outvalue before firing
-		for k, v in pairs(self.Outputs.OnGetValue or {}) do
-			v.param = self.m_OutValue
+		if self.Outputs.OnGetValue then
+			for k, v in pairs(self.Outputs.OnGetValue) do
+				v.param = self.m_OutValue
+			end
 		end
+
 		self:TriggerOutput("OnGetValue", activator)
+
 	elseif name == "enable" then
 		self.m_bDisabled = false
 	elseif name == "disable" then
