@@ -30,20 +30,12 @@ function GM:HasRoundStarted()
 	return !self.Restarting and self.RoundStarted 
 end
 
-function GM:RoundChecks( callback )
-
-	if game.SinglePlayer() then return end
-
-	timer.Simple(0.25, function() GAMEMODE:DeathCheck() end)
-	timer.Simple(0.5, function() GAMEMODE:RoundRestart() end)
-
-	if callback and type(callback) == "function" then
-		timer.Simple( 0.51, callback )
-	end
-
+function GM:RoundChecks()
+	self:DeathCheck()
+	self:RoundRestart()
 end
-hook.Add( "PlayerDeath", "RoundChecks1", GM.RoundChecks ) -- TODO: Test this, use DoPlayerDeath instead?
-hook.Add( "PlayerDisconnected", "RoundChecks2", GM.RoundChecks )
+hook.Add( "PlayerDeath", "RoundChecks1", function() GAMEMODE:RoundChecks() end )
+hook.Add( "PlayerDisconnected", "RoundChecks2", function() GAMEMODE:RoundChecks() end )
 
 function GM:ShouldStartRound()
 
@@ -83,23 +75,19 @@ function GM:DeathCheck()
 
 	if bRestart then
 
-		local callback = function()
+		local bIsRestarting = self:RoundRestart()
 
-			if WinnerTeam then
-				self:SendWinner(WinnerTeam,false)
-				hook.Call( "OnTeamWin", self, WinnerTeam )
-			end
-
+		if bIsRestarting and WinnerTeam then
+			self:SendWinner(WinnerTeam,false)
+			hook.Call( "OnTeamWin", self, WinnerTeam )
 		end
-
-		self:RoundRestart(callback)
 
 	end
 
 end
 
 GM.Restarting = false
-function GM:RoundRestart( callback )
+function GM:RoundRestart()
 
 	if self.Restarting then
 		return -1
@@ -112,10 +100,6 @@ function GM:RoundRestart( callback )
 	self.Restarting = true
 	self.ForceRestart = false
 	self.RoundEndTime = false
-	
-	if type(callback) == 'function' then
-		pcall( callback )
-	end
 	
 	if self:GetMaxRounds() != 0 and self:GetRound() >= self:GetMaxRounds() then
 
