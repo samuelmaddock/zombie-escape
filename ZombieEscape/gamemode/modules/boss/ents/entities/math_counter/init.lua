@@ -2,6 +2,7 @@ ENT.Base = "base_point"
 ENT.Type = "point"
 
 ENT.InputDispatch = {}
+ENT.EventQueue = {}
 
 function ENT:Initialize()
 	-- Any better way I should be doing this?
@@ -52,12 +53,12 @@ function ENT:KeyValue( key, value )
 end
 
 function ENT:AcceptInput( name, activator, caller, data )
-	--[[Msg("MATH COUNTER INPUT:\n")
-	Msg("\tSelf: " .. tostring(self) .. "\n")
+	Msg("MATH COUNTER INPUT:\n")
+	Msg("\tSelf: " .. tostring(self) .. " ("..self:GetName()..")" .. "\n")
 	Msg("\tName: " .. tostring(name) .. "\n")
 	Msg("\tActivator: " .. tostring(activator) .. "\n")
-	Msg("\tCaller: " .. tostring(caller) .. "\n")
-	Msg("\tData: " .. tostring(data) .. "\n")]]
+	Msg("\tCaller: " .. tostring(caller) .. (caller:IsValid() and "("..caller:GetName()..")" or "") .. "\n")
+	Msg("\tData: " .. tostring(data) .. "\n")
 
 	local inputdata = {
 		name = name,
@@ -75,7 +76,7 @@ function ENT:AcceptInput( name, activator, caller, data )
 		returnValue = inputActionFunc(self, inputdata)
 	end
 
-	self:PostAcceptInput()
+	self:PostAcceptInput(name, activator, caller, data)
 
 	if returnValue then
 		return tobool(returnValue)
@@ -84,7 +85,7 @@ function ENT:AcceptInput( name, activator, caller, data )
 	return true
 end
 
-function ENT:PostAcceptInput()
+function ENT:PostAcceptInput(name, activator, caller, data)
 	-- Setup initial value
 	if !self.m_InitialValue || self.m_InitialValue < self.m_OutValue then
 		self.m_InitialValue = self.m_OutValue
@@ -95,6 +96,10 @@ function ENT:PostAcceptInput()
 		hook.Call("MathCounterUpdate", GAMEMODE, self, activator)
 	end
 	
+	if self.m_bHitMin then
+		hook.Call("MathCounterHitMin", GAMEMODE, self, activator)
+	end
+
 	self.m_LastValue = self.m_OutValue
 	
 	/*if !self.m_InitialValue || self.m_InitialValue < self:GetOutValue() then -- starting health
@@ -196,7 +201,7 @@ function ENT:InputSubtract(inputdata)
 end
 
 function ENT:InputGetValue(inputdata)
-	self:TriggerOutput("OnGetValue", inputdata.pActivator, self.m_OutValue)
+	self:QueueTriggerOutput("OnGetValue", inputdata.pActivator, self.m_OutValue)
 end
 
 function ENT:InputEnable(inputdata)
@@ -219,7 +224,7 @@ function ENT:UpdateOutValue(pActivator, fNewValue, bNoOutput)
 		if ( fNewValue >= self.m_flMax ) then
 			if ( !self.m_bHitMax ) then
 				self.m_bHitMax = true
-				self:TriggerOutput("OnHitMax", pActivator)
+				self:QueueTriggerOutput("OnHitMax", pActivator)
 			end
 		else
 			self.m_bHitMax = false
@@ -228,10 +233,8 @@ function ENT:UpdateOutValue(pActivator, fNewValue, bNoOutput)
 		-- Fire an output any time we reach or go below our minimum value.
 		if ( fNewValue <= self.m_flMin ) then
 			if ( !self.m_bHitMin ) then
-				hook.Call("MathCounterHitMin", GAMEMODE, self, pActivator)
-
 				self.m_bHitMin = true
-				self:TriggerOutput("OnHitMin", pActivator)
+				self:QueueTriggerOutput("OnHitMin", pActivator)
 			end
 		else
 			self.m_bHitMin = false
@@ -247,7 +250,7 @@ function ENT:SetOutValue(fNewValue, pActivator, bNoOutput)
 	self.m_OutValue = fNewValue
 
 	if !bNoOutput then
-		self:TriggerOutput("OutValue", pActivator, self.m_OutValue)
+		self:QueueTriggerOutput("OutValue", pActivator, self.m_OutValue)
 	end
 end
 
@@ -257,6 +260,10 @@ end
 
 function ENT:UpdateTransmitState()
 	return TRANSMIT_NEVER
+end
+
+function ENT:QueueTriggerOutput( name, activator, data )
+	table.insert(self.EventQueue, {self,name,activator, data})
 end
 
 ENT:DefineInputFunc("Add", ENT.InputAdd)
@@ -270,3 +277,22 @@ ENT:DefineInputFunc("SetHitMin", ENT.InputSetHitMin)
 ENT:DefineInputFunc("GetValue", ENT.InputGetValue)
 ENT:DefineInputFunc("Enable", ENT.InputEnable)
 ENT:DefineInputFunc("Disable", ENT.InputDisable)
+
+--
+-- Reproduce Source Engine's `g_EventQueue` behavior. GMod fires trigger 
+-- outputs immediately while the Source Engine queues them to fire on the 
+-- next frame.
+--
+local EventQueue = ENT.EventQueue
+
+local function EventQueueThink()
+	while #EventQueue > 0 do
+		local event = table.remove(EventQueue, 1)
+		local ent = table.remove(event, 1)
+
+		if IsValid(ent) then
+			ent:TriggerOutput(unpack(event))
+		end
+	end
+end
+hook.Add("Think", "ProcessCounterEventQueue", EventQueueThink)
