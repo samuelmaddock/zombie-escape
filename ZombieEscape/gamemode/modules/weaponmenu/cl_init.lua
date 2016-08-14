@@ -166,8 +166,8 @@ function PANEL:Paint( w, h )
 	-- Background
 	draw.RoundedBoxEx( 4, 0, 0, w, h, Color(0,0,0,180), true, true, true, true )
 
-	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding + 2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding, team.GetColor(LocalPlayer():Team()), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding + 2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("Select A Weapon", "WeaponMenuText", self.padding, self.padding, team.GetColor(LocalPlayer():Team()), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 	local x, y, text
 	for k, v in pairs(self.WeaponList) do
@@ -176,8 +176,8 @@ function PANEL:Paint( w, h )
 		x = self.padding
 		y = self.padding + (self.padding + self.th) * (k)
 		text = tostring(v.Slot) .. ". " .. v.Name
-		draw.SimpleText(text, "WeaponMenuText", x, y+2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
-		draw.SimpleText(text, "WeaponMenuText", x, y, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
+		draw.SimpleText(text, "WeaponMenuText", x, y+2, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(text, "WeaponMenuText", x, y, Color(255,255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 	end
 
