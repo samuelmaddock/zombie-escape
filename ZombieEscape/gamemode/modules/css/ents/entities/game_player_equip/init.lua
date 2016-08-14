@@ -42,7 +42,7 @@ function ENT:KeyValue( key, value )
 			self.m_weapons = {}
 		end
 
-		self.m_weapons[key] = math.max( 1, tonumber(value) )
+		self.m_weapons[key] = math.max( 1, tonumber(value) or 1 )
 
 		return true
 
