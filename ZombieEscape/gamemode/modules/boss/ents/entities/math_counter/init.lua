@@ -53,12 +53,12 @@ function ENT:KeyValue( key, value )
 end
 
 function ENT:AcceptInput( name, activator, caller, data )
-	Msg("MATH COUNTER INPUT:\n")
+	--[[Msg("MATH COUNTER INPUT:\n")
 	Msg("\tSelf: " .. tostring(self) .. " ("..self:GetName()..")" .. "\n")
 	Msg("\tName: " .. tostring(name) .. "\n")
 	Msg("\tActivator: " .. tostring(activator) .. "\n")
 	Msg("\tCaller: " .. tostring(caller) .. (caller:IsValid() and "("..caller:GetName()..")" or "") .. "\n")
-	Msg("\tData: " .. tostring(data) .. "\n")
+	Msg("\tData: " .. tostring(data) .. "\n")]]
 
 	local inputdata = {
 		name = name,
