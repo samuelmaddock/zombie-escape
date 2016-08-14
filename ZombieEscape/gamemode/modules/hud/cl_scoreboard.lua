@@ -86,6 +86,7 @@ local PLAYER_LINE =
 	Think = function( self )
 
 		if ( !IsValid( self.Player ) ) then
+			self:SetZPos( 9999 ) -- Causes a rebuild
 			self:Remove()
 			return
 		end
@@ -125,15 +126,15 @@ local PLAYER_LINE =
 		-- Connecting players go at the very bottom
 		--
 		if ( self.Player:Team() == TEAM_CONNECTING || self.Player:Team() == TEAM_SPECTATOR ) then
-			self:SetZPos( 5000 )
+			self:SetZPos( 2000 + self.Player:EntIndex() )
 		end
 
 		--
-		-- This is what sorts the list. The panels are docked in the z order, 
+		-- This is what sorts the list. The panels are docked in the z order,
 		-- so if we set the z order according to kills they'll be ordered that way!
 		-- Careful though, it's a signed short internally, so needs to range between -32,768k and +32,767
 		--
-		self:SetZPos( (-self.Player:EntIndex()) + (self.Player:Team() * -100) + (self.NumKills * -50) + self.NumDeaths )
+		self:SetZPos( (self.Player:Team() * -100) + ( self.NumKills * -50 ) + self.NumDeaths + self.Player:EntIndex() )
 
 	end,
 
@@ -192,7 +193,7 @@ local SCORE_BOARD =
 		--self.NumPlayers:SetSize( 300, 30 )
 		--self.NumPlayers:SetContentAlignment( 4 )
 
-		self.Scores = self:Add( "DPanelList" )
+		self.Scores = self:Add( "DScrollPanel" )
 		self.Scores:Dock( FILL )
 
 	end,
