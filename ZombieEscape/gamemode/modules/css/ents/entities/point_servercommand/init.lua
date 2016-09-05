@@ -81,7 +81,9 @@ end
 
 function ENT:AcceptInput(name, activator, caller, data)
 
-    if caller:IsPlayer() || IgnoreCommand(data) then return false end
+    if (IsValid(caller) and caller:IsPlayer()) or (data and IgnoreCommand(data)) then
+    	return false
+    end
 	
     name = string.lower(name)
 
@@ -95,7 +97,9 @@ function ENT:AcceptInput(name, activator, caller, data)
 
 			data = FixCommand(data)
 
-			MsgZE(tostring(self) .. " ran '" .. data .. "'")
+			local devmsg = ("%s (%s) ran '%s'"):format(tostring(self), self:GetName(), data or "")
+			MsgZE(devmsg)
+			
 			game.ConsoleCommand(data.."\n")
 
 		end
